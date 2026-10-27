@@ -131,7 +131,7 @@ states in each mode. The inverter includes a polarity-corrected set of SCRs,
 a driving DC voltage source in place of the rectifier's resistor, and a
 validated extinction angle.
 
-The comparison SVG is created by the two-stage generation command below.
+![Side-by-side rectifier and inverter](output_lcc/lcc_two_stage_overview.svg)
 
 **One-command demonstration:**
 
@@ -166,3 +166,52 @@ arguments remain supported.
 For the topology, the opposite SCR polarity, details of voltage conventions,
 limitations, and usage commands, see
 [docs/LCC_INVERTER_GUIDE.md](docs/LCC_INVERTER_GUIDE.md).
+
+---
+
+## Stage 3 — Complete two-terminal HVDC LCC link
+
+**New:** `hvdc_link.py` connects the educational rectifier and inverter
+bridges through a physically closed, **two-conductor metallic-return** DC loop.
+The vector schematic includes **isolated converter transformers, leakage
+inductances, one smoothing reactor at each station, a DC line resistor and
+all twelve SCRs**. Red paths follow directed, validated electrical loops
+across **both** stations, including overlap on either or both ends.
+
+![Full HVDC current path](output_hvdc/hvdc_normal.png)
+
+![Synchronized station conduction timeline](output_hvdc/hvdc_timeline.png)
+
+**Generate the full demonstration:**
+
+```bash
+python hvdc_link.py --config config_hvdc.json --all --output-dir output_hvdc
+```
+
+**Optional PNGs:** `python -m pip install cairosvg`, then add `--png`.
+
+**Select one instant:**
+
+```bash
+python hvdc_link.py --theta 66 --output-dir output_hvdc
+```
+
+**Independent inverter extinction-angle setting:**
+
+```bash
+python hvdc_link.py --alpha-r 15 --gamma-i 20 --mu-r 12 --mu-i 15 --phase-offset 30
+```
+
+For the example (`μr=12°`, `μi=15°`, illustrative `30°` AC offset), the
+shared timeline has **24 distinct intervals**. The number changes when
+station overlap windows coincide. At each instant the highlighted complete
+path contains four SCRs normally, five during one station overlap and six
+if both stations overlap. These counts are topological, not solved currents.
+
+**This is still a pair of six-pulse stations, not an industrial 12-pulse
+Y/Y + Y/Δ converter.** The transformer primary and secondary are isolated
+and the second DC conductor is an actual metallic return. The offset between
+stations is an illustrative AC-reference choice independent of firing delay.
+
+See **[docs/HVDC_FULL_LINK_GUIDE.md](docs/HVDC_FULL_LINK_GUIDE.md)** for
+topology conventions, architecture, output files, validation and limitations.

@@ -1,0 +1,8 @@
+{
+  "alpha_rectifier": 15,
+  "alpha_inverter": 145,
+  "mu_rectifier": 12,
+  "mu_inverter": 15,
+  "gamma_min": 10,
+  "ac_phase_offset": 30
+}

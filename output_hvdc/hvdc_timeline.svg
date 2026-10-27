@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="3180" height="890" viewBox="0 0 3180 890" version="1.1">
+  <title>LCC HVDC: synchronized rectifier and inverter commutation states</title>
+  <rect x="0" y="0" width="3180" height="890" fill="#F4F7FB" />
+  <text x="85" y="82" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="38" font-weight="700">GLOBAL 360° CONDUCTION TIMELINE</text>
+  <text x="87" y="128" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="19" font-weight="400">Valve commutation at each station, phase-offset by an independently selected AC reference</text>
+  <text x="80" y="273" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="22" font-weight="700">RECTIFIER</text>
+  <rect x="350" y="230" width="2690" height="90" rx="9" fill="#E5EAF0" stroke="#D7E2ED" stroke-width="2" />
+  <text x="80" y="408" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="22" font-weight="700">INVERTER</text>
+  <rect x="350" y="365" width="2690" height="90" rx="9" fill="#E5EAF0" stroke="#D7E2ED" stroke-width="2" />
+  <text x="80" y="573" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="22" font-weight="700">COMBINED</text>
+  <rect x="350" y="530" width="2690" height="90" rx="9" fill="#E5EAF0" stroke="#D7E2ED" stroke-width="2" />
+  <line x1="350.0" y1="205" x2="350.0" y2="640" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+  <text x="350.0" y="188" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400" text-anchor="middle">0°</text>
+  <line x1="574.1666666666666" y1="205" x2="574.1666666666666" y2="640" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+  <text x="574.1666666666666" y="188" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400" text-anchor="middle">30°</text>
+  <line x1="798.3333333333333" y1="205" x2="798.3333333333333" y2="640" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+  <text x="798.3333333333333" y="188" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400" text-anchor="middle">60°</text>
+  <line x1="1022.5" y1="205" x2="1022.5" y2="640" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+  <text x="1022.5" y="188" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400" text-anchor="middle">90°</text>
+  <line x1="1246.6666666666665" y1="205" x2="1246.6666666666665" y2="640" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+  <text x="1246.6666666666665" y="188" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400" text-anchor="middle">120°</text>
+  <line x1="1470.8333333333333" y1="205" x2="1470.8333333333333" y2="640" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+  <text x="1470.8333333333333" y="188" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400" text-anchor="middle">150°</text>
+  <line x1="1695.0" y1="205" x2="1695.0" y2="640" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+  <text x="1695.0" y="188" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400" text-anchor="middle">180°</text>
+  <line x1="1919.1666666666667" y1="205" x2="1919.1666666666667" y2="640" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+  <text x="1919.1666666666667" y="188" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400" text-anchor="middle">210°</text>
+  <line x1="2143.333333333333" y1="205" x2="2143.333333333333" y2="640" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+  <text x="2143.333333333333" y="188" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400" text-anchor="middle">240°</text>
+  <line x1="2367.5" y1="205" x2="2367.5" y2="640" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+  <text x="2367.5" y="188" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400" text-anchor="middle">270°</text>
+  <line x1="2591.6666666666665" y1="205" x2="2591.6666666666665" y2="640" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+  <text x="2591.6666666666665" y="188" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400" text-anchor="middle">300°</text>
+  <line x1="2815.8333333333335" y1="205" x2="2815.8333333333335" y2="640" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+  <text x="2815.8333333333335" y="188" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400" text-anchor="middle">330°</text>
+  <line x1="3040.0" y1="205" x2="3040.0" y2="640" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+  <text x="3040.0" y="188" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400" text-anchor="middle">360°</text>
+  <rect x="350.8" y="231.4" width="88.06666666666668" height="87.2" fill="#D52940" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="350.8" y="366.4" width="88.06666666666668" height="87.2" fill="#517BB0" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="350.8" y="531.4" width="88.06666666666668" height="87.2" fill="#E69A45" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="394.8333333333333" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R12</text>
+  <text x="394.8333333333333" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I11</text>
+  <text x="394.8333333333333" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">01</text>
+  <rect x="440.4666666666667" y="231.4" width="132.9" height="87.2" fill="#518E9E" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="440.4666666666667" y="366.4" width="132.9" height="87.2" fill="#517BB0" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="440.4666666666667" y="531.4" width="132.9" height="87.2" fill="#DBE4EA" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="506.9166666666667" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R01</text>
+  <text x="506.9166666666667" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I11</text>
+  <text x="506.9166666666667" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">02</text>
+  <rect x="574.9666666666666" y="231.4" width="110.48333333333333" height="87.2" fill="#518E9E" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="574.9666666666666" y="366.4" width="110.48333333333333" height="87.2" fill="#D52940" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="574.9666666666666" y="531.4" width="110.48333333333333" height="87.2" fill="#84B56A" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="630.2083333333333" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R01</text>
+  <text x="630.2083333333333" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I12</text>
+  <text x="630.2083333333333" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">03</text>
+  <rect x="687.05" y="231.4" width="110.48333333333333" height="87.2" fill="#518E9E" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="687.05" y="366.4" width="110.48333333333333" height="87.2" fill="#517BB0" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="687.05" y="531.4" width="110.48333333333333" height="87.2" fill="#DBE4EA" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="742.2916666666666" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R01</text>
+  <text x="742.2916666666666" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I01</text>
+  <text x="742.2916666666666" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">04</text>
+  <rect x="799.1333333333332" y="231.4" width="88.06666666666668" height="87.2" fill="#D52940" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="799.1333333333332" y="366.4" width="88.06666666666668" height="87.2" fill="#517BB0" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="799.1333333333332" y="531.4" width="88.06666666666668" height="87.2" fill="#E69A45" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="843.1666666666666" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R02</text>
+  <text x="843.1666666666666" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I01</text>
+  <text x="843.1666666666666" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">05</text>
+  <rect x="888.8" y="231.4" width="132.9" height="87.2" fill="#518E9E" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="888.8" y="366.4" width="132.9" height="87.2" fill="#517BB0" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="888.8" y="531.4" width="132.9" height="87.2" fill="#DBE4EA" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="955.25" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R03</text>
+  <text x="955.25" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I01</text>
+  <text x="955.25" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">06</text>
+  <rect x="1023.3" y="231.4" width="110.48333333333333" height="87.2" fill="#518E9E" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="1023.3" y="366.4" width="110.48333333333333" height="87.2" fill="#D52940" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="1023.3" y="531.4" width="110.48333333333333" height="87.2" fill="#84B56A" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="1078.5416666666667" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R03</text>
+  <text x="1078.5416666666667" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I02</text>
+  <text x="1078.5416666666667" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">07</text>
+  <rect x="1135.3833333333334" y="231.4" width="110.48333333333333" height="87.2" fill="#518E9E" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="1135.3833333333334" y="366.4" width="110.48333333333333" height="87.2" fill="#517BB0" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="1135.3833333333334" y="531.4" width="110.48333333333333" height="87.2" fill="#DBE4EA" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="1190.6250000000002" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R03</text>
+  <text x="1190.6250000000002" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I03</text>
+  <text x="1190.6250000000002" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">08</text>
+  <rect x="1247.4666666666665" y="231.4" width="88.06666666666668" height="87.2" fill="#D52940" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="1247.4666666666665" y="366.4" width="88.06666666666668" height="87.2" fill="#517BB0" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="1247.4666666666665" y="531.4" width="88.06666666666668" height="87.2" fill="#E69A45" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="1291.4999999999998" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R04</text>
+  <text x="1291.4999999999998" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I03</text>
+  <text x="1291.4999999999998" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">09</text>
+  <rect x="1337.1333333333334" y="231.4" width="132.9" height="87.2" fill="#518E9E" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="1337.1333333333334" y="366.4" width="132.9" height="87.2" fill="#517BB0" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="1337.1333333333334" y="531.4" width="132.9" height="87.2" fill="#DBE4EA" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="1403.5833333333335" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R05</text>
+  <text x="1403.5833333333335" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I03</text>
+  <text x="1403.5833333333335" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">10</text>
+  <rect x="1471.6333333333332" y="231.4" width="110.48333333333333" height="87.2" fill="#518E9E" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="1471.6333333333332" y="366.4" width="110.48333333333333" height="87.2" fill="#D52940" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="1471.6333333333332" y="531.4" width="110.48333333333333" height="87.2" fill="#84B56A" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="1526.875" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R05</text>
+  <text x="1526.875" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I04</text>
+  <text x="1526.875" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">11</text>
+  <rect x="1583.7166666666667" y="231.4" width="110.48333333333333" height="87.2" fill="#518E9E" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="1583.7166666666667" y="366.4" width="110.48333333333333" height="87.2" fill="#517BB0" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="1583.7166666666667" y="531.4" width="110.48333333333333" height="87.2" fill="#DBE4EA" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="1638.9583333333335" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R05</text>
+  <text x="1638.9583333333335" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I05</text>
+  <text x="1638.9583333333335" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">12</text>
+  <rect x="1695.8" y="231.4" width="88.06666666666668" height="87.2" fill="#D52940" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="1695.8" y="366.4" width="88.06666666666668" height="87.2" fill="#517BB0" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="1695.8" y="531.4" width="88.06666666666668" height="87.2" fill="#E69A45" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="1739.8333333333333" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R06</text>
+  <text x="1739.8333333333333" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I05</text>
+  <text x="1739.8333333333333" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">13</text>
+  <rect x="1785.4666666666667" y="231.4" width="132.9" height="87.2" fill="#518E9E" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="1785.4666666666667" y="366.4" width="132.9" height="87.2" fill="#517BB0" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="1785.4666666666667" y="531.4" width="132.9" height="87.2" fill="#DBE4EA" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="1851.9166666666667" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R07</text>
+  <text x="1851.9166666666667" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I05</text>
+  <text x="1851.9166666666667" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">14</text>
+  <rect x="1919.9666666666667" y="231.4" width="110.48333333333333" height="87.2" fill="#518E9E" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="1919.9666666666667" y="366.4" width="110.48333333333333" height="87.2" fill="#D52940" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="1919.9666666666667" y="531.4" width="110.48333333333333" height="87.2" fill="#84B56A" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="1975.2083333333335" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R07</text>
+  <text x="1975.2083333333335" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I06</text>
+  <text x="1975.2083333333335" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">15</text>
+  <rect x="2032.05" y="231.4" width="110.48333333333333" height="87.2" fill="#518E9E" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="2032.05" y="366.4" width="110.48333333333333" height="87.2" fill="#517BB0" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="2032.05" y="531.4" width="110.48333333333333" height="87.2" fill="#DBE4EA" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="2087.2916666666665" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R07</text>
+  <text x="2087.2916666666665" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I07</text>
+  <text x="2087.2916666666665" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">16</text>
+  <rect x="2144.133333333333" y="231.4" width="88.06666666666668" height="87.2" fill="#D52940" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="2144.133333333333" y="366.4" width="88.06666666666668" height="87.2" fill="#517BB0" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="2144.133333333333" y="531.4" width="88.06666666666668" height="87.2" fill="#E69A45" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="2188.1666666666665" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R08</text>
+  <text x="2188.1666666666665" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I07</text>
+  <text x="2188.1666666666665" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">17</text>
+  <rect x="2233.8" y="231.4" width="132.9" height="87.2" fill="#518E9E" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="2233.8" y="366.4" width="132.9" height="87.2" fill="#517BB0" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="2233.8" y="531.4" width="132.9" height="87.2" fill="#DBE4EA" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="2300.25" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R09</text>
+  <text x="2300.25" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I07</text>
+  <text x="2300.25" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">18</text>
+  <rect x="2368.3" y="231.4" width="110.48333333333333" height="87.2" fill="#518E9E" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="2368.3" y="366.4" width="110.48333333333333" height="87.2" fill="#D52940" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="2368.3" y="531.4" width="110.48333333333333" height="87.2" fill="#84B56A" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="2423.5416666666665" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R09</text>
+  <text x="2423.5416666666665" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I08</text>
+  <text x="2423.5416666666665" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">19</text>
+  <rect x="2480.3833333333337" y="231.4" width="110.48333333333333" height="87.2" fill="#518E9E" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="2480.3833333333337" y="366.4" width="110.48333333333333" height="87.2" fill="#517BB0" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="2480.3833333333337" y="531.4" width="110.48333333333333" height="87.2" fill="#DBE4EA" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="2535.625" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R09</text>
+  <text x="2535.625" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I09</text>
+  <text x="2535.625" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">20</text>
+  <rect x="2592.4666666666667" y="231.4" width="88.06666666666668" height="87.2" fill="#D52940" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="2592.4666666666667" y="366.4" width="88.06666666666668" height="87.2" fill="#517BB0" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="2592.4666666666667" y="531.4" width="88.06666666666668" height="87.2" fill="#E69A45" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="2636.5" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R10</text>
+  <text x="2636.5" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I09</text>
+  <text x="2636.5" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">21</text>
+  <rect x="2682.1333333333337" y="231.4" width="132.9" height="87.2" fill="#518E9E" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="2682.1333333333337" y="366.4" width="132.9" height="87.2" fill="#517BB0" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="2682.1333333333337" y="531.4" width="132.9" height="87.2" fill="#DBE4EA" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="2748.5833333333335" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R11</text>
+  <text x="2748.5833333333335" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I09</text>
+  <text x="2748.5833333333335" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">22</text>
+  <rect x="2816.6333333333337" y="231.4" width="110.48333333333333" height="87.2" fill="#518E9E" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="2816.6333333333337" y="366.4" width="110.48333333333333" height="87.2" fill="#D52940" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="2816.6333333333337" y="531.4" width="110.48333333333333" height="87.2" fill="#84B56A" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="2871.875" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R11</text>
+  <text x="2871.875" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I10</text>
+  <text x="2871.875" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">23</text>
+  <rect x="2928.7166666666667" y="231.4" width="110.48333333333333" height="87.2" fill="#518E9E" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="2928.7166666666667" y="366.4" width="110.48333333333333" height="87.2" fill="#517BB0" stroke="#FFFFFF" stroke-width="1.1" />
+  <rect x="2928.7166666666667" y="531.4" width="110.48333333333333" height="87.2" fill="#DBE4EA" stroke="#FFFFFF" stroke-width="1.1" />
+  <text x="2983.958333333333" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R11</text>
+  <text x="2983.958333333333" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I11</text>
+  <text x="2983.958333333333" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">24</text>
+  <text x="92" y="712" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="20" font-weight="400">μr = 12°   |   μi = 15°   |   AC phase offset = 30°</text>
+  <text x="92" y="757" fill="#D52940" font-family="DejaVu Sans, Arial, sans-serif" font-size="20" font-weight="700">24 distinct joint conduction intervals</text>
+  <text x="92" y="799" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="400">Overlap intervals show which devices conduct; red does not quantify current sharing.</text>
+  <text x="92" y="835" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="17" font-weight="400">A 30° offset here is pedagogical; it is not an assumed grid phase lock or a 12-pulse transformer phase shift.</text>
+</svg>

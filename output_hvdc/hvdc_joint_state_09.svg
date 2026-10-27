@@ -1,0 +1,423 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="3500" height="1550" viewBox="0 0 3500 1550" version="1.1">
+  <title>Full LCC HVDC circuit — Rectifier commutation overlap</title>
+  <desc>Two three-phase, two-winding converter transformers, a six-pulse rectifier, two smoothing reactors, line resistance, a six-pulse inverter, and a metallic return. The red line is the union of validated complete electrical current loops.</desc>
+  <defs>
+    <marker id="current-arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="5.2" markerHeight="5.2" orient="auto" markerUnits="strokeWidth">
+      <path d="M 1,1 L 11,6 L 1,11 Z" fill="#D52940" stroke="#D52940" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" />
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="3500" height="1550" fill="#F4F7FB" />
+  <rect x="0" y="0" width="3500" height="137" fill="#21334A" />
+  <text x="75" y="61" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="39" font-weight="700">HVDC LCC  ·  COMPLETE CURRENT PATH</text>
+  <text x="76" y="108" fill="#BFD5EA" font-family="DejaVu Sans, Arial, sans-serif" font-size="20" font-weight="400">Stage 3  ·  6-pulse rectifier → DC link → 6-pulse inverter</text>
+  <text x="3415" y="57" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="30" font-weight="700" text-anchor="end">JOINT STATE  09</text>
+  <text x="3415" y="98" fill="#BFD5EA" font-family="DejaVu Sans, Arial, sans-serif" font-size="19" font-weight="400" text-anchor="end">120° – 132°  (global AC reference)</text>
+  <rect x="66" y="169" width="1385" height="1130" rx="20" fill="#FFFFFF" stroke="#D7E2ED" stroke-width="2" />
+  <rect x="2047" y="169" width="1385" height="1130" rx="20" fill="#FFFFFF" stroke="#D7E2ED" stroke-width="2" />
+  <text x="94" y="222" fill="#2566A0" font-family="DejaVu Sans, Arial, sans-serif" font-size="25" font-weight="700">01  RECTIFIER STATION</text>
+  <text x="2080" y="222" fill="#2566A0" font-family="DejaVu Sans, Arial, sans-serif" font-size="25" font-weight="700">02  INVERTER STATION</text>
+  <text x="94" y="258" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="400">αr = 15°   ·   μr = 12°</text>
+  <text x="2080" y="258" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="400">αi = 145°   ·   μi = 15°   ·   γi = 20°</text>
+  <text x="94" y="298" fill="#D52940" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="400">R state 04: T2 + T3 + T6  ·  Overlap</text>
+  <text x="2080" y="298" fill="#D52940" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="400">I state 03: T3 + T6  ·  Normal</text>
+  <text x="1750" y="231" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="700" text-anchor="middle">ONE CONTINUOUS DC LOOP</text>
+  <text x="1750" y="263" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="15" font-weight="400" text-anchor="middle">metallic return (not earth return)</text>
+  <text x="1672" y="342" fill="#D52940" font-family="DejaVu Sans, Arial, sans-serif" font-size="29" font-weight="700">+</text>
+  <text x="1884" y="342" fill="#D52940" font-family="DejaVu Sans, Arial, sans-serif" font-size="29" font-weight="700">+</text>
+  <text x="1730" y="1164" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="400" text-anchor="middle">RETURN</text>
+  <g id="dc-link" inkscape:groupmode="layer" inkscape:label="DC transmission conductors and smoothing reactors">
+    <line x1="1255.0" y1="370.0" x2="1425" y2="370.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <path d="M 1425,370 C 1431.25,342 1450,342 1456.25,370 C 1462.5,342 1481.25,342 1487.5,370 C 1493.75,342 1512.5,342 1518.75,370 C 1525,342 1543.75,342 1550,370" fill="none" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" stroke-linejoin="round" />
+    <line x1="1550" y1="370.0" x2="1695" y2="370.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <path d="M 1695,370 L 1707.5,352 L 1720,388 L 1732.5,352 L 1745,388 L 1757.5,352 L 1770,388 L 1782.5,352 L 1795,370" fill="none" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" stroke-linejoin="round" />
+    <line x1="1795" y1="370.0" x2="1975" y2="370.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <path d="M 1975,370 C 1981.25,342 2000,342 2006.25,370 C 2012.5,342 2031.25,342 2037.5,370 C 2043.75,342 2062.5,342 2068.75,370 C 2075,342 2093.75,342 2100,370" fill="none" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" stroke-linejoin="round" />
+    <line x1="2100" y1="370.0" x2="2225.0" y2="370.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <line x1="2225.0" y1="1190.0" x2="1255.0" y2="1190.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <g id="edge-l_dr" data-edge-id="L_DR" data-active="true" data-rendered-as="continuous-dc-link" />
+    <g id="edge-r_line" data-edge-id="R_LINE" data-active="true" data-rendered-as="continuous-dc-link" />
+    <g id="edge-l_di" data-edge-id="L_DI" data-active="true" data-rendered-as="continuous-dc-link" />
+    <g id="edge-metallic_return" data-edge-id="METALLIC_RETURN" data-active="true" data-rendered-as="continuous-dc-link" />
+    <text x="1482" y="317" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="14.3" font-style="italic">d,r</tspan>
+    </text>
+    <text x="1745" y="315" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="400" text-anchor="middle">R<tspan baseline-shift="sub" font-size="14.3" font-style="normal">line</tspan>
+    </text>
+    <text x="2035" y="317" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="14.3" font-style="italic">d,i</tspan>
+    </text>
+    <text x="1745" y="1098" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="25" font-weight="400" text-anchor="middle">I<tspan baseline-shift="sub" font-size="16.25" font-style="normal">dc</tspan>
+    </text>
+    <text x="1750" y="441" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="17" font-weight="400" text-anchor="middle">POSITIVE DC CONDUCTOR</text>
+    <line x1="1605" y1="370.0" x2="1644" y2="370.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
+    <line x1="1830" y1="370.0" x2="1875" y2="370.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
+    <line x1="1940" y1="1190.0" x2="1895" y2="1190.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
+    <line x1="1570" y1="1190.0" x2="1520" y2="1190.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
+  </g>
+  <g id="bridge-R" inkscape:groupmode="layer" inkscape:label="R - bridge valves and nodes">
+    <line x1="835.0" y1="370.0" x2="1255.0" y2="370.0" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" />
+    <line x1="835.0" y1="1190.0" x2="1255.0" y2="1190.0" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" />
+    <line x1="835.0" y1="1190.0" x2="1045.0" y2="1190.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <line x1="1045.0" y1="370.0" x2="1255.0" y2="370.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <line x1="1045.0" y1="1190.0" x2="1255.0" y2="1190.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <line x1="835.0" y1="370.0" x2="835.0" y2="485.0" stroke="#21334A" stroke-width="3.4" stroke-linecap="round" />
+    <line x1="835.0" y1="555.0" x2="835.0" y2="705.0" stroke="#21334A" stroke-width="3.4" stroke-linecap="round" />
+    <line x1="835.0" y1="705.0" x2="835.0" y2="975.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <line x1="835.0" y1="1045.0" x2="835.0" y2="1190.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <g id="scr-r_t1" data-native-symbol="schemdraw.elements.SCR" data-scr="R_T1" data-active="false">
+      <line x1="835.0" y1="485.0" x2="835.0" y2="504.95" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" />
+      <line x1="835.0" y1="535.05" x2="835.0" y2="555.0" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" />
+      <path d="M 813.5,504.95 L 856.5,504.95" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+      <polygon points="813.50,535.05 835.00,504.95 856.50,535.05" fill="white" stroke="#21334A" stroke-width="3.6" stroke-linejoin="round" />
+      <path d="M 835,504.95 L 860.8,479.15 L 878,479.15" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+      <text x="875.0" y="510.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">RT1</tspan>
+      </text>
+    </g>
+    <g id="scr-r_t2" data-native-symbol="schemdraw.elements.SCR" data-scr="R_T2" data-active="true">
+      <line x1="835.0" y1="975.0" x2="835.0" y2="994.95" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" />
+      <line x1="835.0" y1="1025.05" x2="835.0" y2="1045.0" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" />
+      <path d="M 813.5,994.95 L 856.5,994.95" fill="none" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round" />
+      <polygon points="813.50,1025.05 835.00,994.95 856.50,1025.05" fill="#FFF0F2" stroke="#D52940" stroke-width="5.0" stroke-linejoin="round" />
+      <path d="M 835,994.95 L 860.8,969.15 L 878,969.15" fill="none" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round" />
+      <text x="875.0" y="1000.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">RT2</tspan>
+      </text>
+      <text x="802.0" y="965.0" fill="#18857B" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">IN</text>
+    </g>
+    <circle cx="835.0" cy="370.0" r="5.1" fill="#203246" />
+    <circle cx="835.0" cy="1190.0" r="5.1" fill="#E12E3F" />
+    <circle cx="835.0" cy="705.0" r="6.0" fill="#E12E3F" />
+    <line x1="1045.0" y1="370.0" x2="1045.0" y2="485.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <line x1="1045.0" y1="555.0" x2="1045.0" y2="805.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <line x1="1045.0" y1="805.0" x2="1045.0" y2="975.0" stroke="#21334A" stroke-width="3.4" stroke-linecap="round" />
+    <line x1="1045.0" y1="1045.0" x2="1045.0" y2="1190.0" stroke="#21334A" stroke-width="3.4" stroke-linecap="round" />
+    <g id="scr-r_t3" data-native-symbol="schemdraw.elements.SCR" data-scr="R_T3" data-active="true">
+      <line x1="1045.0" y1="485.0" x2="1045.0" y2="504.95" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" />
+      <line x1="1045.0" y1="535.05" x2="1045.0" y2="555.0" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" />
+      <path d="M 1023.5,504.95 L 1066.5,504.95" fill="none" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round" />
+      <polygon points="1023.50,535.05 1045.00,504.95 1066.50,535.05" fill="#FFF0F2" stroke="#D52940" stroke-width="5.0" stroke-linejoin="round" />
+      <path d="M 1045,504.95 L 1070.8,479.15 L 1088,479.15" fill="none" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round" />
+      <text x="1085.0" y="510.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">RT3</tspan>
+      </text>
+    </g>
+    <g id="scr-r_t4" data-native-symbol="schemdraw.elements.SCR" data-scr="R_T4" data-active="false">
+      <line x1="1045.0" y1="975.0" x2="1045.0" y2="994.95" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" />
+      <line x1="1045.0" y1="1025.05" x2="1045.0" y2="1045.0" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" />
+      <path d="M 1023.5,994.95 L 1066.5,994.95" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+      <polygon points="1023.50,1025.05 1045.00,994.95 1066.50,1025.05" fill="white" stroke="#21334A" stroke-width="3.6" stroke-linejoin="round" />
+      <path d="M 1045,994.95 L 1070.8,969.15 L 1088,969.15" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+      <text x="1085.0" y="1000.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">RT4</tspan>
+      </text>
+    </g>
+    <circle cx="1045.0" cy="370.0" r="5.1" fill="#E12E3F" />
+    <circle cx="1045.0" cy="1190.0" r="5.1" fill="#203246" />
+    <circle cx="1045.0" cy="805.0" r="6.0" fill="#E12E3F" />
+    <line x1="1255.0" y1="370.0" x2="1255.0" y2="485.0" stroke="#21334A" stroke-width="3.4" stroke-linecap="round" />
+    <line x1="1255.0" y1="555.0" x2="1255.0" y2="905.0" stroke="#21334A" stroke-width="3.4" stroke-linecap="round" />
+    <line x1="1255.0" y1="905.0" x2="1255.0" y2="975.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <line x1="1255.0" y1="1045.0" x2="1255.0" y2="1190.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <g id="scr-r_t5" data-native-symbol="schemdraw.elements.SCR" data-scr="R_T5" data-active="false">
+      <line x1="1255.0" y1="485.0" x2="1255.0" y2="504.95" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" />
+      <line x1="1255.0" y1="535.05" x2="1255.0" y2="555.0" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" />
+      <path d="M 1233.5,504.95 L 1276.5,504.95" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+      <polygon points="1233.50,535.05 1255.00,504.95 1276.50,535.05" fill="white" stroke="#21334A" stroke-width="3.6" stroke-linejoin="round" />
+      <path d="M 1255,504.95 L 1280.8,479.15 L 1298,479.15" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+      <text x="1295.0" y="510.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">RT5</tspan>
+      </text>
+    </g>
+    <g id="scr-r_t6" data-native-symbol="schemdraw.elements.SCR" data-scr="R_T6" data-active="true">
+      <line x1="1255.0" y1="975.0" x2="1255.0" y2="994.95" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" />
+      <line x1="1255.0" y1="1025.05" x2="1255.0" y2="1045.0" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" />
+      <path d="M 1233.5,994.95 L 1276.5,994.95" fill="none" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round" />
+      <polygon points="1233.50,1025.05 1255.00,994.95 1276.50,1025.05" fill="#FFF0F2" stroke="#D52940" stroke-width="5.0" stroke-linejoin="round" />
+      <path d="M 1255,994.95 L 1280.8,969.15 L 1298,969.15" fill="none" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round" />
+      <text x="1295.0" y="1000.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">RT6</tspan>
+      </text>
+      <text x="1222.0" y="965.0" fill="#A65B18" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">OUT</text>
+    </g>
+    <circle cx="1255.0" cy="370.0" r="5.1" fill="#203246" />
+    <circle cx="1255.0" cy="1190.0" r="5.1" fill="#E12E3F" />
+    <circle cx="1255.0" cy="905.0" r="6.0" fill="#E12E3F" />
+    <text x="1045.0" y="400" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="15" font-weight="400" text-anchor="middle">VALVE GROUP +</text>
+    <text x="1045.0" y="1173" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="15" font-weight="400" text-anchor="middle">VALVE GROUP −</text>
+  </g>
+  <g id="feeders-R" inkscape:groupmode="layer" inkscape:label="R - phase crossings">
+    <path d="M 665,705 L 835,705" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 665,705 L 835,705" fill="none" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="835.0" cy="705.0" r="5.4" fill="#E12E3F" />
+    <path d="M 814,805 L 816,805 C 822,788 848,788 854,805 L 856,805" fill="none" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 665,805 L 816,805 C 822,788 848,788 854,805 L 1045,805" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 665,805 L 816,805 C 822,788 848,788 854,805 L 1045,805" fill="none" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="1045.0" cy="805.0" r="5.4" fill="#E12E3F" />
+    <path d="M 814,905 L 816,905 C 822,888 848,888 854,905 L 856,905" fill="none" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 1024,905 L 1026,905 C 1032,888 1058,888 1064,905 L 1066,905" fill="none" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 665,905 L 816,905 C 822,888 848,888 854,905 L 1026,905 C 1032,888 1058,888 1064,905 L 1255,905" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 665,905 L 816,905 C 822,888 848,888 854,905 L 1026,905 C 1032,888 1058,888 1064,905 L 1255,905" fill="none" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="1255.0" cy="905.0" r="5.4" fill="#E12E3F" />
+  </g>
+  <g id="bridge-I" inkscape:groupmode="layer" inkscape:label="I - bridge valves and nodes">
+    <line x1="2225.0" y1="370.0" x2="2645.0" y2="370.0" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" />
+    <line x1="2225.0" y1="1190.0" x2="2645.0" y2="1190.0" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" />
+    <line x1="2225.0" y1="370.0" x2="2435.0" y2="370.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <line x1="2225.0" y1="1190.0" x2="2435.0" y2="1190.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <line x1="2435.0" y1="1190.0" x2="2645.0" y2="1190.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <line x1="2225.0" y1="370.0" x2="2225.0" y2="485.0" stroke="#21334A" stroke-width="3.4" stroke-linecap="round" />
+    <line x1="2225.0" y1="555.0" x2="2225.0" y2="705.0" stroke="#21334A" stroke-width="3.4" stroke-linecap="round" />
+    <line x1="2225.0" y1="705.0" x2="2225.0" y2="975.0" stroke="#21334A" stroke-width="3.4" stroke-linecap="round" />
+    <line x1="2225.0" y1="1045.0" x2="2225.0" y2="1190.0" stroke="#21334A" stroke-width="3.4" stroke-linecap="round" />
+    <g id="scr-i_t1" data-native-symbol="schemdraw.elements.SCR" data-scr="I_T1" data-active="false">
+      <line x1="2225.0" y1="485.0" x2="2225.0" y2="504.95" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" />
+      <line x1="2225.0" y1="535.05" x2="2225.0" y2="555.0" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" />
+      <path d="M 2246.5,535.05 L 2203.5,535.05" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+      <polygon points="2246.50,504.95 2225.00,535.05 2203.50,504.95" fill="white" stroke="#21334A" stroke-width="3.6" stroke-linejoin="round" />
+      <path d="M 2225,535.05 L 2199.2,560.85 L 2182,560.85" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+      <text x="2265.0" y="510.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">IT1</tspan>
+      </text>
+    </g>
+    <g id="scr-i_t2" data-native-symbol="schemdraw.elements.SCR" data-scr="I_T2" data-active="false">
+      <line x1="2225.0" y1="975.0" x2="2225.0" y2="994.95" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" />
+      <line x1="2225.0" y1="1025.05" x2="2225.0" y2="1045.0" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" />
+      <path d="M 2246.5,1025.05 L 2203.5,1025.05" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+      <polygon points="2246.50,994.95 2225.00,1025.05 2203.50,994.95" fill="white" stroke="#21334A" stroke-width="3.6" stroke-linejoin="round" />
+      <path d="M 2225,1025.05 L 2199.2,1050.85 L 2182,1050.85" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+      <text x="2265.0" y="1000.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">IT2</tspan>
+      </text>
+    </g>
+    <circle cx="2225.0" cy="370.0" r="5.1" fill="#203246" />
+    <circle cx="2225.0" cy="1190.0" r="5.1" fill="#203246" />
+    <circle cx="2225.0" cy="705.0" r="6.0" fill="#203246" />
+    <line x1="2435.0" y1="370.0" x2="2435.0" y2="485.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <line x1="2435.0" y1="555.0" x2="2435.0" y2="805.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <line x1="2435.0" y1="805.0" x2="2435.0" y2="975.0" stroke="#21334A" stroke-width="3.4" stroke-linecap="round" />
+    <line x1="2435.0" y1="1045.0" x2="2435.0" y2="1190.0" stroke="#21334A" stroke-width="3.4" stroke-linecap="round" />
+    <g id="scr-i_t3" data-native-symbol="schemdraw.elements.SCR" data-scr="I_T3" data-active="true">
+      <line x1="2435.0" y1="485.0" x2="2435.0" y2="504.95" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" />
+      <line x1="2435.0" y1="535.05" x2="2435.0" y2="555.0" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" />
+      <path d="M 2456.5,535.05 L 2413.5,535.05" fill="none" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round" />
+      <polygon points="2456.50,504.95 2435.00,535.05 2413.50,504.95" fill="#FFF0F2" stroke="#D52940" stroke-width="5.0" stroke-linejoin="round" />
+      <path d="M 2435,535.05 L 2409.2,560.85 L 2392,560.85" fill="none" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round" />
+      <text x="2475.0" y="510.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">IT3</tspan>
+      </text>
+    </g>
+    <g id="scr-i_t4" data-native-symbol="schemdraw.elements.SCR" data-scr="I_T4" data-active="false">
+      <line x1="2435.0" y1="975.0" x2="2435.0" y2="994.95" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" />
+      <line x1="2435.0" y1="1025.05" x2="2435.0" y2="1045.0" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" />
+      <path d="M 2456.5,1025.05 L 2413.5,1025.05" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+      <polygon points="2456.50,994.95 2435.00,1025.05 2413.50,994.95" fill="white" stroke="#21334A" stroke-width="3.6" stroke-linejoin="round" />
+      <path d="M 2435,1025.05 L 2409.2,1050.85 L 2392,1050.85" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+      <text x="2475.0" y="1000.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">IT4</tspan>
+      </text>
+    </g>
+    <circle cx="2435.0" cy="370.0" r="5.1" fill="#E12E3F" />
+    <circle cx="2435.0" cy="1190.0" r="5.1" fill="#203246" />
+    <circle cx="2435.0" cy="805.0" r="6.0" fill="#E12E3F" />
+    <line x1="2645.0" y1="370.0" x2="2645.0" y2="485.0" stroke="#21334A" stroke-width="3.4" stroke-linecap="round" />
+    <line x1="2645.0" y1="555.0" x2="2645.0" y2="905.0" stroke="#21334A" stroke-width="3.4" stroke-linecap="round" />
+    <line x1="2645.0" y1="905.0" x2="2645.0" y2="975.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <line x1="2645.0" y1="1045.0" x2="2645.0" y2="1190.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <g id="scr-i_t5" data-native-symbol="schemdraw.elements.SCR" data-scr="I_T5" data-active="false">
+      <line x1="2645.0" y1="485.0" x2="2645.0" y2="504.95" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" />
+      <line x1="2645.0" y1="535.05" x2="2645.0" y2="555.0" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" />
+      <path d="M 2666.5,535.05 L 2623.5,535.05" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+      <polygon points="2666.50,504.95 2645.00,535.05 2623.50,504.95" fill="white" stroke="#21334A" stroke-width="3.6" stroke-linejoin="round" />
+      <path d="M 2645,535.05 L 2619.2,560.85 L 2602,560.85" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+      <text x="2685.0" y="510.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">IT5</tspan>
+      </text>
+    </g>
+    <g id="scr-i_t6" data-native-symbol="schemdraw.elements.SCR" data-scr="I_T6" data-active="true">
+      <line x1="2645.0" y1="975.0" x2="2645.0" y2="994.95" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" />
+      <line x1="2645.0" y1="1025.05" x2="2645.0" y2="1045.0" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" />
+      <path d="M 2666.5,1025.05 L 2623.5,1025.05" fill="none" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round" />
+      <polygon points="2666.50,994.95 2645.00,1025.05 2623.50,994.95" fill="#FFF0F2" stroke="#D52940" stroke-width="5.0" stroke-linejoin="round" />
+      <path d="M 2645,1025.05 L 2619.2,1050.85 L 2602,1050.85" fill="none" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round" />
+      <text x="2685.0" y="1000.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">IT6</tspan>
+      </text>
+    </g>
+    <circle cx="2645.0" cy="370.0" r="5.1" fill="#203246" />
+    <circle cx="2645.0" cy="1190.0" r="5.1" fill="#E12E3F" />
+    <circle cx="2645.0" cy="905.0" r="6.0" fill="#E12E3F" />
+    <text x="2435.0" y="400" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="15" font-weight="400" text-anchor="middle">VALVE GROUP +</text>
+    <text x="2435.0" y="1173" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="15" font-weight="400" text-anchor="middle">VALVE GROUP −</text>
+  </g>
+  <g id="feeders-I" inkscape:groupmode="layer" inkscape:label="I - phase crossings">
+    <path d="M 2456,705 L 2454,705 C 2448,688 2422,688 2416,705 L 2414,705" fill="none" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 2666,705 L 2664,705 C 2658,688 2632,688 2626,705 L 2624,705" fill="none" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 2750,705 L 2664,705 C 2658,688 2632,688 2626,705 L 2454,705 C 2448,688 2422,688 2416,705 L 2225,705" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="2225.0" cy="705.0" r="5.4" fill="#203246" />
+    <path d="M 2666,805 L 2664,805 C 2658,788 2632,788 2626,805 L 2624,805" fill="none" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 2750,805 L 2664,805 C 2658,788 2632,788 2626,805 L 2435,805" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 2750,805 L 2664,805 C 2658,788 2632,788 2626,805 L 2435,805" fill="none" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="2435.0" cy="805.0" r="5.4" fill="#E12E3F" />
+    <path d="M 2750,905 L 2645,905" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 2750,905 L 2645,905" fill="none" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="2645.0" cy="905.0" r="5.4" fill="#E12E3F" />
+  </g>
+  <g id="transformer-R" inkscape:groupmode="layer" inkscape:label="R - transformer and AC grid">
+    <text x="105" y="605" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700">3-PHASE CONVERTER TRANSFORMER</text>
+    <text x="125" y="629" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="14" font-weight="400">Y/Y  ·  isolated windings  ·  teaching model</text>
+    <line x1="334" y1="705.0" x2="334" y2="905.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+    <line x1="405" y1="705.0" x2="405" y2="905.0" stroke="#21334A" stroke-width="3.4" stroke-linecap="round" />
+    <line x1="405" y1="705.0" x2="405" y2="905.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <circle cx="405" cy="705.0" r="4.8" fill="#E12E3F" />
+    <circle cx="405" cy="805.0" r="4.8" fill="#E12E3F" />
+    <circle cx="405" cy="905.0" r="4.8" fill="#E12E3F" />
+    <text x="387" y="792.0" fill="#76889C" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400">O</text>
+    <line x1="86" y1="705.0" x2="133" y2="705.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+    <circle cx="156" cy="705.0" r="23" fill="#FFFFFF" stroke="#21334A" stroke-width="3.5" />
+    <path d="M 141,705 C 144,693 151,693 156,705 C 161,717 168,717 171,705" fill="none" stroke="#21334A" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" />
+    <line x1="179" y1="705.0" x2="255" y2="705.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+    <path d="M 255,705 C 257.9,677 266.6,677 269.5,705 C 272.4,677 281.1,677 284,705 C 286.9,677 295.6,677 298.5,705 C 301.4,677 310.1,677 313,705" fill="none" stroke="#21334A" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" />
+    <line x1="313" y1="705.0" x2="334" y2="705.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+    <line x1="405" y1="705.0" x2="435" y2="705.0" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" />
+    <g id="edge-r_tr_a" data-edge-id="R_TR_A" data-active="true">
+      <path d="M 435,705 C 437.9,677 446.6,677 449.5,705 C 452.4,677 461.1,677 464,705 C 466.9,677 475.6,677 478.5,705 C 481.4,677 490.1,677 493,705" fill="none" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" stroke-linejoin="round" />
+      <line x1="493" y1="705.0" x2="571" y2="705.0" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" />
+    </g>
+    <g id="edge-r_lc_a" data-edge-id="R_LC_A" data-active="true">
+      <path d="M 571,705 C 574,677 583,677 586,705 C 589,677 598,677 601,705 C 604,677 613,677 616,705 C 619,677 628,677 631,705" fill="none" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" stroke-linejoin="round" />
+      <line x1="631" y1="705.0" x2="665" y2="705.0" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" />
+    </g>
+    <line x1="365" y1="671.0" x2="365" y2="739.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
+    <line x1="377" y1="671.0" x2="377" y2="739.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
+    <text x="86" y="677.0" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="700">A</text>
+    <text x="627" y="676.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.05" font-style="italic">c,ar</tspan>
+    </text>
+    <line x1="662" y1="705.0" x2="644" y2="705.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
+    <line x1="86" y1="805.0" x2="133" y2="805.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+    <circle cx="156" cy="805.0" r="23" fill="#FFFFFF" stroke="#21334A" stroke-width="3.5" />
+    <path d="M 141,805 C 144,793 151,793 156,805 C 161,817 168,817 171,805" fill="none" stroke="#21334A" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" />
+    <line x1="179" y1="805.0" x2="255" y2="805.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+    <path d="M 255,805 C 257.9,777 266.6,777 269.5,805 C 272.4,777 281.1,777 284,805 C 286.9,777 295.6,777 298.5,805 C 301.4,777 310.1,777 313,805" fill="none" stroke="#21334A" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" />
+    <line x1="313" y1="805.0" x2="334" y2="805.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+    <line x1="405" y1="805.0" x2="435" y2="805.0" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" />
+    <g id="edge-r_tr_b" data-edge-id="R_TR_B" data-active="true">
+      <path d="M 435,805 C 437.9,777 446.6,777 449.5,805 C 452.4,777 461.1,777 464,805 C 466.9,777 475.6,777 478.5,805 C 481.4,777 490.1,777 493,805" fill="none" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" stroke-linejoin="round" />
+      <line x1="493" y1="805.0" x2="571" y2="805.0" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" />
+    </g>
+    <g id="edge-r_lc_b" data-edge-id="R_LC_B" data-active="true">
+      <path d="M 571,805 C 574,777 583,777 586,805 C 589,777 598,777 601,805 C 604,777 613,777 616,805 C 619,777 628,777 631,805" fill="none" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" stroke-linejoin="round" />
+      <line x1="631" y1="805.0" x2="665" y2="805.0" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" />
+    </g>
+    <line x1="365" y1="771.0" x2="365" y2="839.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
+    <line x1="377" y1="771.0" x2="377" y2="839.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
+    <text x="86" y="777.0" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="700">B</text>
+    <text x="627" y="776.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.05" font-style="italic">c,br</tspan>
+    </text>
+    <line x1="644" y1="805.0" x2="662" y2="805.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
+    <line x1="86" y1="905.0" x2="133" y2="905.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+    <circle cx="156" cy="905.0" r="23" fill="#FFFFFF" stroke="#21334A" stroke-width="3.5" />
+    <path d="M 141,905 C 144,893 151,893 156,905 C 161,917 168,917 171,905" fill="none" stroke="#21334A" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" />
+    <line x1="179" y1="905.0" x2="255" y2="905.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+    <path d="M 255,905 C 257.9,877 266.6,877 269.5,905 C 272.4,877 281.1,877 284,905 C 286.9,877 295.6,877 298.5,905 C 301.4,877 310.1,877 313,905" fill="none" stroke="#21334A" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" />
+    <line x1="313" y1="905.0" x2="334" y2="905.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+    <line x1="405" y1="905.0" x2="435" y2="905.0" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" />
+    <g id="edge-r_tr_c" data-edge-id="R_TR_C" data-active="true">
+      <path d="M 435,905 C 437.9,877 446.6,877 449.5,905 C 452.4,877 461.1,877 464,905 C 466.9,877 475.6,877 478.5,905 C 481.4,877 490.1,877 493,905" fill="none" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" stroke-linejoin="round" />
+      <line x1="493" y1="905.0" x2="571" y2="905.0" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" />
+    </g>
+    <g id="edge-r_lc_c" data-edge-id="R_LC_C" data-active="true">
+      <path d="M 571,905 C 574,877 583,877 586,905 C 589,877 598,877 601,905 C 604,877 613,877 616,905 C 619,877 628,877 631,905" fill="none" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" stroke-linejoin="round" />
+      <line x1="631" y1="905.0" x2="665" y2="905.0" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" />
+    </g>
+    <line x1="365" y1="871.0" x2="365" y2="939.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
+    <line x1="377" y1="871.0" x2="377" y2="939.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
+    <text x="86" y="877.0" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="700">C</text>
+    <text x="627" y="876.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.05" font-style="italic">c,cr</tspan>
+    </text>
+    <line x1="662" y1="905.0" x2="644" y2="905.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
+    <text x="60" y="960" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="700">AC GRID</text>
+  </g>
+  <g id="transformer-I" inkscape:groupmode="layer" inkscape:label="I - transformer and AC grid">
+    <text x="2850" y="605" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700">3-PHASE CONVERTER TRANSFORMER</text>
+    <text x="2962" y="629" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="14" font-weight="400">Y/Y  ·  isolated windings  ·  teaching model</text>
+    <line x1="3192" y1="705.0" x2="3192" y2="905.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+    <line x1="3125" y1="705.0" x2="3125" y2="905.0" stroke="#21334A" stroke-width="3.4" stroke-linecap="round" />
+    <line x1="3125" y1="805.0" x2="3125" y2="905.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <circle cx="3125" cy="705.0" r="4.8" fill="#203246" />
+    <circle cx="3125" cy="805.0" r="4.8" fill="#E12E3F" />
+    <circle cx="3125" cy="905.0" r="4.8" fill="#E12E3F" />
+    <text x="3107" y="792.0" fill="#76889C" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400">O</text>
+    <g id="edge-i_tr_a" data-edge-id="I_TR_A" data-active="false">
+      <line x1="3107" y1="705.0" x2="3125" y2="705.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+      <path d="M 3049,705 C 3051.9,677 3060.6,677 3063.5,705 C 3066.4,677 3075.1,677 3078,705 C 3080.9,677 3089.6,677 3092.5,705 C 3095.4,677 3104.1,677 3107,705" fill="none" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+    <g id="edge-i_lc_a" data-edge-id="I_LC_A" data-active="false">
+      <line x1="2750" y1="705.0" x2="2790" y2="705.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+      <path d="M 2790,705 C 2793,677 2802,677 2805,705 C 2808,677 2817,677 2820,705 C 2823,677 2832,677 2835,705 C 2838,677 2847,677 2850,705" fill="none" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round" />
+      <line x1="2850" y1="705.0" x2="3049" y2="705.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+    </g>
+    <line x1="3192" y1="705.0" x2="3213" y2="705.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+    <path d="M 3213,705 C 3215.9,677 3224.6,677 3227.5,705 C 3230.4,677 3239.1,677 3242,705 C 3244.9,677 3253.6,677 3256.5,705 C 3259.4,677 3268.1,677 3271,705" fill="none" stroke="#21334A" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" />
+    <line x1="3271" y1="705.0" x2="3317" y2="705.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+    <circle cx="3340" cy="705.0" r="23" fill="#FFFFFF" stroke="#21334A" stroke-width="3.5" />
+    <path d="M 3325,705 C 3328,693 3335,693 3340,705 C 3345,717 3352,717 3355,705" fill="none" stroke="#21334A" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" />
+    <line x1="3363" y1="705.0" x2="3415" y2="705.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+    <line x1="3150" y1="671.0" x2="3150" y2="739.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
+    <line x1="3162" y1="671.0" x2="3162" y2="739.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
+    <text x="3411" y="677.0" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="700">A</text>
+    <text x="2787" y="676.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.05" font-style="italic">c,ai</tspan>
+    </text>
+    <g id="edge-i_tr_b" data-edge-id="I_TR_B" data-active="true">
+      <line x1="3107" y1="805.0" x2="3125" y2="805.0" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" />
+      <path d="M 3049,805 C 3051.9,777 3060.6,777 3063.5,805 C 3066.4,777 3075.1,777 3078,805 C 3080.9,777 3089.6,777 3092.5,805 C 3095.4,777 3104.1,777 3107,805" fill="none" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+    <g id="edge-i_lc_b" data-edge-id="I_LC_B" data-active="true">
+      <line x1="2750" y1="805.0" x2="2790" y2="805.0" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" />
+      <path d="M 2790,805 C 2793,777 2802,777 2805,805 C 2808,777 2817,777 2820,805 C 2823,777 2832,777 2835,805 C 2838,777 2847,777 2850,805" fill="none" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" stroke-linejoin="round" />
+      <line x1="2850" y1="805.0" x2="3049" y2="805.0" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" />
+    </g>
+    <line x1="3192" y1="805.0" x2="3213" y2="805.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+    <path d="M 3213,805 C 3215.9,777 3224.6,777 3227.5,805 C 3230.4,777 3239.1,777 3242,805 C 3244.9,777 3253.6,777 3256.5,805 C 3259.4,777 3268.1,777 3271,805" fill="none" stroke="#21334A" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" />
+    <line x1="3271" y1="805.0" x2="3317" y2="805.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+    <circle cx="3340" cy="805.0" r="23" fill="#FFFFFF" stroke="#21334A" stroke-width="3.5" />
+    <path d="M 3325,805 C 3328,793 3335,793 3340,805 C 3345,817 3352,817 3355,805" fill="none" stroke="#21334A" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" />
+    <line x1="3363" y1="805.0" x2="3415" y2="805.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+    <line x1="3150" y1="771.0" x2="3150" y2="839.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
+    <line x1="3162" y1="771.0" x2="3162" y2="839.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
+    <text x="3411" y="777.0" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="700">B</text>
+    <text x="2787" y="776.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.05" font-style="italic">c,bi</tspan>
+    </text>
+    <line x1="2734" y1="805.0" x2="2752" y2="805.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
+    <g id="edge-i_tr_c" data-edge-id="I_TR_C" data-active="true">
+      <line x1="3107" y1="905.0" x2="3125" y2="905.0" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" />
+      <path d="M 3049,905 C 3051.9,877 3060.6,877 3063.5,905 C 3066.4,877 3075.1,877 3078,905 C 3080.9,877 3089.6,877 3092.5,905 C 3095.4,877 3104.1,877 3107,905" fill="none" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+    <g id="edge-i_lc_c" data-edge-id="I_LC_C" data-active="true">
+      <line x1="2750" y1="905.0" x2="2790" y2="905.0" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" />
+      <path d="M 2790,905 C 2793,877 2802,877 2805,905 C 2808,877 2817,877 2820,905 C 2823,877 2832,877 2835,905 C 2838,877 2847,877 2850,905" fill="none" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" stroke-linejoin="round" />
+      <line x1="2850" y1="905.0" x2="3049" y2="905.0" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" />
+    </g>
+    <line x1="3192" y1="905.0" x2="3213" y2="905.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+    <path d="M 3213,905 C 3215.9,877 3224.6,877 3227.5,905 C 3230.4,877 3239.1,877 3242,905 C 3244.9,877 3253.6,877 3256.5,905 C 3259.4,877 3268.1,877 3271,905" fill="none" stroke="#21334A" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" />
+    <line x1="3271" y1="905.0" x2="3317" y2="905.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+    <circle cx="3340" cy="905.0" r="23" fill="#FFFFFF" stroke="#21334A" stroke-width="3.5" />
+    <path d="M 3325,905 C 3328,893 3335,893 3340,905 C 3345,917 3352,917 3355,905" fill="none" stroke="#21334A" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" />
+    <line x1="3363" y1="905.0" x2="3415" y2="905.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
+    <line x1="3150" y1="871.0" x2="3150" y2="939.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
+    <line x1="3162" y1="871.0" x2="3162" y2="939.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
+    <text x="3411" y="877.0" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="700">C</text>
+    <text x="2787" y="876.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.05" font-style="italic">c,ci</tspan>
+    </text>
+    <line x1="2752" y1="905.0" x2="2734" y2="905.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
+    <text x="3275" y="960" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="700">AC GRID</text>
+  </g>
+  <g id="on-wire-arrows" inkscape:groupmode="layer" inkscape:label="On-wire current direction">
+    <line x1="835.0" y1="1102.0" x2="835.0" y2="1055.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
+    <line x1="1045.0" y1="640.0" x2="1045.0" y2="592.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
+    <line x1="1255.0" y1="1102.0" x2="1255.0" y2="1055.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
+    <line x1="2435.0" y1="594.0" x2="2435.0" y2="642.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
+    <line x1="2645.0" y1="1054.0" x2="2645.0" y2="1100.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
+    <text x="1750" y="524" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="25" font-weight="400" text-anchor="middle">I<tspan baseline-shift="sub" font-size="16.25" font-style="normal">dc</tspan>
+    </text>
+    <text x="1750" y="550" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="17" font-weight="400" text-anchor="middle">Conventional current: rectifier → inverter</text>
+    <text x="1750" y="578" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="15" font-weight="400" text-anchor="middle">The same current returns through the lower conductor.</text>
+  </g>
+  <rect x="67" y="1323" width="3366" height="156" rx="14" fill="#FFFFFF" stroke="#D7E2ED" stroke-width="2" />
+  <text x="94" y="1363" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="19" font-weight="700">TEACHING MODE  ·  SIX-PULSE PER STATION</text>
+  <text x="94" y="1402" fill="#D52940" font-family="DejaVu Sans, Arial, sans-serif" font-size="19" font-weight="400">Rectifier commutation overlap</text>
+  <text x="94" y="1441" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400">5 conducting SCRs · 2 graph-validated conducting path(s)</text>
+  <text x="1350" y="1364" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="400">αr = 15°   ·  αi = 145°   ·  γi ≈ 20°</text>
+  <text x="1350" y="1405" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="17" font-weight="400">μr = 12°   ·  μi = 15°   ·  AC phase offset = 30°</text>
+  <text x="1350" y="1443" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400">Transformer primaries are galvanically isolated from the conducting valve-side loops.</text>
+  <text x="3407" y="1372" fill="#A65B18" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="end">NO CURRENT SHARING SOLVED</text>
+  <text x="3407" y="1410" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400" text-anchor="end">Red = potentially conducting branches</text>
+  <text x="3407" y="1443" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400" text-anchor="end">NOT a 12-pulse or EMT model</text>
+</svg>
