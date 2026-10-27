@@ -1,0 +1,35 @@
+{
+  "titulo": "THREE-PHASE CONTROLLED RECTIFIER",
+  "tiristores": [
+    "T1",
+    "T6"
+  ],
+  "indutores": [
+    "LA",
+    "LC",
+    "LDC"
+  ],
+  "fontes": [
+    "VA",
+    "VC"
+  ],
+  "resistor": true,
+  "caminhos": [
+    "FASE_A",
+    "FASE_C",
+    "NEUTRO_AB",
+    "NEUTRO_BC",
+    "T1_FASE",
+    "T1_POS",
+    "T6_FASE",
+    "T6_NEG",
+    "POS_T1_T3",
+    "POS_T3_T5",
+    "POS_T5_CARGA",
+    "NEG_T6_CARGA",
+    "CARGA_POS_L",
+    "CARGA_L_R",
+    "CARGA_R_NEG"
+  ],
+  "setas": true
+}

@@ -1,0 +1,121 @@
+# Three-phase SCR rectifier — twelve conduction states
+
+This project refactors the existing Python/Inkscape six-pulse rectifier into a **graph-validated, reusable SVG generator**. The output remains vector-based and editable in Inkscape.
+
+![Twelve SCR conduction and commutation-overlap states](output/painel_12_estados.png)
+
+## Quick start (Windows PowerShell / Command Prompt)
+
+Install Python 3.10 or newer. Unzip the package and open a terminal inside its folder.
+
+```bash
+python retificador_trifasico_inkscape.py --all-12 --mu 15 --output-dir output
+```
+
+The generator has **no mandatory pip dependencies**. For the native SCR symbol as provided directly by the Schemdraw library, install:
+
+```bash
+python -m pip install schemdraw
+python retificador_trifasico_inkscape.py --all-12 --mu 15 --require-schemdraw --output-dir output
+```
+
+When Schemdraw is unavailable, the original generator's embedded copy of the exact `schemdraw.elements.SCR` vector primitives is used. This fallback produces equivalent SVG geometry. On systems with Schemdraw installed, the program reads the native component segments.
+
+## Outputs
+
+The automatic command creates:
+
+- `output/estado_01.svg` through `output/estado_12.svg`: complete independent editable drawings.
+- `output/painel_12_estados.svg`: comparison panel containing **all twelve actual SVG geometries**, not raster thumbnails.
+- `output/manifest_estados.json`: SCR lists, active sources/reactors, conductor IDs, angular windows, graph-edge directions, outgoing/incoming SCRs.
+- `output/manifest_estados.csv`: compact state inventory.
+
+The distributed `output` folder also contains PNG preview images. PNGs are previews only; use SVG for editing.
+
+## Other modes
+
+```bash
+# One normal / overlap state, for example T1 + T3 + T6:
+python retificador_trifasico_inkscape.py --state 2 --mu 20 --output estado_02_mu20.svg
+
+# Read sequence parameters from a JSON file:
+python retificador_trifasico_inkscape.py --config config_sequencia.json
+
+# Legacy interface: six ideal states with only two SCRs each:
+python retificador_trifasico_inkscape.py --all --output-dir output_ideal
+python retificador_trifasico_inkscape.py --step 1 --output etapa_ideal.svg
+
+# Preserve manual selection using the existing Portuguese-key JSON:
+python retificador_trifasico_inkscape.py --config configuracao_retificador.json --output selecao_manual.svg
+
+# Override an automatic state for custom instructional highlighting:
+python retificador_trifasico_inkscape.py --state 2 --thyristors T1,T6 --output custom.svg
+
+# List individually selectable components and wire segments:
+python retificador_trifasico_inkscape.py --list-parts
+```
+
+**Note:** modifying an automatic state with manual component/path overrides changes the legend to `CUSTOM SELECTION`, because its coloring may no longer represent a physically valid current state.
+
+## Complete sequence — ABC phase order
+
+T1/T3/T5 are the upper SCRs, T2/T4/T6 are the lower SCRs. All SCR symbols are oriented with the anode below and cathode above in the drawing.
+
+| State | SCRs in conduction | Type | Entering / leaving |
+|---|---|---|---|
+| 01 | T1 + T6 | normal | — |
+| 02 | T1 + T3 + T6 | overlap | T3 enters / T1 leaves |
+| 03 | T3 + T6 | normal | — |
+| 04 | T3 + T6 + T2 | overlap | T2 enters / T6 leaves |
+| 05 | T3 + T2 | normal | — |
+| 06 | T3 + T5 + T2 | overlap | T5 enters / T3 leaves |
+| 07 | T5 + T2 | normal | — |
+| 08 | T5 + T2 + T4 | overlap | T4 enters / T2 leaves |
+| 09 | T5 + T4 | normal | — |
+| 10 | T5 + T1 + T4 | overlap | T1 enters / T5 leaves |
+| 11 | T1 + T4 | normal | — |
+| 12 | T1 + T4 + T6 | overlap | T6 enters / T4 leaves |
+
+The sequence repeats cyclically. Each SCR pair defines a complete loop through the DC load and back through the star-connected AC sources. During overlap the program takes the **union of two valid loops** and highlights the two transferring phases, the stationary phase, and the shared conductors.
+
+### Angular convention
+
+With the angle origin chosen at the start of the overlap immediately preceding state 01:
+
+- Normal state for sector *i*: `[60(i − 1) + μ, 60i]` electrical degrees.
+- Overlap state for sector *i*: `[60i, 60i + μ]` electrical degrees.
+- State 12 extends past `360°`; its terminal portion wraps to the beginning of the next cycle.
+
+The 12-state mode accepts only `0 < μ < 60°`. There is no simultaneous two-group overlapping commutation in this simplified model. For `μ = 0°`, use `--all` to get the six ideal conducting pairs.
+
+### Important limitation
+
+**This is a topology and schematic visualization tool, not an EMT simulator.** The red paths and arrows represent possible conducting branches and conventional-current directions. In overlap states, the two branches do not necessarily carry equal currents; signed traversal counters in the manifest count paths, **not actual amperes or current-sharing ratios**. `μ` changes annotation intervals only and does not calculate current waveforms or the operating point. A physical model for commutation reactance, firing angle, source voltages, and DC current would be required for realistic instantaneous currents.
+
+## Architecture
+
+- `rectifier_model.py`:
+  - `CircuitTopology`: graph of wires, AC sources, reactors, SCRs and load; checks continuity and SCR forward conduction.
+  - `ConductionState`: structured list of conducting pairs, SCRs, angle window, entering/leaving SCRs.
+  - `CommutationSequence`: automatic creation of six pairs plus six overlaps, with cyclic invariants.
+  - `Highlight`: graph-derived sets and signed branch directions.
+- `rectifier_art.py`: reused geometry, editable mathematical labels, `schemdraw.elements.SCR` primitive extraction/fallback, American zigzag resistor, source and inductor symbols, overhead wire jumps.
+- `rectifier_renderer.py`:
+  - `CircuitRenderer`: draws any state with shared component definitions and correct arrows.
+  - `StyleManager`: consistent fonts, colors and on-wire arrow geometry.
+  - `build_panel`: editable group composition with unique SVG IDs and isolated arrow markers.
+- `retificador_trifasico_inkscape.py`: argument parser, old/modern JSON configuration, legacy modes and batch export.
+- `tests/test_sequence.py`: automated topology, commutation, compatibility and SVG tests.
+
+## Validation
+
+If pytest is available:
+
+```bash
+python -m pip install pytest
+python -m pytest -q tests
+```
+
+All 15 tests passed in the provided environment. Visual PNG preview generation and checks were carried out with CairoSVG (used only during package preparation and not required by the SVG generator).
+
+All Python comments and docstrings are in English. Visual labels and component annotations are in English, and symbols use mathematical typesetting with editable SVG text (`STIX Math`, with compatible fallbacks).

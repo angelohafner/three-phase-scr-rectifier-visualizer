@@ -1,0 +1,21 @@
+# Python bytecode and test caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments and local editor files
+.venv/
+venv/
+.env
+.vscode/
+.idea/
+
+# Generated scratch output (the output/ gallery is intentionally versioned)
+output_ideal/
+*.tmp
+.DS_Store
+Thumbs.db
