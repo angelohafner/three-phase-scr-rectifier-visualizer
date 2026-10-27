@@ -183,8 +183,9 @@ def native_scr_segments() -> tuple[tuple[str, tuple[tuple[float, float], ...]], 
 
 SCR_PRIMITIVES = native_scr_segments()
 
-def scr_geometry(parent: ET.Element, name: str, color: str, on: bool, status: str = "ON") -> None:
-    """Draw a native Schemdraw SCR, oriented cathode-up on both bridge rows."""
+def scr_geometry(parent: ET.Element, name: str, color: str, on: bool,
+                 status: str = "ON", inverter: bool = False) -> None:
+    """Draw native Schemdraw SCR: cathode-up or cathode-down."""
     phase, upper = SCR_TO_POSITION[name]
     xc = X[phase]
     cy = Y['top_scr'] if upper else Y['bottom_scr']
@@ -194,18 +195,20 @@ def scr_geometry(parent: ET.Element, name: str, color: str, on: bool, status: st
     scale = 70.0
     width = 4.7 if on else 3.3
 
-    # The native element points toward +X. Rotating +90 degrees in circuit
-    # coordinates makes cathode-up and anode-down in screen coordinates.
+    # Flip the real Schemdraw SCR primitive, including the gate lead, for
+    # the inverter where DC+ -> upper SCR -> AC -> lower SCR -> DC-.
     def xy(local: tuple[float, float]) -> tuple[float, float]:
         x, y = local
-        return xc - scale*y, cy - scale*(x - .175)
+        direction = 1 if inverter else -1
+        return xc + direction * scale*y, cy + direction * scale*(x - .175)
 
-    # Continuous terminals: the external vertical conductors end at these
-    # coordinates, with no gaps at either end of the native SCR symbol.
-    cathode_y = xy((.35, 0))[1]
+    # The external conductor endpoints stay fixed in both orientations.
     anode_y = xy((0, 0))[1]
-    line(g, xc, cy-17, xc, cathode_y, color, width)
-    line(g, xc, anode_y, xc, cy+18, color, width)
+    cathode_y = xy((.35, 0))[1]
+    upper_y = min(anode_y, cathode_y)
+    lower_y = max(anode_y, cathode_y)
+    line(g, xc, cy-17, xc, upper_y, color, width)
+    line(g, xc, lower_y, xc, cy+18, color, width)
 
     for shape, vertices in SCR_PRIMITIVES:
         if shape == 'polygon':
@@ -293,6 +296,25 @@ def us_resistor(parent: ET.Element, color: str,
         d += f' L {px},{py}'
     e = path(g, d, color, 4.7 if highlighted else 3.4)
     e.set('stroke-linejoin', 'miter')
+
+def dc_voltage_supply(parent: ET.Element, color: str,
+                      highlighted: bool) -> None:
+    """Draw an external ideal DC supply delivering power to the inverter.
+
+    Current in the external source flows from its negative terminal toward
+    its positive terminal, whereas bridge DC current enters at its DC+ bus.
+    """
+    g = group(parent, f'{"selected" if highlighted else "base"}-edc')
+    w = 4.8 if highlighted else 3.4
+    x, y, r = X['load'], 489, 29
+    line(g, x, 443, x, y-r, color, w)
+    line(g, x, y+r, x, 535, color, w)
+    element(g, 'circle', cx=x, cy=y, r=r, fill=C['paper'],
+            stroke=color, stroke_width=w)
+    line(g, x-9, y-11, x+9, y-11, color, 2.5)
+    line(g, x, y-19, x, y-3, color, 2.5)
+    line(g, x-9, y+13, x+9, y+13, color, 2.5)
+
 
 def arc_feeder(y: float, x_end: float) -> str:
     """Bridge wire crossings with arcs without electrical connections."""

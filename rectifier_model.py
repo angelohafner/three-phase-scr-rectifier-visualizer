@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Electrical connectivity model and 12-state six-pulse SCR commutation logic.
+"""Electrical graph model of rectifier and inverter six-pulse SCR commutation.
 
 The graph contains actual conductive elements. A highlighted segment is the
 union of complete directed conduction loops, never a hand-coded list of reds.
@@ -88,6 +88,7 @@ class Highlight:
     resistor: bool = False
     arrows: bool = True
     title: str = 'THREE-PHASE SCR RECTIFIER'
+    dc_source: bool = False
     step: int | None = None
     directions: tuple[tuple[str, int], ...] = ()
 
@@ -97,7 +98,10 @@ class Highlight:
 
 class CircuitTopology:
     """Connectivity and shortest paths through the actual circuit elements."""
-    def __init__(self) -> None:
+    def __init__(self, operation: str = 'rectifier') -> None:
+        if operation not in ('rectifier', 'inverter'):
+            raise ValueError('operation must be rectifier or inverter')
+        self.operation = operation
         self.edges: dict[str, Edge] = {}
         self.neighbors: dict[str, list[Walk]] = defaultdict(list)
         self._build()
@@ -122,14 +126,22 @@ class CircuitTopology:
             self.add('L'+p, 'SRC_'+p, 'FEED_'+p, 'AC', 'inductor')
             self.add('FASE_'+p, 'FEED_'+p, 'PHASE_'+p, 'AC')
             top, bot = UPPER[ph], LOWER[ph]
-            self.add(top+'_FASE', 'PHASE_'+p, 'ANODE_'+top, 'DC')
+            if self.operation == 'rectifier':
+                self.add(top+'_FASE', 'PHASE_'+p, 'ANODE_'+top, 'DC')
+                self.add(top+'_POS', 'CATHODE_'+top, 'POS_'+p, 'DC')
+                self.add(bot+'_NEG', 'NEG_'+p, 'ANODE_'+bot, 'DC')
+                self.add(bot+'_FASE', 'CATHODE_'+bot, 'PHASE_'+p, 'DC')
+            else:
+                # Inverter valves have anodes toward DC+ in the upper group
+                # and toward the AC phase in the lower group.
+                self.add(top+'_FASE', 'PHASE_'+p, 'CATHODE_'+top, 'DC')
+                self.add(top+'_POS', 'ANODE_'+top, 'POS_'+p, 'DC')
+                self.add(bot+'_NEG', 'NEG_'+p, 'CATHODE_'+bot, 'DC')
+                self.add(bot+'_FASE', 'ANODE_'+bot, 'PHASE_'+p, 'DC')
             self.add(top, 'ANODE_'+top, 'CATHODE_'+top,
                      'DC', 'scr', forward_only=True)
-            self.add(top+'_POS', 'CATHODE_'+top, 'POS_'+p, 'DC')
-            self.add(bot+'_NEG', 'NEG_'+p, 'ANODE_'+bot, 'DC')
             self.add(bot, 'ANODE_'+bot, 'CATHODE_'+bot,
                      'DC', 'scr', forward_only=True)
-            self.add(bot+'_FASE', 'CATHODE_'+bot, 'PHASE_'+p, 'DC')
         self.add('POS_T1_T3', 'POS_A', 'POS_B', 'DC')
         self.add('POS_T3_T5', 'POS_B', 'POS_C', 'DC')
         self.add('POS_T5_CARGA', 'POS_C', 'POS_LOAD', 'DC')
@@ -139,7 +151,9 @@ class CircuitTopology:
         self.add('CARGA_POS_L', 'POS_LOAD', 'LDC_IN', 'LOAD')
         self.add('LDC', 'LDC_IN', 'LDC_OUT', 'LOAD', 'inductor')
         self.add('CARGA_L_R', 'LDC_OUT', 'R_IN', 'LOAD')
-        self.add('R', 'R_IN', 'R_OUT', 'LOAD', 'resistor')
+        self.add('R' if self.operation == 'rectifier' else 'EDC',
+                 'R_IN', 'R_OUT', 'LOAD',
+                 'resistor' if self.operation == 'rectifier' else 'dc_supply')
         self.add('CARGA_R_NEG', 'R_OUT', 'NEG_LOAD', 'LOAD')
 
     def _validate_topology(self) -> None:
@@ -182,16 +196,24 @@ class CircuitTopology:
         return tuple(reversed(result))
 
     def current_loop(self, high: str, low: str) -> tuple[Walk, ...]:
-        """Return full loop: positive SCR, DC load, negative SCR, AC return."""
+        """Return a closed forward-only SCR path in either energy-flow direction."""
         if high not in PHASES or low not in PHASES or high == low:
             raise ValueError('Conduction requires distinct AC phases')
         selected = {UPPER[high], LOWER[low]}
-        routes = (
-            self.shortest_path('PHASE_'+high.upper(), 'POS_LOAD', ('DC',), selected),
-            self.shortest_path('POS_LOAD', 'NEG_LOAD', ('LOAD',), selected),
-            self.shortest_path('NEG_LOAD', 'PHASE_'+low.upper(), ('DC',), selected),
-            self.shortest_path('PHASE_'+low.upper(), 'PHASE_'+high.upper(), ('AC',), selected),
-        )
+        if self.operation == 'rectifier':
+            routes = (
+                self.shortest_path('PHASE_'+high.upper(), 'POS_LOAD', ('DC',), selected),
+                self.shortest_path('POS_LOAD', 'NEG_LOAD', ('LOAD',), selected),
+                self.shortest_path('NEG_LOAD', 'PHASE_'+low.upper(), ('DC',), selected),
+                self.shortest_path('PHASE_'+low.upper(), 'PHASE_'+high.upper(), ('AC',), selected),
+            )
+        else:
+            routes = (
+                self.shortest_path('POS_LOAD', 'PHASE_'+high.upper(), ('DC',), selected),
+                self.shortest_path('PHASE_'+high.upper(), 'PHASE_'+low.upper(), ('AC',), selected),
+                self.shortest_path('PHASE_'+low.upper(), 'NEG_LOAD', ('DC',), selected),
+                self.shortest_path('NEG_LOAD', 'POS_LOAD', ('LOAD',), selected),
+            )
         loop = tuple(w for route in routes for w in route)
         assert loop[0].start == loop[-1].end
         for left, right in zip(loop, loop[1:]):
@@ -199,7 +221,7 @@ class CircuitTopology:
                 raise AssertionError(f'Broken route between {left.edge.name} and {right.edge.name}')
         actual_scrs = {w.edge.name for w in loop if w.edge.kind == 'scr'}
         assert actual_scrs == selected, (actual_scrs, selected)
-        assert {'LDC', 'R'} <= {w.edge.name for w in loop}
+        assert {'LDC', 'R' if self.operation == 'rectifier' else 'EDC'} <= {w.edge.name for w in loop}
         return loop
 
     def highlight(self, state: ConductionState) -> Highlight:
@@ -221,7 +243,8 @@ class CircuitTopology:
         return Highlight(
             thyristors=frozenset(scrs), inductors=frozenset(inductors),
             sources=frozenset(sources), paths=frozenset(wires),
-            resistor='R' in used, arrows=True, step=state.number,
+            resistor='R' in used, dc_source='EDC' in used, arrows=True,
+            step=state.number,
             directions=tuple(sorted((k, v) for k, v in counts.items() if v)),
         )
 

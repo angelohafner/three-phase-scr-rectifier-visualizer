@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from xml.etree import ElementTree as ET
 import copy
+import re
 
 import rectifier_art as art
 from rectifier_model import CircuitTopology, ConductionState, CommutationSequence, Highlight
@@ -97,9 +98,21 @@ class StyleManager:
 class CircuitRenderer:
     """Render any manual or electrically validated state with shared primitives."""
     def __init__(self, topology: CircuitTopology | None = None,
-                 styles: StyleManager | None = None) -> None:
+                 styles: StyleManager | None = None,
+                 alpha_deg: float | None = None) -> None:
         self.topology = topology or CircuitTopology()
         self.styles = styles or StyleManager()
+        self.alpha_deg = alpha_deg
+
+    @property
+    def inverter(self) -> bool:
+        return self.topology.operation == 'inverter'
+
+    @property
+    def gamma_deg(self) -> float | None:
+        return None if self.alpha_deg is None else 180 - self.alpha_deg - self._mu
+
+    _mu: float = 0.0
 
     def render(self, selected: Highlight, state: ConductionState | None = None,
                ideal_step: int | None = None) -> ET.ElementTree:
@@ -113,11 +126,13 @@ class CircuitRenderer:
             f'{state.label}, state {state.number}: {state.scr_description}'
             if state else f'Editable six-pulse SCR bridge: {selected.title}'
         )
+        self._mu = state.mu if state else 0.0
         art.element(root, 'desc').text = (
-            'Editable conduction paths in a three-phase SCR rectifier. '
-            'Red means an active conducting component. Commutation overlap '
-            'is a topological model, not a current-sharing simulation. '
-            'Arrow directions follow graph traversals.'
+            f'Editable SCR {self.topology.operation} conduction paths. '
+            'Red highlights electrically closed forward-only SCR loops. '
+            'In inverter operation, current enters DC+ and leaves DC-; '
+            'the external DC source provides energy to the AC grid. '
+            'Overlap shows connectivity, not instantaneous current sharing.'
         )
         self.styles.add_arrow_definition(root)
         self._background(root)
@@ -140,9 +155,12 @@ class CircuitRenderer:
     def _header(self, root: ET.Element, selected: Highlight,
                 state: ConductionState | None, ideal_step: int | None) -> None:
         layer = art.layer(root, '02 - Headings', 'headings')
-        art.txt(layer, 65, 78, selected.title[:48], size=32, bold=True)
+        name = 'THREE-PHASE SCR INVERTER (LCC)' if self.inverter else selected.title
+        art.txt(layer, 65, 78, name[:48], size=32, bold=True)
         art.txt(layer, 66, 120,
-                'Six-pulse bridge  ·  Star-connected AC sources  ·  Conduction paths',
+                ('DC → AC  ·  AC-grid voltages  ·  Natural commutation'
+                 if self.inverter else
+                 'Six-pulse bridge  ·  Star-connected AC sources  ·  Conduction paths'),
                 size=19, color=self.styles.muted)
         art.element(layer, 'rect', x=1197, y=46, width=267, height=77,
                     rx=13, fill='#EAF0F7', stroke=self.styles.border)
@@ -175,10 +193,13 @@ class CircuitRenderer:
             art.ac_voltage_source(base, ph, self.styles.ink, False)
             art.winding(base, ph, self.styles.ink, False)
         art.dc_inductor(base, self.styles.ink, False)
-        art.us_resistor(base, self.styles.ink, False)
+        if self.inverter:
+            art.dc_voltage_supply(base, self.styles.ink, False)
+        else:
+            art.us_resistor(base, self.styles.ink, False)
         scr_base = art.layer(root, '06 - Native Schemdraw SCR geometry', 'scr-base')
         for name in ('T1', 'T3', 'T5', 'T2', 'T4', 'T6'):
-            art.scr_geometry(scr_base, name, self.styles.ink, False)
+            art.scr_geometry(scr_base, name, self.styles.ink, False, inverter=self.inverter)
         selected = art.layer(root, '07 - Highlighted sources and elements', 'components-active')
         for ph in art.PHASES:
             if f'V{ph.upper()}' in sel.sources:
@@ -187,7 +208,9 @@ class CircuitRenderer:
                 art.winding(selected, ph, self.styles.red, True)
         if 'LDC' in sel.inductors:
             art.dc_inductor(selected, self.styles.red, True)
-        if sel.resistor:
+        if self.inverter and sel.dc_source:
+            art.dc_voltage_supply(selected, self.styles.red, True)
+        elif not self.inverter and sel.resistor:
             art.us_resistor(selected, self.styles.red, True)
         active_scrs = art.layer(root, '08 - Conducting SCRs', 'scr-active')
         for name in ('T1', 'T3', 'T5', 'T2', 'T4', 'T6'):
@@ -199,7 +222,7 @@ class CircuitRenderer:
                     status = 'OUT'
                 elif state.incoming == name:
                     status = 'IN'
-            art.scr_geometry(active_scrs, name, self.styles.red, True, status)
+            art.scr_geometry(active_scrs, name, self.styles.red, True, status, inverter=self.inverter)
 
     def _feeders(self, root: ET.Element, sel: Highlight) -> None:
         layer = art.layer(root, '09 - AC conductor jumps', 'ac-feeders')
@@ -255,8 +278,13 @@ class CircuitRenderer:
                        upright_subscript=True, size=23,
                        color=self.styles.red if 'LDC' in sel.inductors
                        else self.styles.ink)
-        art.math_label(layer, 1285, 489, 'R', size=24,
-                       color=self.styles.red if sel.resistor else self.styles.ink)
+        if self.inverter:
+            art.math_label(layer, 1292, 494, 'E', subscript='dc',
+                           size=23, color=(self.styles.red if sel.dc_source
+                                           else self.styles.ink))
+        else:
+            art.math_label(layer, 1285, 489, 'R', size=24,
+                           color=self.styles.red if sel.resistor else self.styles.ink)
         if sel.arrows:
             arrows = sel.signed_edges()
             if not arrows:
@@ -290,13 +318,31 @@ class CircuitRenderer:
             art.txt(layer, 74, 757, heading, size=16, bold=True,
                     color=self.styles.red)
             art.txt(layer, 74, 784, label, size=16, color=self.styles.ink)
-            art.txt(layer, 74, 812, f'Paths: {state.phase_description}',
+            if self.inverter:
+                desc = '  |  '.join(f'DC+ → {h.upper()}; {l.upper()} → DC-'
+                                   for h, l in state.pairs)
+            else:
+                desc = state.phase_description
+            art.txt(layer, 74, 812, f'Paths: {desc}',
                     size=14, color=self.styles.muted)
-            art.txt(layer, 955, 783,
-                    f'Electrical angle: {state.theta_start:g}°–{state.theta_end:g}°',
-                    size=15, color=self.styles.ink)
-            art.math_label(layer, 957, 812, f'μ = {state.mu:g}°', size=17,
-                           color=self.styles.muted)
+            if self.inverter:
+                art.txt(layer, 929, 759,
+                        f'Cycle angle: {state.theta_start:g}°–{state.theta_end:g}°',
+                        size=15, color=self.styles.ink)
+                art.math_label(layer, 931, 787, f'α = {self.alpha_deg:g}°', size=17,
+                               color=self.styles.muted)
+                art.math_label(layer, 1110, 787, f'μ = {state.mu:g}°', size=17,
+                               color=self.styles.muted)
+                art.math_label(layer, 1275, 787, f'γ = {self.gamma_deg:g}°',
+                               size=17, color=self.styles.red)
+                art.txt(layer, 931, 812, 'DC source → AC grid', size=14,
+                        color=self.styles.muted)
+            else:
+                art.txt(layer, 955, 783,
+                        f'Electrical angle: {state.theta_start:g}°–{state.theta_end:g}°',
+                        size=15, color=self.styles.ink)
+                art.math_label(layer, 957, 812, f'μ = {state.mu:g}°', size=17,
+                               color=self.styles.muted)
         elif ideal_step:
             art.txt(layer, 74, 762, f'IDEAL CONDUCTION INTERVAL {ideal_step} OF 6',
                     size=17, bold=True, color=self.styles.red)
@@ -329,12 +375,14 @@ def _prefix_identifiers(svg: ET.Element, prefix: str) -> None:
         if ident:
             replacements[ident] = prefix + ident
             node.set('id', prefix + ident)
+    # Resolve only referenced identifiers; avoid the original quadratic scan.
+    reference = re.compile(r'url\(#([^()]+)\)')
     for node in svg.iter():
         for key, value in tuple(node.attrib.items()):
             if 'url(#' in value:
-                for old, new in replacements.items():
-                    value = value.replace('url(#'+old+')', 'url(#'+new+')')
-                node.set(key, value)
+                node.set(key, reference.sub(
+                    lambda match: f'url(#{replacements.get(match.group(1), match.group(1))})',
+                    value))
 
 
 def build_panel(states: tuple[ConductionState, ...], renderer: CircuitRenderer,
@@ -355,9 +403,13 @@ def build_panel(states: tuple[ConductionState, ...], renderer: CircuitRenderer,
     art.element(root, 'title').text = 'Twelve SCR conduction states with commutation overlap'
     art.element(root, 'rect', x=0, y=0, width=width, height=height,
                 fill='#F0F4F9')
-    art.txt(root, margin, 52, 'SIX-PULSE SCR RECTIFIER', size=34, bold=True)
+    art.txt(root, margin, 52,
+            'SIX-PULSE SCR INVERTER' if renderer.inverter else 'SIX-PULSE SCR RECTIFIER',
+            size=34, bold=True)
     art.txt(root, margin, 89,
-            f'12 conduction states   ·   μ = {states[0].mu:g}°   ·   3-phase ABC system',
+            (f'12 states  ·  α = {renderer.alpha_deg:g}°  ·  μ = {states[0].mu:g}°  ·  γ = {renderer.gamma_deg:g}°'
+             if renderer.inverter else
+             f'12 conduction states   ·   μ = {states[0].mu:g}°   ·   3-phase ABC system'),
             size=21, color=renderer.styles.muted)
     for i, state in enumerate(states):
         col, row = i%3, i//3

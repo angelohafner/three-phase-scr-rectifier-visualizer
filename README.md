@@ -119,3 +119,50 @@ python -m pytest -q tests
 All 15 tests passed in the provided environment. Visual PNG preview generation and checks were carried out with CairoSVG (used only during package preparation and not required by the SVG generator).
 
 All Python comments and docstrings are in English. Visual labels and component annotations are in English, and symbols use mathematical typesetting with editable SVG text (`STIX Math`, with compatible fallbacks).
+
+---
+
+## New: LCC inverter teaching figures (stage 2)
+
+This release preserves the original rectifier tool and adds a **bidirectional
+LCC learning sequence**: first the rectifier (AC to DC), then the inverter
+(DC to AC), showing the same 12 valve conduction and commutation-overlap
+states in each mode. The inverter includes a polarity-corrected set of SCRs,
+a driving DC voltage source in place of the rectifier's resistor, and a
+validated extinction angle.
+
+The comparison SVG is created by the two-stage generation command below.
+
+**One-command demonstration:**
+
+```bash
+python lcc_converter.py --side both --alpha 145 --mu 15 --output-dir output_lcc
+```
+
+This creates `output_lcc/rectifier/` and `output_lcc/inverter/`, each with
+12 independent, editable SVGs, an SVG comparison panel and two manifests. It
+also writes `output_lcc/lcc_two_stage_overview.svg`.
+
+To generate only the inverter:
+
+```bash
+python lcc_converter.py --side inverter --alpha 145 --mu 15 --output-dir output_lcc/inverter
+```
+
+Parameters can also be supplied in JSON:
+
+```bash
+python lcc_converter.py --config config_inversor.json
+```
+
+The inverter example uses **alpha = 145°, mu = 15° and gamma = 20°** with
+`gamma_min = 10°`, applying `alpha + mu + gamma = 180°` and rejecting
+inadmissible extinction-angle margins. Current paths are topological,
+not waveforms or an EMT simulation.
+
+The legacy `retificador_trifasico_inkscape.py` and its original command-line
+arguments remain supported.
+
+For the topology, the opposite SCR polarity, details of voltage conventions,
+limitations, and usage commands, see
+[docs/LCC_INVERTER_GUIDE.md](docs/LCC_INVERTER_GUIDE.md).
