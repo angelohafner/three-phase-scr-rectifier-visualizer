@@ -130,10 +130,13 @@ def generate_overview(rectifier: CircuitRenderer, inverter: CircuitRenderer,
     art.txt(root,60,681,
             'Standalone station examples. The real DC line, transformers and controls are omitted.',
             size=17,color='#6C7D90')
-    art.txt(root,60,711,
-            'During overlap: three valves conduct; angular relation at the inverter: α + μ + γ = 180°.',
-            size=17,color='#6C7D90')
-    ET.indent(root,space='  ')
+    art.math_formula(root,60,711,
+                     [('During overlap: three valves conduct; at the inverter: ','roman'),
+                      ('α','variable'),(' + ','roman'),('μ','variable'),
+                      (' + ','roman'),('γ','variable'),(' = 180','roman'),
+                      ('°','unit'),('.','roman')],
+                     size=17,color='#6C7D90')
+    art.indent_svg(root,space='  ')
     file.parent.mkdir(parents=True,exist_ok=True)
     ET.ElementTree(root).write(file, encoding='utf-8', xml_declaration=True)
     return file

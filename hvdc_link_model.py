@@ -113,9 +113,10 @@ class CombinedState:
 class CombinedSchedule:
     """Partition a global 360-degree timeline at *all* commutation boundaries.
 
-    The station angle offset is independent of the firing delay angles. Both
-    AC systems need not have their electrical phase references synchronized.
-    The offset represents a pedagogical choice, not a network solution.
+    The station commutation offset is independent of firing delay angles.
+    It is an illustrative relative shift between valve-sequence timelines,
+    not a physical AC-grid phase angle, PLL reference, or solved quantity.
+    The historic JSON/CLI key ``ac_phase_offset`` is retained for compatibility.
     """
 
     def __init__(self, settings: LinkSettings) -> None:

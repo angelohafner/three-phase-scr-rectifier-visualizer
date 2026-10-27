@@ -215,3 +215,17 @@ stations is an illustrative AC-reference choice independent of firing delay.
 
 See **[docs/HVDC_FULL_LINK_GUIDE.md](docs/HVDC_FULL_LINK_GUIDE.md)** for
 topology conventions, architecture, output files, validation and limitations.
+
+
+## Audited figure conventions (October 2026)
+
+- Electrical paths are traced through directed SCRs and the idealized transformer secondary windings.
+- The three-phase transformer primaries and AC grids are **symbolic terminal drawings**; they are not a solved network, and no transformer equivalent circuit or primary current is calculated.
+- SCR reference labels use `T₁` through `T₆`; station identity comes from the panel heading.
+- Scalar variables, including Greek letters `α`, `μ`, `γ`, and `v`, are *italic*. Indices identifying functions such as `dc`, `line`, `r`, and `i` are upright, while phase-variable indices are italic.
+- Physical units (for example `°`, `V`, `A`, `Ω`, `Hz`) are upright. Matrix names use **bold upright** letters through `rectifier_art.matrix_label`.
+- Editable mathematical expressions are assembled from contiguous SVG `<tspan>` elements. `rectifier_art.indent_svg` prevents unwanted XML whitespace between glyphs.
+- The existing configuration key `ac_phase_offset` controls an **illustrative relative commutation-timeline offset**, not a calculated phase difference between the AC grids. The firing delays are parameter annotations; changing `α` alone does not calculate a new phase-locked time schedule.
+- In overlap states, red means a possible conducting branch, not equal currents or a calculated instantaneous division.
+
+Audit and regenerate all galleries with the commands in `docs/FIGURE_AUDIT.md`.

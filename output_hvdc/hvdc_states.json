@@ -10,7 +10,7 @@
   },
   "gamma_inverter_deg": 20.0,
   "timeline_reference": "rectifier local overlap start=0; inverter local=global-phase_offset",
-  "phase_offset_note": "Independent illustrative grid phase reference; not a transformer shift",
+  "phase_offset_note": "Illustrative station commutation offset; not a modeled AC voltage phase shift or transformer shift",
   "line_model": "L_DR + R_LINE + L_DI in positive pole; explicit metallic return",
   "transformer_note": "Idealized isolated Y/Y three-phase transformer at each station",
   "physical_limitations": "Topology-only. Does not solve voltages, overlap currents, commutation failure, 12-pulse bridges, phase locking, transformer magnetization, line capacitance, DC load-flow or current distribution.",

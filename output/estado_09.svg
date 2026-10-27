@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="1520" height="850" viewBox="0 0 1520 850" version="1.1">
   <title>Normal Conduction, state 9: T4 + T5</title>
-  <desc>Editable conduction paths in a three-phase SCR rectifier. Red means an active conducting component. Commutation overlap is a topological model, not a current-sharing simulation. Arrow directions follow graph traversals.</desc>
+  <desc>Editable SCR rectifier conduction paths. Red highlights electrically closed forward-only SCR loops. In inverter operation, current enters DC+ and leaves DC-; the external DC source provides energy to the AC grid. Overlap shows connectivity, not instantaneous current sharing.</desc>
   <defs>
     <marker id="redArrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="5.5" markerHeight="5.5" orient="auto" markerUnits="strokeWidth">
       <path d="M 1,1 L 11,6 L 1,11 Z" fill="#E12E3F" stroke="#E12E3F" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" />
@@ -130,42 +130,36 @@
       <line x1="272" y1="408" x2="310" y2="408" stroke="#203246" stroke-width="3.4" stroke-linecap="round" />
       <circle cx="250" cy="408" r="22" fill="#FFFFFF" stroke="#203246" stroke-width="3.4" />
       <path d="M 236,408 C 240,395 246,395 250,408 C 254,421 260,421 264,408" fill="none" stroke="#203246" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="282" y="396" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="16" font-weight="400">v<tspan baseline-shift="sub" font-size="10.4" font-style="italic">a</tspan>
-      </text>
+      <text x="282" y="396" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="16" font-weight="400">v<tspan baseline-shift="sub" font-size="10.4" font-style="italic">a</tspan></text>
     </g>
     <g id="base-la">
       <path d="M 310,408 C 312,391 328,391 330,408 C 332,391 348,391 350,408 C 352,391 368,391 370,408 C 372,391 388,391 390,408" fill="none" stroke="#203246" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" />
       <line x1="390" y1="408" x2="430" y2="408" stroke="#203246" stroke-width="3.4" stroke-linecap="round" />
-      <text x="349" y="387" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="18" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.7" font-style="italic">a</tspan>
-      </text>
+      <text x="349" y="387" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="18" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.7" font-style="italic">a</tspan></text>
     </g>
     <g id="base-vb">
       <line x1="180" y1="455" x2="228" y2="455" stroke="#203246" stroke-width="3.4" stroke-linecap="round" />
       <line x1="272" y1="455" x2="310" y2="455" stroke="#203246" stroke-width="3.4" stroke-linecap="round" />
       <circle cx="250" cy="455" r="22" fill="#FFFFFF" stroke="#203246" stroke-width="3.4" />
       <path d="M 236,455 C 240,442 246,442 250,455 C 254,468 260,468 264,455" fill="none" stroke="#203246" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="282" y="443" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="16" font-weight="400">v<tspan baseline-shift="sub" font-size="10.4" font-style="italic">b</tspan>
-      </text>
+      <text x="282" y="443" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="16" font-weight="400">v<tspan baseline-shift="sub" font-size="10.4" font-style="italic">b</tspan></text>
     </g>
     <g id="base-lb">
       <path d="M 310,455 C 312,438 328,438 330,455 C 332,438 348,438 350,455 C 352,438 368,438 370,455 C 372,438 388,438 390,455" fill="none" stroke="#203246" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" />
       <line x1="390" y1="455" x2="430" y2="455" stroke="#203246" stroke-width="3.4" stroke-linecap="round" />
-      <text x="349" y="434" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="18" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.7" font-style="italic">b</tspan>
-      </text>
+      <text x="349" y="434" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="18" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.7" font-style="italic">b</tspan></text>
     </g>
     <g id="base-vc">
       <line x1="180" y1="502" x2="228" y2="502" stroke="#203246" stroke-width="3.4" stroke-linecap="round" />
       <line x1="272" y1="502" x2="310" y2="502" stroke="#203246" stroke-width="3.4" stroke-linecap="round" />
       <circle cx="250" cy="502" r="22" fill="#FFFFFF" stroke="#203246" stroke-width="3.4" />
       <path d="M 236,502 C 240,489 246,489 250,502 C 254,515 260,515 264,502" fill="none" stroke="#203246" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="282" y="490" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="16" font-weight="400">v<tspan baseline-shift="sub" font-size="10.4" font-style="italic">c</tspan>
-      </text>
+      <text x="282" y="490" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="16" font-weight="400">v<tspan baseline-shift="sub" font-size="10.4" font-style="italic">c</tspan></text>
     </g>
     <g id="base-lc">
       <path d="M 310,502 C 312,485 328,485 330,502 C 332,485 348,485 350,502 C 352,485 368,485 370,502 C 372,485 388,485 390,502" fill="none" stroke="#203246" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" />
       <line x1="390" y1="502" x2="430" y2="502" stroke="#203246" stroke-width="3.4" stroke-linecap="round" />
-      <text x="349" y="481" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="18" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.7" font-style="italic">c</tspan>
-      </text>
+      <text x="349" y="481" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="18" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.7" font-style="italic">c</tspan></text>
     </g>
     <g id="base-ldc">
       <path d="M 1240,293 C 1261,295 1261,311 1240,313 C 1261,315 1261,331 1240,333 C 1261,335 1261,351 1240,353 C 1261,355 1261,371 1240,373" fill="none" stroke="#203246" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" />
@@ -181,8 +175,7 @@
       <path d="M 542.500,301.750 L 577.500,301.750" fill="none" stroke="#203246" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round" />
       <polygon points="542.500,326.250 560.000,301.750 577.500,326.250" fill="#FFFFFF" stroke="#203246" stroke-width="3.3" stroke-linejoin="round" />
       <path d="M 560.000,301.750 L 581.000,280.750 L 595.000,280.750" fill="none" stroke="#203246" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="614" y="309" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="600">T<tspan baseline-shift="sub" font-size="14.3" font-style="italic">1</tspan>
-      </text>
+      <text x="614" y="309" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="600">T<tspan baseline-shift="sub" font-size="14.3" font-style="normal">1</tspan></text>
     </g>
     <g id="base-t3" data-symbol="schemdraw.elements.SCR" data-phase="B">
       <line x1="745" y1="297" x2="745" y2="301.75" stroke="#203246" stroke-width="3.3" stroke-linecap="round" />
@@ -190,8 +183,7 @@
       <path d="M 727.500,301.750 L 762.500,301.750" fill="none" stroke="#203246" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round" />
       <polygon points="727.500,326.250 745.000,301.750 762.500,326.250" fill="#FFFFFF" stroke="#203246" stroke-width="3.3" stroke-linejoin="round" />
       <path d="M 745.000,301.750 L 766.000,280.750 L 780.000,280.750" fill="none" stroke="#203246" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="799" y="309" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="600">T<tspan baseline-shift="sub" font-size="14.3" font-style="italic">3</tspan>
-      </text>
+      <text x="799" y="309" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="600">T<tspan baseline-shift="sub" font-size="14.3" font-style="normal">3</tspan></text>
     </g>
     <g id="base-t5" data-symbol="schemdraw.elements.SCR" data-phase="C">
       <line x1="930" y1="297" x2="930" y2="301.75" stroke="#203246" stroke-width="3.3" stroke-linecap="round" />
@@ -199,8 +191,7 @@
       <path d="M 912.500,301.750 L 947.500,301.750" fill="none" stroke="#203246" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round" />
       <polygon points="912.500,326.250 930.000,301.750 947.500,326.250" fill="#FFFFFF" stroke="#203246" stroke-width="3.3" stroke-linejoin="round" />
       <path d="M 930.000,301.750 L 951.000,280.750 L 965.000,280.750" fill="none" stroke="#203246" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="984" y="309" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="600">T<tspan baseline-shift="sub" font-size="14.3" font-style="italic">5</tspan>
-      </text>
+      <text x="984" y="309" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="600">T<tspan baseline-shift="sub" font-size="14.3" font-style="normal">5</tspan></text>
     </g>
     <g id="base-t2" data-symbol="schemdraw.elements.SCR" data-phase="A">
       <line x1="560" y1="551" x2="560" y2="555.75" stroke="#203246" stroke-width="3.3" stroke-linecap="round" />
@@ -208,8 +199,7 @@
       <path d="M 542.500,555.750 L 577.500,555.750" fill="none" stroke="#203246" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round" />
       <polygon points="542.500,580.250 560.000,555.750 577.500,580.250" fill="#FFFFFF" stroke="#203246" stroke-width="3.3" stroke-linejoin="round" />
       <path d="M 560.000,555.750 L 581.000,534.750 L 595.000,534.750" fill="none" stroke="#203246" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="614" y="563" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="600">T<tspan baseline-shift="sub" font-size="14.3" font-style="italic">2</tspan>
-      </text>
+      <text x="614" y="563" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="600">T<tspan baseline-shift="sub" font-size="14.3" font-style="normal">2</tspan></text>
     </g>
     <g id="base-t4" data-symbol="schemdraw.elements.SCR" data-phase="B">
       <line x1="745" y1="551" x2="745" y2="555.75" stroke="#203246" stroke-width="3.3" stroke-linecap="round" />
@@ -217,8 +207,7 @@
       <path d="M 727.500,555.750 L 762.500,555.750" fill="none" stroke="#203246" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round" />
       <polygon points="727.500,580.250 745.000,555.750 762.500,580.250" fill="#FFFFFF" stroke="#203246" stroke-width="3.3" stroke-linejoin="round" />
       <path d="M 745.000,555.750 L 766.000,534.750 L 780.000,534.750" fill="none" stroke="#203246" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="799" y="563" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="600">T<tspan baseline-shift="sub" font-size="14.3" font-style="italic">4</tspan>
-      </text>
+      <text x="799" y="563" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="600">T<tspan baseline-shift="sub" font-size="14.3" font-style="normal">4</tspan></text>
     </g>
     <g id="base-t6" data-symbol="schemdraw.elements.SCR" data-phase="C">
       <line x1="930" y1="551" x2="930" y2="555.75" stroke="#203246" stroke-width="3.3" stroke-linecap="round" />
@@ -226,8 +215,7 @@
       <path d="M 912.500,555.750 L 947.500,555.750" fill="none" stroke="#203246" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round" />
       <polygon points="912.500,580.250 930.000,555.750 947.500,580.250" fill="#FFFFFF" stroke="#203246" stroke-width="3.3" stroke-linejoin="round" />
       <path d="M 930.000,555.750 L 951.000,534.750 L 965.000,534.750" fill="none" stroke="#203246" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="984" y="563" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="600">T<tspan baseline-shift="sub" font-size="14.3" font-style="italic">6</tspan>
-      </text>
+      <text x="984" y="563" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="600">T<tspan baseline-shift="sub" font-size="14.3" font-style="normal">6</tspan></text>
     </g>
   </g>
   <g id="components-active" inkscape:groupmode="layer" inkscape:label="07 - Highlighted sources and elements">
@@ -236,28 +224,24 @@
       <line x1="272" y1="455" x2="310" y2="455" stroke="#E12E3F" stroke-width="4.8" stroke-linecap="round" />
       <circle cx="250" cy="455" r="22" fill="#FFFFFF" stroke="#E12E3F" stroke-width="4.8" />
       <path d="M 236,455 C 240,442 246,442 250,455 C 254,468 260,468 264,455" fill="none" stroke="#E12E3F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="282" y="443" fill="#E12E3F" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="16" font-weight="400">v<tspan baseline-shift="sub" font-size="10.4" font-style="italic">b</tspan>
-      </text>
+      <text x="282" y="443" fill="#E12E3F" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="16" font-weight="400">v<tspan baseline-shift="sub" font-size="10.4" font-style="italic">b</tspan></text>
     </g>
     <g id="selected-lb">
       <path d="M 310,455 C 312,438 328,438 330,455 C 332,438 348,438 350,455 C 352,438 368,438 370,455 C 372,438 388,438 390,455" fill="none" stroke="#E12E3F" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round" />
       <line x1="390" y1="455" x2="430" y2="455" stroke="#E12E3F" stroke-width="4.8" stroke-linecap="round" />
-      <text x="349" y="434" fill="#E12E3F" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="18" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.7" font-style="italic">b</tspan>
-      </text>
+      <text x="349" y="434" fill="#E12E3F" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="18" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.7" font-style="italic">b</tspan></text>
     </g>
     <g id="selected-vc">
       <line x1="180" y1="502" x2="228" y2="502" stroke="#E12E3F" stroke-width="4.8" stroke-linecap="round" />
       <line x1="272" y1="502" x2="310" y2="502" stroke="#E12E3F" stroke-width="4.8" stroke-linecap="round" />
       <circle cx="250" cy="502" r="22" fill="#FFFFFF" stroke="#E12E3F" stroke-width="4.8" />
       <path d="M 236,502 C 240,489 246,489 250,502 C 254,515 260,515 264,502" fill="none" stroke="#E12E3F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="282" y="490" fill="#E12E3F" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="16" font-weight="400">v<tspan baseline-shift="sub" font-size="10.4" font-style="italic">c</tspan>
-      </text>
+      <text x="282" y="490" fill="#E12E3F" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="16" font-weight="400">v<tspan baseline-shift="sub" font-size="10.4" font-style="italic">c</tspan></text>
     </g>
     <g id="selected-lc">
       <path d="M 310,502 C 312,485 328,485 330,502 C 332,485 348,485 350,502 C 352,485 368,485 370,502 C 372,485 388,485 390,502" fill="none" stroke="#E12E3F" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round" />
       <line x1="390" y1="502" x2="430" y2="502" stroke="#E12E3F" stroke-width="4.8" stroke-linecap="round" />
-      <text x="349" y="481" fill="#E12E3F" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="18" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.7" font-style="italic">c</tspan>
-      </text>
+      <text x="349" y="481" fill="#E12E3F" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="18" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.7" font-style="italic">c</tspan></text>
     </g>
     <g id="selected-ldc">
       <path d="M 1240,293 C 1261,295 1261,311 1240,313 C 1261,315 1261,331 1240,333 C 1261,335 1261,351 1240,353 C 1261,355 1261,371 1240,373" fill="none" stroke="#E12E3F" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round" />
@@ -273,8 +257,7 @@
       <path d="M 912.500,301.750 L 947.500,301.750" fill="none" stroke="#E12E3F" stroke-width="4.7" stroke-linecap="round" stroke-linejoin="round" />
       <polygon points="912.500,326.250 930.000,301.750 947.500,326.250" fill="#FFE9EC" stroke="#E12E3F" stroke-width="4.7" stroke-linejoin="round" />
       <path d="M 930.000,301.750 L 951.000,280.750 L 965.000,280.750" fill="none" stroke="#E12E3F" stroke-width="4.7" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="984" y="309" fill="#E12E3F" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="600">T<tspan baseline-shift="sub" font-size="14.3" font-style="italic">5</tspan>
-      </text>
+      <text x="984" y="309" fill="#E12E3F" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="600">T<tspan baseline-shift="sub" font-size="14.3" font-style="normal">5</tspan></text>
       <text x="891" y="284" fill="#E12E3F" font-family="DejaVu Sans, Arial, sans-serif" font-size="12" font-weight="700" text-anchor="middle">ON</text>
     </g>
     <g id="selected-t4" data-symbol="schemdraw.elements.SCR" data-phase="B">
@@ -283,8 +266,7 @@
       <path d="M 727.500,555.750 L 762.500,555.750" fill="none" stroke="#E12E3F" stroke-width="4.7" stroke-linecap="round" stroke-linejoin="round" />
       <polygon points="727.500,580.250 745.000,555.750 762.500,580.250" fill="#FFE9EC" stroke="#E12E3F" stroke-width="4.7" stroke-linejoin="round" />
       <path d="M 745.000,555.750 L 766.000,534.750 L 780.000,534.750" fill="none" stroke="#E12E3F" stroke-width="4.7" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="799" y="563" fill="#E12E3F" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="600">T<tspan baseline-shift="sub" font-size="14.3" font-style="italic">4</tspan>
-      </text>
+      <text x="799" y="563" fill="#E12E3F" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="600">T<tspan baseline-shift="sub" font-size="14.3" font-style="normal">4</tspan></text>
       <text x="706" y="538" fill="#E12E3F" font-family="DejaVu Sans, Arial, sans-serif" font-size="12" font-weight="700" text-anchor="middle">ON</text>
     </g>
   </g>
@@ -304,27 +286,26 @@
   </g>
   <g id="annotations" inkscape:groupmode="layer" inkscape:label="10 - Mathematics, junctions and arrows">
     <circle cx="560" cy="408" r="6.2" fill="#203246" />
-    <text x="450" y="395" fill="#203246" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="19" font-weight="600">A</text>
+    <text x="450" y="395" fill="#203246" font-family="DejaVu Sans, Arial, sans-serif" font-size="19" font-weight="700">A</text>
     <circle cx="180" cy="408" r="5.4" fill="#203246" />
     <circle cx="560" cy="235" r="5.4" fill="#203246" />
     <circle cx="560" cy="662" r="5.4" fill="#203246" />
     <circle cx="745" cy="455" r="6.2" fill="#E12E3F" />
-    <text x="450" y="442" fill="#E12E3F" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="19" font-weight="600">B</text>
+    <text x="450" y="442" fill="#E12E3F" font-family="DejaVu Sans, Arial, sans-serif" font-size="19" font-weight="700">B</text>
     <circle cx="180" cy="455" r="5.4" fill="#E12E3F" />
     <circle cx="745" cy="235" r="5.4" fill="#203246" />
     <circle cx="745" cy="662" r="5.4" fill="#E12E3F" />
     <circle cx="930" cy="502" r="6.2" fill="#E12E3F" />
-    <text x="450" y="489" fill="#E12E3F" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="19" font-weight="600">C</text>
+    <text x="450" y="489" fill="#E12E3F" font-family="DejaVu Sans, Arial, sans-serif" font-size="19" font-weight="700">C</text>
     <circle cx="180" cy="502" r="5.4" fill="#E12E3F" />
     <circle cx="930" cy="235" r="5.4" fill="#E12E3F" />
     <circle cx="930" cy="662" r="5.4" fill="#E12E3F" />
     <circle cx="1240" cy="235" r="5.4" fill="#E12E3F" />
     <circle cx="1240" cy="662" r="5.4" fill="#E12E3F" />
-    <text x="150" y="446" fill="#6C7D90" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="19" font-weight="600">O</text>
+    <text x="150" y="446" fill="#6C7D90" font-family="DejaVu Sans, Arial, sans-serif" font-size="19" font-weight="700">O</text>
     <text x="1267" y="255" fill="#E12E3F" font-family="DejaVu Sans, Arial, sans-serif" font-size="26" font-weight="700">+</text>
     <text x="1267" y="669" fill="#E12E3F" font-family="DejaVu Sans, Arial, sans-serif" font-size="28" font-weight="700">−</text>
-    <text x="1285" y="337" fill="#E12E3F" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="23" font-weight="400">L<tspan baseline-shift="sub" font-size="14.95" font-style="normal">dc</tspan>
-    </text>
+    <text x="1285" y="337" fill="#E12E3F" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="23" font-weight="400">L<tspan baseline-shift="sub" font-size="14.95" font-style="normal">dc</tspan></text>
     <text x="1285" y="489" fill="#E12E3F" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="24" font-weight="400">R</text>
     <line x1="1240" y1="391" x2="1240" y2="422" stroke="#E12E3F" stroke-width="3.6" stroke-linecap="round" marker-end="url(#redArrow)" />
     <line x1="1240" y1="251" x2="1240" y2="279" stroke="#E12E3F" stroke-width="3.6" stroke-linecap="round" marker-end="url(#redArrow)" />
@@ -345,6 +326,6 @@
     <text x="74" y="784" fill="#203246" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400">One positive-group SCR and one negative-group SCR</text>
     <text x="74" y="812" fill="#6C7D90" font-family="DejaVu Sans, Arial, sans-serif" font-size="14" font-weight="400">Paths: C+ → B−</text>
     <text x="955" y="783" fill="#203246" font-family="DejaVu Sans, Arial, sans-serif" font-size="15" font-weight="400">Electrical angle: 255°–300°</text>
-    <text x="957" y="812" fill="#6C7D90" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400">μ = 15°</text>
+    <text x="957" y="812" fill="#6C7D90" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="normal" font-size="17" data-math-notation="mixed"><tspan font-style="italic" font-weight="400" font-size="17" data-math-role="variable">μ</tspan><tspan font-style="normal" font-weight="400" font-size="17" data-math-role="roman"> = 15</tspan><tspan font-style="normal" font-weight="400" font-size="17" data-math-role="unit">°</tspan></text>
   </g>
 </svg>

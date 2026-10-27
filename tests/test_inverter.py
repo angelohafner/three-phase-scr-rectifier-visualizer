@@ -78,8 +78,9 @@ def test_two_modes_require_different_scr_orientation(tmp_path):
             assert 'E_dc' not in data  # Native mathematical tspan is used instead.
             assert 'selected-edc' in data
             assert 'selected-r' not in data
-            assert 'α = 145°' in data
-            assert 'γ = 20°' in data
+            visible=''.join(root.itertext())
+            assert 'α = 145°' in visible
+            assert 'γ = 20°' in visible
         else:
             assert 'selected-r' in data
             assert 'selected-edc' not in data
@@ -111,7 +112,7 @@ def test_cli_modes(tmp_path):
     assert (tmp_path/'inv/estado_02.svg').exists()
     gamma=run('--side','inverter','--state','1','--gamma','20','--mu','15','--output-dir','g')
     assert gamma.returncode==0, gamma.stderr
-    assert 'α = 145°' in (tmp_path/'g/estado_01.svg').read_text()
+    assert 'α = 145°' in ''.join(ET.parse(tmp_path/'g/estado_01.svg').getroot().itertext())
     bad=run('--side','inverter','--state','2','--alpha','155','--mu','20')
     assert bad.returncode!=0 and 'gamma' in bad.stderr.lower()
     both=run('--side','both','--state','2','--output-dir','both')

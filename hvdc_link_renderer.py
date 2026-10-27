@@ -129,8 +129,8 @@ def scr(root: ET.Element, x: float, cy: float, ident: str,
             else:
                 segment.append(xy(point))
     # Station prefix avoids ambiguity when both stations use T1..T6.
-    art.math_label(ident_group,x+40,cy-10,'T',subscript=ident.replace('_',''),
-                   size=20,color=color,bold=True)
+    art.math_label(ident_group,x+40,cy-10,'T',subscript=ident.rsplit('T',1)[-1],
+                   size=21,color=color,bold=True)
     if role in ('OUT','IN'):
         art.txt(ident_group,x-33,cy-45,role,size=16,bold=True,
                 anchor='middle',color=PALETTE['amber'] if role=='OUT' else PALETTE['green'])
@@ -179,7 +179,7 @@ class HVDCLinkRenderer:
         art.txt(root,WIDTH-85,57,f'JOINT STATE  {state.number:02d}',
                 size=30,color='white',anchor='end',bold=True)
         art.txt(root,WIDTH-85,98,
-                f'{state.theta_start:g}° – {state.theta_end:g}°  (global AC reference)',
+                f'{state.theta_start:g}° – {state.theta_end:g}°  (relative commutation reference)',
                 size=19,color='#BFD5EA',anchor='end')
         round_rect(root,66,169,1385,1130,'#FFFFFF',PALETTE['line'],20)
         round_rect(root,2047,169,1385,1130,'#FFFFFF',PALETTE['line'],20)
@@ -187,12 +187,15 @@ class HVDCLinkRenderer:
                 color=PALETTE['blue'])
         art.txt(root,2080,222,'02  INVERTER STATION',size=25,bold=True,
                 color=PALETTE['blue'])
-        art.txt(root,94,258,f'αr = {self.settings.alpha_rectifier:g}°   ·   '
-                f'μr = {self.settings.mu_rectifier:g}°',size=18,color=PALETTE['quiet'])
-        art.txt(root,2080,258,
-                f'αi = {self.settings.alpha_inverter:g}°   ·   '
-                f'μi = {self.settings.mu_inverter:g}°   ·   '
-                f'γi = {self.settings.gamma:g}°',size=18,color=PALETTE['quiet'])
+        art.angle_notation(root,94,258,
+                           [('α','r',self.settings.alpha_rectifier),
+                            ('μ','r',self.settings.mu_rectifier)],
+                           size=18,color=PALETTE['quiet'],separator='   ·   ')
+        art.angle_notation(root,2080,258,
+                           [('α','i',self.settings.alpha_inverter),
+                            ('μ','i',self.settings.mu_inverter),
+                            ('γ','i',self.settings.gamma)],
+                           size=18,color=PALETTE['quiet'],separator='   ·   ')
         art.txt(root,94,298,f'R state {state.rectifier.number:02d}: '
                 f'{state.rectifier.scr_description}  ·  '
                 f'{"Overlap" if state.rectifier_overlap else "Normal"}',
@@ -214,13 +217,18 @@ class HVDCLinkRenderer:
         # The two outer terminals of the neutral star are connected through O.
         y_min, y_max=PHASE_Y['a'],PHASE_Y['c']
         art.line(root,x,y_min,x,y_max,PALETTE['ink'],3.4)
+        active_span = None
         if len(active_phases)>1:
             y_values=[PHASE_Y[p] for p in active_phases]
-            art.line(root,x,min(y_values),x,max(y_values),PALETTE['active'],5.1)
+            active_span=(min(y_values),max(y_values))
+            art.line(root,x,*active_span,PALETTE['active'],5.1)
         for phase in 'abc':
-            art.dot(root,x,PHASE_Y[phase],phase in active_phases,4.8)
-        art.math_label(root,x-18,PHASE_Y['b']-13,'O',size=17,
-                       color=PALETTE['quiet'])
+            ypos=PHASE_Y[phase]
+            on=phase in active_phases or (active_span is not None
+                                        and active_span[0]<=ypos<=active_span[1])
+            art.dot(root,x,ypos,on,4.8)
+        art.txt(root,x-18,PHASE_Y['b']-13,'O',size=17,
+                color=PALETTE['quiet'])
 
     def _transformer(self, root: ET.Element, side: str,
                      active: frozenset[str], arrows: dict[str,int]) -> None:
@@ -275,9 +283,13 @@ class HVDCLinkRenderer:
             art.txt(station,coord['grid'] if side=='R' else coord['grid']-4,
                     yp-28,p.upper(),size=18,bold=True,
                     color=PALETTE['ink'])
-            xlab=627 if side=='R' else 2787
-            art.math_label(station,xlab,yp-29,'L',subscript=f'c,{p}{side.lower()}',
-                           size=17,color=tcolor,anchor='middle')
+            art.math_label(station,210 if side=='R' else 3303, yp-28,
+                           'v',subscript=p,size=17,color=PALETTE['ink'],
+                           anchor='middle')
+            art.math_formula(station,(lc[0]+lc[1])/2,yp-39,
+                             [('L','variable'),('c,','subscript-roman'),
+                              (p,'subscript-variable'),(side.lower(),'subscript-roman')],
+                             size=18,color=tcolor,anchor='middle')
             if is_active:
                 direction=arrows.get(f'{side}_LC_{p.upper()}',0)
                 if direction:
@@ -347,8 +359,18 @@ class HVDCLinkRenderer:
             )
             scr(valve,xc,Y_TOP,f'{side}_{high}',hcol,high_on,rdir,upper_role)
             scr(valve,xc,Y_BOTTOM,f'{side}_{low}',lcol,low_on,rdir,lower_role)
-            art.dot(valve,xc,Y_P,high_on,5.1)
-            art.dot(valve,xc,Y_N,low_on,5.1)
+            # Bus nodes on an energized segment are red even when the
+            # associated vertical valve branch is not conducting.
+            active_upper_x=[columns[p] for p in 'abc' if UPPER[p] in upper_active]
+            active_lower_x=[columns[p] for p in 'abc' if LOWER[p] in lower_active]
+            if side=='R':
+                upper_bus_on=bool(active_upper_x) and xc >= min(active_upper_x)
+                lower_bus_on=bool(active_lower_x) and xc >= min(active_lower_x)
+            else:
+                upper_bus_on=bool(active_upper_x) and xc <= max(active_upper_x)
+                lower_bus_on=bool(active_lower_x) and xc <= max(active_lower_x)
+            art.dot(valve,xc,Y_P,upper_bus_on,5.1)
+            art.dot(valve,xc,Y_N,lower_bus_on,5.1)
             art.dot(valve,xc,yp,high_on or low_on,6.0)
         # Each phase feeder jumps over unrelated vertical valve conductors.
         # The white halo at the arc protects the unconnected crossing point.
@@ -398,11 +420,11 @@ class HVDCLinkRenderer:
             tag=self._tag(dc,eid,eid in active)
             tag.set('data-rendered-as','continuous-dc-link')
         art.math_label(dc,1482,317,'L',subscript='d,r',size=22,color=plus,
-                       anchor='middle')
+                       anchor='middle',upright_subscript=True)
         art.math_label(dc,1745,315,'R',subscript='line',size=22,color=plus,
                        anchor='middle',upright_subscript=True)
         art.math_label(dc,2035,317,'L',subscript='d,i',size=22,color=plus,
-                       anchor='middle')
+                       anchor='middle',upright_subscript=True)
         art.math_label(dc,1745,1098,'I',subscript='dc',size=25,color=neg,
                        anchor='middle',upright_subscript=True)
         art.txt(dc,1750,441,'POSITIVE DC CONDUCTOR',size=17,
@@ -450,20 +472,20 @@ class HVDCLinkRenderer:
                 f'{len([e for e in active if self.topology.edges[e].kind == "scr"])} conducting SCRs '
                 f'· {loop_count} graph-validated conducting path(s)',
                 size=16,color=PALETTE['quiet'])
-        art.txt(root,1350,1364,
-                f'αr = {self.settings.alpha_rectifier:g}°   ·  '
-                f'αi = {self.settings.alpha_inverter:g}°   ·  '
-                f'γi ≈ {self.settings.gamma:g}°',
-                size=18,color=PALETTE['ink'])
-        art.txt(root,1350,1405,
-                f'μr = {self.settings.mu_rectifier:g}°   ·  '
-                f'μi = {self.settings.mu_inverter:g}°   ·  '
-                f'AC phase offset = {self.settings.ac_phase_offset:g}°',
-                size=17,color=PALETTE['quiet'])
+        art.angle_notation(root,1350,1364,
+                           [('α','r',self.settings.alpha_rectifier),
+                            ('α','i',self.settings.alpha_inverter),
+                            ('γ','i',self.settings.gamma)],
+                           size=18,color=PALETTE['ink'])
+        art.angle_notation(root,1350,1405,
+                           [('μ','r',self.settings.mu_rectifier),
+                            ('μ','i',self.settings.mu_inverter)],
+                           size=17,color=PALETTE['quiet'],
+                           trailer=f'  ·  Relative commutation offset = {self.settings.ac_phase_offset:g}°')
         art.txt(root,1350,1443,
                 'Transformer primaries are galvanically isolated from the conducting valve-side loops.',
                 size=16,color=PALETTE['quiet'])
-        art.txt(root,WIDTH-93,1372,'NO CURRENT SHARING SOLVED',
+        art.txt(root,WIDTH-93,1372,'CURRENT SHARING NOT SOLVED',
                 size=16,color=PALETTE['amber'],anchor='end',bold=True)
         art.txt(root,WIDTH-93,1410,'Red = potentially conducting branches',
                 size=16,color=PALETTE['quiet'],anchor='end')
@@ -494,7 +516,7 @@ class HVDCLinkRenderer:
         self._transformer(root,'I',active,directed)
         self._current_arrows(root,state,active)
         self._footer(root,state,active,int(selection['loop_count']))
-        ET.indent(root,space='  ')
+        art.indent_svg(root,space='  ')
         return ET.ElementTree(root)
 
     @staticmethod

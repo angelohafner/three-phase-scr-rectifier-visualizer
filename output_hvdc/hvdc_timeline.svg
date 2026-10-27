@@ -3,7 +3,7 @@
   <title>LCC HVDC: synchronized rectifier and inverter commutation states</title>
   <rect x="0" y="0" width="3180" height="890" fill="#F4F7FB" />
   <text x="85" y="82" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="38" font-weight="700">GLOBAL 360° CONDUCTION TIMELINE</text>
-  <text x="87" y="128" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="19" font-weight="400">Valve commutation at each station, phase-offset by an independently selected AC reference</text>
+  <text x="87" y="128" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="19" font-weight="400">Commutation windows referenced to the rectifier event; station offset is illustrative</text>
   <text x="80" y="273" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="22" font-weight="700">RECTIFIER</text>
   <rect x="350" y="230" width="2690" height="90" rx="9" fill="#E5EAF0" stroke="#D7E2ED" stroke-width="2" />
   <text x="80" y="408" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="22" font-weight="700">INVERTER</text>
@@ -180,8 +180,8 @@
   <text x="2983.958333333333" y="280" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">R11</text>
   <text x="2983.958333333333" y="415" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">I11</text>
   <text x="2983.958333333333" y="580" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">24</text>
-  <text x="92" y="712" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="20" font-weight="400">μr = 12°   |   μi = 15°   |   AC phase offset = 30°</text>
+  <text x="92" y="712" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="normal" font-size="20" data-math-notation="mixed"><tspan font-style="italic" font-weight="400" font-size="20" data-math-role="variable">μ</tspan><tspan font-style="normal" font-weight="400" font-size="13.2" baseline-shift="sub" data-math-role="subscript-roman">r</tspan><tspan font-style="normal" font-weight="400" font-size="20" data-math-role="roman"> = 12</tspan><tspan font-style="normal" font-weight="400" font-size="20" data-math-role="unit">°</tspan><tspan font-style="normal" font-weight="400" font-size="20" data-math-role="roman">   |   </tspan><tspan font-style="italic" font-weight="400" font-size="20" data-math-role="variable">μ</tspan><tspan font-style="normal" font-weight="400" font-size="13.2" baseline-shift="sub" data-math-role="subscript-roman">i</tspan><tspan font-style="normal" font-weight="400" font-size="20" data-math-role="roman"> = 15</tspan><tspan font-style="normal" font-weight="400" font-size="20" data-math-role="unit">°</tspan><tspan font-style="normal" font-weight="400" font-size="20" data-math-role="roman">   |   Relative commutation offset = 30°</tspan></text>
   <text x="92" y="757" fill="#D52940" font-family="DejaVu Sans, Arial, sans-serif" font-size="20" font-weight="700">24 distinct joint conduction intervals</text>
   <text x="92" y="799" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="400">Overlap intervals show which devices conduct; red does not quantify current sharing.</text>
-  <text x="92" y="835" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="17" font-weight="400">A 30° offset here is pedagogical; it is not an assumed grid phase lock or a 12-pulse transformer phase shift.</text>
+  <text x="92" y="835" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="17" font-weight="400">The station offset is illustrative, not a power-system phase lock or transformer phase shift.</text>
 </svg>

@@ -250,9 +250,9 @@ class CircuitRenderer:
             art.dot(layer, art.X[ph], art.Y[ph],
                     any_selected(f'FASE_{P}', f'{art.TOP[ph]}_FASE',
                                  f'{art.BOTTOM[ph]}_FASE'), 6.2)
-            art.math_label(layer, 450, art.Y[ph]-13, P,
-                           color=(self.styles.red if f'FASE_{P}' in sel.paths
-                                  else self.styles.ink), size=19, bold=True)
+            art.txt(layer, 450, art.Y[ph]-13, P,
+                    color=(self.styles.red if f'FASE_{P}' in sel.paths
+                           else self.styles.ink), size=19, bold=True)
             adjacent = ('NEUTRO_AB',) if ph == 'a' else (
                 ('NEUTRO_AB', 'NEUTRO_BC') if ph == 'b' else ('NEUTRO_BC',))
             art.dot(layer, art.X['star'], art.Y[ph],
@@ -266,8 +266,8 @@ class CircuitRenderer:
                 any_selected('POS_T5_CARGA', 'CARGA_POS_L'))
         art.dot(layer, art.X['load'], art.Y['minus'],
                 any_selected('NEG_T6_CARGA', 'CARGA_R_NEG'))
-        art.math_label(layer, art.X['star']-30, art.Y['b']-9, 'O',
-                       color=self.styles.muted, size=19, bold=True)
+        art.txt(layer, art.X['star']-30, art.Y['b']-9, 'O',
+                color=self.styles.muted, size=19, bold=True)
         art.txt(layer, 1267, 255, '+', size=26, bold=True,
                 color=self.styles.red if 'CARGA_POS_L' in sel.paths
                 else self.styles.ink)
@@ -279,7 +279,7 @@ class CircuitRenderer:
                        color=self.styles.red if 'LDC' in sel.inductors
                        else self.styles.ink)
         if self.inverter:
-            art.math_label(layer, 1292, 494, 'E', subscript='dc',
+            art.math_label(layer, 1292, 494, 'E', subscript='dc',upright_subscript=True,
                            size=23, color=(self.styles.red if sel.dc_source
                                            else self.styles.ink))
         else:
@@ -329,25 +329,27 @@ class CircuitRenderer:
                 art.txt(layer, 929, 759,
                         f'Cycle angle: {state.theta_start:g}°–{state.theta_end:g}°',
                         size=15, color=self.styles.ink)
-                art.math_label(layer, 931, 787, f'α = {self.alpha_deg:g}°', size=17,
-                               color=self.styles.muted)
-                art.math_label(layer, 1110, 787, f'μ = {state.mu:g}°', size=17,
-                               color=self.styles.muted)
-                art.math_label(layer, 1275, 787, f'γ = {self.gamma_deg:g}°',
-                               size=17, color=self.styles.red)
+                art.angle_notation(layer, 931, 787, [('α','',self.alpha_deg)],
+                                   size=17,color=self.styles.muted)
+                art.angle_notation(layer, 1110, 787, [('μ','',state.mu)],
+                                   size=17,color=self.styles.muted)
+                art.angle_notation(layer, 1275, 787, [('γ','',self.gamma_deg)],
+                                   size=17,color=self.styles.red)
                 art.txt(layer, 931, 812, 'DC source → AC grid', size=14,
                         color=self.styles.muted)
             else:
                 art.txt(layer, 955, 783,
                         f'Electrical angle: {state.theta_start:g}°–{state.theta_end:g}°',
                         size=15, color=self.styles.ink)
-                art.math_label(layer, 957, 812, f'μ = {state.mu:g}°', size=17,
-                               color=self.styles.muted)
+                art.angle_notation(layer, 957, 812, [('μ','',state.mu)],
+                                   size=17,color=self.styles.muted)
         elif ideal_step:
             art.txt(layer, 74, 762, f'IDEAL CONDUCTION INTERVAL {ideal_step} OF 6',
                     size=17, bold=True, color=self.styles.red)
-            art.txt(layer, 74, 792, 'Two SCRs conducting. Overlap neglected (μ = 0°).',
-                    size=17, color=self.styles.ink)
+            art.math_formula(layer,74,792,
+                             [('Two SCRs conducting. Overlap neglected (','roman'),
+                              ('μ','variable'),(' = 0','roman'),('°','unit'),(').','roman')],
+                             size=17,color=self.styles.ink)
         else:
             art.txt(layer, 74, 763, 'MANUAL COMPONENT SELECTION', size=17,
                     bold=True, color=self.styles.red)
@@ -363,7 +365,7 @@ class CircuitRenderer:
     @staticmethod
     def save(tree: ET.ElementTree, filename: Path) -> None:
         filename.parent.mkdir(parents=True, exist_ok=True)
-        ET.indent(tree, space='  ')
+        art.indent_svg(tree, space='  ')
         tree.write(filename, encoding='utf-8', xml_declaration=True)
 
 
@@ -406,11 +408,21 @@ def build_panel(states: tuple[ConductionState, ...], renderer: CircuitRenderer,
     art.txt(root, margin, 52,
             'SIX-PULSE SCR INVERTER' if renderer.inverter else 'SIX-PULSE SCR RECTIFIER',
             size=34, bold=True)
-    art.txt(root, margin, 89,
-            (f'12 states  ·  α = {renderer.alpha_deg:g}°  ·  μ = {states[0].mu:g}°  ·  γ = {renderer.gamma_deg:g}°'
-             if renderer.inverter else
-             f'12 conduction states   ·   μ = {states[0].mu:g}°   ·   3-phase ABC system'),
-            size=21, color=renderer.styles.muted)
+    if renderer.inverter:
+        art.math_formula(root,margin,89,
+                         [('12 states  ·  ','roman'),('α','variable'),
+                          (f' = {renderer.alpha_deg:g}','roman'),('°','unit'),
+                          ('  ·  ','roman'),('μ','variable'),
+                          (f' = {states[0].mu:g}','roman'),('°','unit'),
+                          ('  ·  ','roman'),('γ','variable'),
+                          (f' = {renderer.gamma_deg:g}','roman'),('°','unit')],
+                         size=21,color=renderer.styles.muted)
+    else:
+        art.math_formula(root,margin,89,
+                         [('12 conduction states  ·  ','roman'),
+                          ('μ','variable'),(f' = {states[0].mu:g}','roman'),
+                          ('°','unit'),('  ·  3-phase ABC system','roman')],
+                         size=21,color=renderer.styles.muted)
     for i, state in enumerate(states):
         col, row = i%3, i//3
         ox = margin + col*(itemw+gapx)
@@ -426,8 +438,9 @@ def build_panel(states: tuple[ConductionState, ...], renderer: CircuitRenderer,
         })
         for element in list(child_root):
             grouped.append(element)
-    art.txt(root, margin, height-25,
-            'Red = conducting path    ·    OUT = outgoing SCR    ·    IN = incoming SCR    ·    μ changes angular duration, not current magnitude',
+    art.math_formula(root, margin, height-25,
+            [('Red = conducting path    ·    OUT = outgoing SCR    ·    IN = incoming SCR    ·    ','roman'),
+             ('μ','variable'),(' changes angular duration, not current magnitude','roman')],
             size=17, color=renderer.styles.muted)
     renderer.save(ET.ElementTree(root),output)
     return output

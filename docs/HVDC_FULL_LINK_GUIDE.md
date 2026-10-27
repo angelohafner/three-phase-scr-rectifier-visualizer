@@ -166,3 +166,8 @@ without rewriting the underlying drawing and conduction graph.
   industrial twelve-pulse valve groups and the converter transformer shift.
 - [MDPI Energies — LCC HVDC analysis](https://www.mdpi.com/1996-1073/15/3/1142):
   DC voltage, line-commutation reactance and smoothing behavior.
+
+
+## Audit note: typography and angular reference
+
+SVG notation now follows the project-wide engineering convention: italic scalar variables (including Greek), upright physical units and descriptive indices, and bold upright matrix names. SCR labels display `T₁`–`T₆` within the separate station panels. The legacy field name `ac_phase_offset` is an illustrative **relative commutation offset**, not an independently solved physical AC phase shift. The transformer primaries are symbolic AC-network interfaces and their currents are not computed.

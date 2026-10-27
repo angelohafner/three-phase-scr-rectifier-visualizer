@@ -138,15 +138,104 @@ def math_label(parent: ET.Element, x: float, y: float, symbol: str, *,
     fully editable, with Cambria Math and DejaVu Serif as fallback families.
     """
     t = element(parent, 'text', x=x, y=y, fill=color or C['ink'],
-                font_family='STIX Math, STIX, Cambria Math, DejaVu Serif, serif',
+                font_family=MATH_FONT,
                 font_style='italic', font_size=size,
                 font_weight='600' if bold else '400', text_anchor=anchor)
     t.text = symbol
     if subscript:
         low = element(t, 'tspan', baseline_shift='sub', font_size=f'{size*0.65:g}',
-                      font_style='normal' if upright_subscript else 'italic')
+                      font_style='normal' if upright_subscript or subscript.isdecimal() else 'italic')
         low.text = subscript
     return t
+
+# Mathematical notation is formatted at the glyph-span level to remain editable.
+MATH_FONT = 'STIX Math, STIX, Cambria Math, DejaVu Serif, serif'
+
+
+def math_formula(parent: ET.Element, x: float, y: float,
+                 spans: list[tuple[str, str]] | tuple[tuple[str, str], ...], *,
+                 size: float = 19, color: str | None = None,
+                 anchor: str | None = None) -> ET.Element:
+    """Draw SVG math tokens with explicit scientific typography.
+
+    Roles: variable (including Greek), roman, unit, matrix (bold upright),
+    subscript-variable, subscript-roman. All glyphs remain actual text and
+    can be edited in Inkscape rather than converted to paths.
+    """
+    roles = {'variable', 'roman', 'unit', 'matrix',
+             'subscript-variable', 'subscript-roman'}
+    label = element(parent, 'text', x=x, y=y, fill=color or C['ink'],
+                    font_family=MATH_FONT, font_style='normal',
+                    font_size=size, text_anchor=anchor)
+    label.set('data-math-notation', 'mixed')
+    for string, role in spans:
+        if role not in roles:
+            raise ValueError(f'Unsupported mathematical notation role: {role}')
+        if not string:
+            continue
+        subscript = role.startswith('subscript-')
+        italic = role in {'variable', 'subscript-variable'}
+        fragment = element(
+            label, 'tspan', font_style='italic' if italic else 'normal',
+            font_weight='700' if role == 'matrix' else '400',
+            font_size=f'{size*.66:g}' if subscript else str(size),
+            baseline_shift='sub' if subscript else None,
+        )
+        fragment.set('data-math-role', role)
+        fragment.text = string
+    return label
+
+
+def angle_notation(parent: ET.Element, x: float, y: float,
+                   angles: list[tuple[str, str, float]] | tuple[tuple[str, str, float], ...], *,
+                   size: float = 18, color: str | None = None,
+                   anchor: str | None = None, separator: str = '  ·  ',
+                   trailer: str = '') -> ET.Element:
+    """Format Greek angle variables italic and angle-unit symbols upright."""
+    parts: list[tuple[str, str]] = []
+    for index, (variable, descriptor, value) in enumerate(angles):
+        if index:
+            parts.append((separator, 'roman'))
+        parts.append((variable, 'variable'))
+        if descriptor:
+            parts.append((descriptor, 'subscript-roman'))
+        parts.append((f' = {value:g}', 'roman'))
+        parts.append(('°', 'unit'))
+    if trailer:
+        parts.append((trailer, 'roman'))
+    return math_formula(parent, x, y, parts, size=size, color=color,
+                        anchor=anchor)
+
+
+def matrix_label(parent: ET.Element, x: float, y: float, symbol: str, *,
+                 size: float = 19, color: str | None = None,
+                 anchor: str | None = None) -> ET.Element:
+    """Draw a matrix name upright and bold, following project convention."""
+    if not symbol:
+        raise ValueError('Matrix name must not be empty')
+    return math_formula(parent, x, y, [(symbol, 'matrix')], size=size,
+                        color=color, anchor=anchor)
+
+
+def indent_svg(root_or_tree: ET.Element | ET.ElementTree,
+               space: str = '  ') -> None:
+    """Pretty-print SVG while preserving mathematical tspan adjacency.
+
+    ElementTree.indent inserts whitespace between child tspans, and SVG text
+    renders those blanks as unwanted spaces. Remove only formatting whitespace
+    inside editable <text> nodes after indenting everything else.
+    """
+    ET.indent(root_or_tree, space=space)
+    root = (root_or_tree.getroot() if isinstance(root_or_tree, ET.ElementTree)
+            else root_or_tree)
+    for label in root.iter(S + 'text'):
+        if len(label):
+            if not (label.text or '').strip():
+                label.text = None
+            for child in label:
+                if child.tail is not None and not child.tail.strip():
+                    child.tail = None
+
 
 def native_scr_segments() -> tuple[tuple[str, tuple[tuple[float, float], ...]], ...]:
     """Return the genuine Schemdraw SCR primitive paths in element coordinates.

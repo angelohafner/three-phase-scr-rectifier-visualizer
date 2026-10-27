@@ -12,13 +12,13 @@
   <text x="75" y="61" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="39" font-weight="700">HVDC LCC  ·  COMPLETE CURRENT PATH</text>
   <text x="76" y="108" fill="#BFD5EA" font-family="DejaVu Sans, Arial, sans-serif" font-size="20" font-weight="400">Stage 3  ·  6-pulse rectifier → DC link → 6-pulse inverter</text>
   <text x="3415" y="57" fill="white" font-family="DejaVu Sans, Arial, sans-serif" font-size="30" font-weight="700" text-anchor="end">JOINT STATE  13</text>
-  <text x="3415" y="98" fill="#BFD5EA" font-family="DejaVu Sans, Arial, sans-serif" font-size="19" font-weight="400" text-anchor="end">180° – 192°  (global AC reference)</text>
+  <text x="3415" y="98" fill="#BFD5EA" font-family="DejaVu Sans, Arial, sans-serif" font-size="19" font-weight="400" text-anchor="end">180° – 192°  (relative commutation reference)</text>
   <rect x="66" y="169" width="1385" height="1130" rx="20" fill="#FFFFFF" stroke="#D7E2ED" stroke-width="2" />
   <rect x="2047" y="169" width="1385" height="1130" rx="20" fill="#FFFFFF" stroke="#D7E2ED" stroke-width="2" />
   <text x="94" y="222" fill="#2566A0" font-family="DejaVu Sans, Arial, sans-serif" font-size="25" font-weight="700">01  RECTIFIER STATION</text>
   <text x="2080" y="222" fill="#2566A0" font-family="DejaVu Sans, Arial, sans-serif" font-size="25" font-weight="700">02  INVERTER STATION</text>
-  <text x="94" y="258" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="400">αr = 15°   ·   μr = 12°</text>
-  <text x="2080" y="258" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="400">αi = 145°   ·   μi = 15°   ·   γi = 20°</text>
+  <text x="94" y="258" fill="#76889C" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="normal" font-size="18" data-math-notation="mixed"><tspan font-style="italic" font-weight="400" font-size="18" data-math-role="variable">α</tspan><tspan font-style="normal" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-roman">r</tspan><tspan font-style="normal" font-weight="400" font-size="18" data-math-role="roman"> = 15</tspan><tspan font-style="normal" font-weight="400" font-size="18" data-math-role="unit">°</tspan><tspan font-style="normal" font-weight="400" font-size="18" data-math-role="roman">   ·   </tspan><tspan font-style="italic" font-weight="400" font-size="18" data-math-role="variable">μ</tspan><tspan font-style="normal" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-roman">r</tspan><tspan font-style="normal" font-weight="400" font-size="18" data-math-role="roman"> = 12</tspan><tspan font-style="normal" font-weight="400" font-size="18" data-math-role="unit">°</tspan></text>
+  <text x="2080" y="258" fill="#76889C" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="normal" font-size="18" data-math-notation="mixed"><tspan font-style="italic" font-weight="400" font-size="18" data-math-role="variable">α</tspan><tspan font-style="normal" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-roman">i</tspan><tspan font-style="normal" font-weight="400" font-size="18" data-math-role="roman"> = 145</tspan><tspan font-style="normal" font-weight="400" font-size="18" data-math-role="unit">°</tspan><tspan font-style="normal" font-weight="400" font-size="18" data-math-role="roman">   ·   </tspan><tspan font-style="italic" font-weight="400" font-size="18" data-math-role="variable">μ</tspan><tspan font-style="normal" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-roman">i</tspan><tspan font-style="normal" font-weight="400" font-size="18" data-math-role="roman"> = 15</tspan><tspan font-style="normal" font-weight="400" font-size="18" data-math-role="unit">°</tspan><tspan font-style="normal" font-weight="400" font-size="18" data-math-role="roman">   ·   </tspan><tspan font-style="italic" font-weight="400" font-size="18" data-math-role="variable">γ</tspan><tspan font-style="normal" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-roman">i</tspan><tspan font-style="normal" font-weight="400" font-size="18" data-math-role="roman"> = 20</tspan><tspan font-style="normal" font-weight="400" font-size="18" data-math-role="unit">°</tspan></text>
   <text x="94" y="298" fill="#D52940" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="400">R state 06: T2 + T3 + T5  ·  Overlap</text>
   <text x="2080" y="298" fill="#D52940" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="400">I state 05: T2 + T3  ·  Normal</text>
   <text x="1750" y="231" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="700" text-anchor="middle">ONE CONTINUOUS DC LOOP</text>
@@ -39,14 +39,10 @@
     <g id="edge-r_line" data-edge-id="R_LINE" data-active="true" data-rendered-as="continuous-dc-link" />
     <g id="edge-l_di" data-edge-id="L_DI" data-active="true" data-rendered-as="continuous-dc-link" />
     <g id="edge-metallic_return" data-edge-id="METALLIC_RETURN" data-active="true" data-rendered-as="continuous-dc-link" />
-    <text x="1482" y="317" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="14.3" font-style="italic">d,r</tspan>
-    </text>
-    <text x="1745" y="315" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="400" text-anchor="middle">R<tspan baseline-shift="sub" font-size="14.3" font-style="normal">line</tspan>
-    </text>
-    <text x="2035" y="317" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="14.3" font-style="italic">d,i</tspan>
-    </text>
-    <text x="1745" y="1098" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="25" font-weight="400" text-anchor="middle">I<tspan baseline-shift="sub" font-size="16.25" font-style="normal">dc</tspan>
-    </text>
+    <text x="1482" y="317" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="14.3" font-style="normal">d,r</tspan></text>
+    <text x="1745" y="315" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="400" text-anchor="middle">R<tspan baseline-shift="sub" font-size="14.3" font-style="normal">line</tspan></text>
+    <text x="2035" y="317" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="22" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="14.3" font-style="normal">d,i</tspan></text>
+    <text x="1745" y="1098" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="25" font-weight="400" text-anchor="middle">I<tspan baseline-shift="sub" font-size="16.25" font-style="normal">dc</tspan></text>
     <text x="1750" y="441" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="17" font-weight="400" text-anchor="middle">POSITIVE DC CONDUCTOR</text>
     <line x1="1605" y1="370.0" x2="1644" y2="370.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
     <line x1="1830" y1="370.0" x2="1875" y2="370.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
@@ -69,8 +65,7 @@
       <path d="M 813.5,504.95 L 856.5,504.95" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
       <polygon points="813.50,535.05 835.00,504.95 856.50,535.05" fill="white" stroke="#21334A" stroke-width="3.6" stroke-linejoin="round" />
       <path d="M 835,504.95 L 860.8,479.15 L 878,479.15" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="875.0" y="510.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">RT1</tspan>
-      </text>
+      <text x="875.0" y="510.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="21" font-weight="600">T<tspan baseline-shift="sub" font-size="13.65" font-style="normal">1</tspan></text>
     </g>
     <g id="scr-r_t2" data-native-symbol="schemdraw.elements.SCR" data-scr="R_T2" data-active="true">
       <line x1="835.0" y1="975.0" x2="835.0" y2="994.95" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" />
@@ -78,8 +73,7 @@
       <path d="M 813.5,994.95 L 856.5,994.95" fill="none" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round" />
       <polygon points="813.50,1025.05 835.00,994.95 856.50,1025.05" fill="#FFF0F2" stroke="#D52940" stroke-width="5.0" stroke-linejoin="round" />
       <path d="M 835,994.95 L 860.8,969.15 L 878,969.15" fill="none" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="875.0" y="1000.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">RT2</tspan>
-      </text>
+      <text x="875.0" y="1000.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="21" font-weight="600">T<tspan baseline-shift="sub" font-size="13.65" font-style="normal">2</tspan></text>
     </g>
     <circle cx="835.0" cy="370.0" r="5.1" fill="#203246" />
     <circle cx="835.0" cy="1190.0" r="5.1" fill="#E12E3F" />
@@ -94,8 +88,7 @@
       <path d="M 1023.5,504.95 L 1066.5,504.95" fill="none" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round" />
       <polygon points="1023.50,535.05 1045.00,504.95 1066.50,535.05" fill="#FFF0F2" stroke="#D52940" stroke-width="5.0" stroke-linejoin="round" />
       <path d="M 1045,504.95 L 1070.8,479.15 L 1088,479.15" fill="none" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="1085.0" y="510.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">RT3</tspan>
-      </text>
+      <text x="1085.0" y="510.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="21" font-weight="600">T<tspan baseline-shift="sub" font-size="13.65" font-style="normal">3</tspan></text>
       <text x="1012.0" y="475.0" fill="#A65B18" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">OUT</text>
     </g>
     <g id="scr-r_t4" data-native-symbol="schemdraw.elements.SCR" data-scr="R_T4" data-active="false">
@@ -104,11 +97,10 @@
       <path d="M 1023.5,994.95 L 1066.5,994.95" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
       <polygon points="1023.50,1025.05 1045.00,994.95 1066.50,1025.05" fill="white" stroke="#21334A" stroke-width="3.6" stroke-linejoin="round" />
       <path d="M 1045,994.95 L 1070.8,969.15 L 1088,969.15" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="1085.0" y="1000.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">RT4</tspan>
-      </text>
+      <text x="1085.0" y="1000.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="21" font-weight="600">T<tspan baseline-shift="sub" font-size="13.65" font-style="normal">4</tspan></text>
     </g>
     <circle cx="1045.0" cy="370.0" r="5.1" fill="#E12E3F" />
-    <circle cx="1045.0" cy="1190.0" r="5.1" fill="#203246" />
+    <circle cx="1045.0" cy="1190.0" r="5.1" fill="#E12E3F" />
     <circle cx="1045.0" cy="805.0" r="6.0" fill="#E12E3F" />
     <line x1="1255.0" y1="370.0" x2="1255.0" y2="485.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
     <line x1="1255.0" y1="555.0" x2="1255.0" y2="905.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
@@ -120,8 +112,7 @@
       <path d="M 1233.5,504.95 L 1276.5,504.95" fill="none" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round" />
       <polygon points="1233.50,535.05 1255.00,504.95 1276.50,535.05" fill="#FFF0F2" stroke="#D52940" stroke-width="5.0" stroke-linejoin="round" />
       <path d="M 1255,504.95 L 1280.8,479.15 L 1298,479.15" fill="none" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="1295.0" y="510.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">RT5</tspan>
-      </text>
+      <text x="1295.0" y="510.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="21" font-weight="600">T<tspan baseline-shift="sub" font-size="13.65" font-style="normal">5</tspan></text>
       <text x="1222.0" y="475.0" fill="#18857B" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">IN</text>
     </g>
     <g id="scr-r_t6" data-native-symbol="schemdraw.elements.SCR" data-scr="R_T6" data-active="false">
@@ -130,11 +121,10 @@
       <path d="M 1233.5,994.95 L 1276.5,994.95" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
       <polygon points="1233.50,1025.05 1255.00,994.95 1276.50,1025.05" fill="white" stroke="#21334A" stroke-width="3.6" stroke-linejoin="round" />
       <path d="M 1255,994.95 L 1280.8,969.15 L 1298,969.15" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="1295.0" y="1000.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">RT6</tspan>
-      </text>
+      <text x="1295.0" y="1000.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="21" font-weight="600">T<tspan baseline-shift="sub" font-size="13.65" font-style="normal">6</tspan></text>
     </g>
     <circle cx="1255.0" cy="370.0" r="5.1" fill="#E12E3F" />
-    <circle cx="1255.0" cy="1190.0" r="5.1" fill="#203246" />
+    <circle cx="1255.0" cy="1190.0" r="5.1" fill="#E12E3F" />
     <circle cx="1255.0" cy="905.0" r="6.0" fill="#E12E3F" />
     <text x="1045.0" y="400" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="15" font-weight="400" text-anchor="middle">VALVE GROUP +</text>
     <text x="1045.0" y="1173" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="15" font-weight="400" text-anchor="middle">VALVE GROUP −</text>
@@ -167,8 +157,7 @@
       <path d="M 2246.5,535.05 L 2203.5,535.05" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
       <polygon points="2246.50,504.95 2225.00,535.05 2203.50,504.95" fill="white" stroke="#21334A" stroke-width="3.6" stroke-linejoin="round" />
       <path d="M 2225,535.05 L 2199.2,560.85 L 2182,560.85" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="2265.0" y="510.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">IT1</tspan>
-      </text>
+      <text x="2265.0" y="510.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="21" font-weight="600">T<tspan baseline-shift="sub" font-size="13.65" font-style="normal">1</tspan></text>
     </g>
     <g id="scr-i_t2" data-native-symbol="schemdraw.elements.SCR" data-scr="I_T2" data-active="true">
       <line x1="2225.0" y1="975.0" x2="2225.0" y2="994.95" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" />
@@ -176,10 +165,9 @@
       <path d="M 2246.5,1025.05 L 2203.5,1025.05" fill="none" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round" />
       <polygon points="2246.50,994.95 2225.00,1025.05 2203.50,994.95" fill="#FFF0F2" stroke="#D52940" stroke-width="5.0" stroke-linejoin="round" />
       <path d="M 2225,1025.05 L 2199.2,1050.85 L 2182,1050.85" fill="none" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="2265.0" y="1000.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">IT2</tspan>
-      </text>
+      <text x="2265.0" y="1000.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="21" font-weight="600">T<tspan baseline-shift="sub" font-size="13.65" font-style="normal">2</tspan></text>
     </g>
-    <circle cx="2225.0" cy="370.0" r="5.1" fill="#203246" />
+    <circle cx="2225.0" cy="370.0" r="5.1" fill="#E12E3F" />
     <circle cx="2225.0" cy="1190.0" r="5.1" fill="#E12E3F" />
     <circle cx="2225.0" cy="705.0" r="6.0" fill="#E12E3F" />
     <line x1="2435.0" y1="370.0" x2="2435.0" y2="485.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
@@ -192,8 +180,7 @@
       <path d="M 2456.5,535.05 L 2413.5,535.05" fill="none" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round" />
       <polygon points="2456.50,504.95 2435.00,535.05 2413.50,504.95" fill="#FFF0F2" stroke="#D52940" stroke-width="5.0" stroke-linejoin="round" />
       <path d="M 2435,535.05 L 2409.2,560.85 L 2392,560.85" fill="none" stroke="#D52940" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="2475.0" y="510.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">IT3</tspan>
-      </text>
+      <text x="2475.0" y="510.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="21" font-weight="600">T<tspan baseline-shift="sub" font-size="13.65" font-style="normal">3</tspan></text>
     </g>
     <g id="scr-i_t4" data-native-symbol="schemdraw.elements.SCR" data-scr="I_T4" data-active="false">
       <line x1="2435.0" y1="975.0" x2="2435.0" y2="994.95" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" />
@@ -201,8 +188,7 @@
       <path d="M 2456.5,1025.05 L 2413.5,1025.05" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
       <polygon points="2456.50,994.95 2435.00,1025.05 2413.50,994.95" fill="white" stroke="#21334A" stroke-width="3.6" stroke-linejoin="round" />
       <path d="M 2435,1025.05 L 2409.2,1050.85 L 2392,1050.85" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="2475.0" y="1000.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">IT4</tspan>
-      </text>
+      <text x="2475.0" y="1000.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="21" font-weight="600">T<tspan baseline-shift="sub" font-size="13.65" font-style="normal">4</tspan></text>
     </g>
     <circle cx="2435.0" cy="370.0" r="5.1" fill="#E12E3F" />
     <circle cx="2435.0" cy="1190.0" r="5.1" fill="#203246" />
@@ -217,8 +203,7 @@
       <path d="M 2666.5,535.05 L 2623.5,535.05" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
       <polygon points="2666.50,504.95 2645.00,535.05 2623.50,504.95" fill="white" stroke="#21334A" stroke-width="3.6" stroke-linejoin="round" />
       <path d="M 2645,535.05 L 2619.2,560.85 L 2602,560.85" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="2685.0" y="510.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">IT5</tspan>
-      </text>
+      <text x="2685.0" y="510.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="21" font-weight="600">T<tspan baseline-shift="sub" font-size="13.65" font-style="normal">5</tspan></text>
     </g>
     <g id="scr-i_t6" data-native-symbol="schemdraw.elements.SCR" data-scr="I_T6" data-active="false">
       <line x1="2645.0" y1="975.0" x2="2645.0" y2="994.95" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" />
@@ -226,8 +211,7 @@
       <path d="M 2666.5,1025.05 L 2623.5,1025.05" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
       <polygon points="2666.50,994.95 2645.00,1025.05 2623.50,994.95" fill="white" stroke="#21334A" stroke-width="3.6" stroke-linejoin="round" />
       <path d="M 2645,1025.05 L 2619.2,1050.85 L 2602,1050.85" fill="none" stroke="#21334A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="2685.0" y="1000.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="20" font-weight="600">T<tspan baseline-shift="sub" font-size="13" font-style="italic">IT6</tspan>
-      </text>
+      <text x="2685.0" y="1000.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="21" font-weight="600">T<tspan baseline-shift="sub" font-size="13.65" font-style="normal">6</tspan></text>
     </g>
     <circle cx="2645.0" cy="370.0" r="5.1" fill="#203246" />
     <circle cx="2645.0" cy="1190.0" r="5.1" fill="#203246" />
@@ -253,11 +237,11 @@
     <text x="125" y="629" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="14" font-weight="400">Y/Y  ·  isolated windings  ·  teaching model</text>
     <line x1="334" y1="705.0" x2="334" y2="905.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
     <line x1="405" y1="705.0" x2="405" y2="905.0" stroke="#21334A" stroke-width="3.4" stroke-linecap="round" />
-    <line x1="405" y1="705.0" x2="405" y2="905.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <line x1="405" y1="705.0" x2="905.0" y2="#D52940" stroke="5.1" stroke-width="3.5" stroke-linecap="round" />
     <circle cx="405" cy="705.0" r="4.8" fill="#E12E3F" />
     <circle cx="405" cy="805.0" r="4.8" fill="#E12E3F" />
     <circle cx="405" cy="905.0" r="4.8" fill="#E12E3F" />
-    <text x="387" y="792.0" fill="#76889C" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400">O</text>
+    <text x="387" y="792.0" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="17" font-weight="400">O</text>
     <line x1="86" y1="705.0" x2="133" y2="705.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
     <circle cx="156" cy="705.0" r="23" fill="#FFFFFF" stroke="#21334A" stroke-width="3.5" />
     <path d="M 141,705 C 144,693 151,693 156,705 C 161,717 168,717 171,705" fill="none" stroke="#21334A" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" />
@@ -276,8 +260,8 @@
     <line x1="365" y1="671.0" x2="365" y2="739.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
     <line x1="377" y1="671.0" x2="377" y2="739.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
     <text x="86" y="677.0" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="700">A</text>
-    <text x="627" y="676.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.05" font-style="italic">c,ar</tspan>
-    </text>
+    <text x="210" y="677.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400" text-anchor="middle">v<tspan baseline-shift="sub" font-size="11.05" font-style="italic">a</tspan></text>
+    <text x="601.0" y="666.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="normal" font-size="18" text-anchor="middle" data-math-notation="mixed"><tspan font-style="italic" font-weight="400" font-size="18" data-math-role="variable">L</tspan><tspan font-style="normal" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-roman">c,</tspan><tspan font-style="italic" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-variable">a</tspan><tspan font-style="normal" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-roman">r</tspan></text>
     <line x1="662" y1="705.0" x2="644" y2="705.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
     <line x1="86" y1="805.0" x2="133" y2="805.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
     <circle cx="156" cy="805.0" r="23" fill="#FFFFFF" stroke="#21334A" stroke-width="3.5" />
@@ -297,8 +281,8 @@
     <line x1="365" y1="771.0" x2="365" y2="839.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
     <line x1="377" y1="771.0" x2="377" y2="839.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
     <text x="86" y="777.0" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="700">B</text>
-    <text x="627" y="776.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.05" font-style="italic">c,br</tspan>
-    </text>
+    <text x="210" y="777.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400" text-anchor="middle">v<tspan baseline-shift="sub" font-size="11.05" font-style="italic">b</tspan></text>
+    <text x="601.0" y="766.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="normal" font-size="18" text-anchor="middle" data-math-notation="mixed"><tspan font-style="italic" font-weight="400" font-size="18" data-math-role="variable">L</tspan><tspan font-style="normal" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-roman">c,</tspan><tspan font-style="italic" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-variable">b</tspan><tspan font-style="normal" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-roman">r</tspan></text>
     <line x1="644" y1="805.0" x2="662" y2="805.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
     <line x1="86" y1="905.0" x2="133" y2="905.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
     <circle cx="156" cy="905.0" r="23" fill="#FFFFFF" stroke="#21334A" stroke-width="3.5" />
@@ -318,8 +302,8 @@
     <line x1="365" y1="871.0" x2="365" y2="939.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
     <line x1="377" y1="871.0" x2="377" y2="939.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
     <text x="86" y="877.0" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="700">C</text>
-    <text x="627" y="876.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.05" font-style="italic">c,cr</tspan>
-    </text>
+    <text x="210" y="877.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400" text-anchor="middle">v<tspan baseline-shift="sub" font-size="11.05" font-style="italic">c</tspan></text>
+    <text x="601.0" y="866.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="normal" font-size="18" text-anchor="middle" data-math-notation="mixed"><tspan font-style="italic" font-weight="400" font-size="18" data-math-role="variable">L</tspan><tspan font-style="normal" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-roman">c,</tspan><tspan font-style="italic" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-variable">c</tspan><tspan font-style="normal" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-roman">r</tspan></text>
     <line x1="644" y1="905.0" x2="662" y2="905.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
     <text x="60" y="960" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="700">AC GRID</text>
   </g>
@@ -328,11 +312,11 @@
     <text x="2962" y="629" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="14" font-weight="400">Y/Y  ·  isolated windings  ·  teaching model</text>
     <line x1="3192" y1="705.0" x2="3192" y2="905.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
     <line x1="3125" y1="705.0" x2="3125" y2="905.0" stroke="#21334A" stroke-width="3.4" stroke-linecap="round" />
-    <line x1="3125" y1="705.0" x2="3125" y2="805.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
+    <line x1="3125" y1="705.0" x2="805.0" y2="#D52940" stroke="5.1" stroke-width="3.5" stroke-linecap="round" />
     <circle cx="3125" cy="705.0" r="4.8" fill="#E12E3F" />
     <circle cx="3125" cy="805.0" r="4.8" fill="#E12E3F" />
     <circle cx="3125" cy="905.0" r="4.8" fill="#203246" />
-    <text x="3107" y="792.0" fill="#76889C" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400">O</text>
+    <text x="3107" y="792.0" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="17" font-weight="400">O</text>
     <g id="edge-i_tr_a" data-edge-id="I_TR_A" data-active="true">
       <line x1="3107" y1="705.0" x2="3125" y2="705.0" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" />
       <path d="M 3049,705 C 3051.9,677 3060.6,677 3063.5,705 C 3066.4,677 3075.1,677 3078,705 C 3080.9,677 3089.6,677 3092.5,705 C 3095.4,677 3104.1,677 3107,705" fill="none" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" stroke-linejoin="round" />
@@ -351,8 +335,8 @@
     <line x1="3150" y1="671.0" x2="3150" y2="739.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
     <line x1="3162" y1="671.0" x2="3162" y2="739.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
     <text x="3411" y="677.0" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="700">A</text>
-    <text x="2787" y="676.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.05" font-style="italic">c,ai</tspan>
-    </text>
+    <text x="3303" y="677.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400" text-anchor="middle">v<tspan baseline-shift="sub" font-size="11.05" font-style="italic">a</tspan></text>
+    <text x="2820.0" y="666.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="normal" font-size="18" text-anchor="middle" data-math-notation="mixed"><tspan font-style="italic" font-weight="400" font-size="18" data-math-role="variable">L</tspan><tspan font-style="normal" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-roman">c,</tspan><tspan font-style="italic" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-variable">a</tspan><tspan font-style="normal" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-roman">i</tspan></text>
     <line x1="2752" y1="705.0" x2="2734" y2="705.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
     <g id="edge-i_tr_b" data-edge-id="I_TR_B" data-active="true">
       <line x1="3107" y1="805.0" x2="3125" y2="805.0" stroke="#D52940" stroke-width="4.9" stroke-linecap="round" />
@@ -372,8 +356,8 @@
     <line x1="3150" y1="771.0" x2="3150" y2="839.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
     <line x1="3162" y1="771.0" x2="3162" y2="839.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
     <text x="3411" y="777.0" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="700">B</text>
-    <text x="2787" y="776.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.05" font-style="italic">c,bi</tspan>
-    </text>
+    <text x="3303" y="777.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400" text-anchor="middle">v<tspan baseline-shift="sub" font-size="11.05" font-style="italic">b</tspan></text>
+    <text x="2820.0" y="766.0" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="normal" font-size="18" text-anchor="middle" data-math-notation="mixed"><tspan font-style="italic" font-weight="400" font-size="18" data-math-role="variable">L</tspan><tspan font-style="normal" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-roman">c,</tspan><tspan font-style="italic" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-variable">b</tspan><tspan font-style="normal" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-roman">i</tspan></text>
     <line x1="2734" y1="805.0" x2="2752" y2="805.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
     <g id="edge-i_tr_c" data-edge-id="I_TR_C" data-active="false">
       <line x1="3107" y1="905.0" x2="3125" y2="905.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
@@ -393,8 +377,8 @@
     <line x1="3150" y1="871.0" x2="3150" y2="939.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
     <line x1="3162" y1="871.0" x2="3162" y2="939.0" stroke="#76889C" stroke-width="2.2" stroke-linecap="round" />
     <text x="3411" y="877.0" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="700">C</text>
-    <text x="2787" y="876.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400" text-anchor="middle">L<tspan baseline-shift="sub" font-size="11.05" font-style="italic">c,ci</tspan>
-    </text>
+    <text x="3303" y="877.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="17" font-weight="400" text-anchor="middle">v<tspan baseline-shift="sub" font-size="11.05" font-style="italic">c</tspan></text>
+    <text x="2820.0" y="866.0" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="normal" font-size="18" text-anchor="middle" data-math-notation="mixed"><tspan font-style="italic" font-weight="400" font-size="18" data-math-role="variable">L</tspan><tspan font-style="normal" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-roman">c,</tspan><tspan font-style="italic" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-variable">c</tspan><tspan font-style="normal" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-roman">i</tspan></text>
     <text x="3275" y="960" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="700">AC GRID</text>
   </g>
   <g id="on-wire-arrows" inkscape:groupmode="layer" inkscape:label="On-wire current direction">
@@ -403,8 +387,7 @@
     <line x1="1255.0" y1="640.0" x2="1255.0" y2="592.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
     <line x1="2225.0" y1="1054.0" x2="2225.0" y2="1100.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
     <line x1="2435.0" y1="594.0" x2="2435.0" y2="642.0" stroke="#D52940" stroke-width="3.6" stroke-linecap="round" marker-end="url(#current-arrow)" />
-    <text x="1750" y="524" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="25" font-weight="400" text-anchor="middle">I<tspan baseline-shift="sub" font-size="16.25" font-style="normal">dc</tspan>
-    </text>
+    <text x="1750" y="524" fill="#D52940" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="italic" font-size="25" font-weight="400" text-anchor="middle">I<tspan baseline-shift="sub" font-size="16.25" font-style="normal">dc</tspan></text>
     <text x="1750" y="550" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="17" font-weight="400" text-anchor="middle">Conventional current: rectifier → inverter</text>
     <text x="1750" y="578" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="15" font-weight="400" text-anchor="middle">The same current returns through the lower conductor.</text>
   </g>
@@ -412,10 +395,10 @@
   <text x="94" y="1363" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="19" font-weight="700">TEACHING MODE  ·  SIX-PULSE PER STATION</text>
   <text x="94" y="1402" fill="#D52940" font-family="DejaVu Sans, Arial, sans-serif" font-size="19" font-weight="400">Rectifier commutation overlap</text>
   <text x="94" y="1441" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400">5 conducting SCRs · 2 graph-validated conducting path(s)</text>
-  <text x="1350" y="1364" fill="#21334A" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="400">αr = 15°   ·  αi = 145°   ·  γi ≈ 20°</text>
-  <text x="1350" y="1405" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="17" font-weight="400">μr = 12°   ·  μi = 15°   ·  AC phase offset = 30°</text>
+  <text x="1350" y="1364" fill="#21334A" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="normal" font-size="18" data-math-notation="mixed"><tspan font-style="italic" font-weight="400" font-size="18" data-math-role="variable">α</tspan><tspan font-style="normal" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-roman">r</tspan><tspan font-style="normal" font-weight="400" font-size="18" data-math-role="roman"> = 15</tspan><tspan font-style="normal" font-weight="400" font-size="18" data-math-role="unit">°</tspan><tspan font-style="normal" font-weight="400" font-size="18" data-math-role="roman">  ·  </tspan><tspan font-style="italic" font-weight="400" font-size="18" data-math-role="variable">α</tspan><tspan font-style="normal" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-roman">i</tspan><tspan font-style="normal" font-weight="400" font-size="18" data-math-role="roman"> = 145</tspan><tspan font-style="normal" font-weight="400" font-size="18" data-math-role="unit">°</tspan><tspan font-style="normal" font-weight="400" font-size="18" data-math-role="roman">  ·  </tspan><tspan font-style="italic" font-weight="400" font-size="18" data-math-role="variable">γ</tspan><tspan font-style="normal" font-weight="400" font-size="11.88" baseline-shift="sub" data-math-role="subscript-roman">i</tspan><tspan font-style="normal" font-weight="400" font-size="18" data-math-role="roman"> = 20</tspan><tspan font-style="normal" font-weight="400" font-size="18" data-math-role="unit">°</tspan></text>
+  <text x="1350" y="1405" fill="#76889C" font-family="STIX Math, STIX, Cambria Math, DejaVu Serif, serif" font-style="normal" font-size="17" data-math-notation="mixed"><tspan font-style="italic" font-weight="400" font-size="17" data-math-role="variable">μ</tspan><tspan font-style="normal" font-weight="400" font-size="11.22" baseline-shift="sub" data-math-role="subscript-roman">r</tspan><tspan font-style="normal" font-weight="400" font-size="17" data-math-role="roman"> = 12</tspan><tspan font-style="normal" font-weight="400" font-size="17" data-math-role="unit">°</tspan><tspan font-style="normal" font-weight="400" font-size="17" data-math-role="roman">  ·  </tspan><tspan font-style="italic" font-weight="400" font-size="17" data-math-role="variable">μ</tspan><tspan font-style="normal" font-weight="400" font-size="11.22" baseline-shift="sub" data-math-role="subscript-roman">i</tspan><tspan font-style="normal" font-weight="400" font-size="17" data-math-role="roman"> = 15</tspan><tspan font-style="normal" font-weight="400" font-size="17" data-math-role="unit">°</tspan><tspan font-style="normal" font-weight="400" font-size="17" data-math-role="roman">  ·  Relative commutation offset = 30°</tspan></text>
   <text x="1350" y="1443" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400">Transformer primaries are galvanically isolated from the conducting valve-side loops.</text>
-  <text x="3407" y="1372" fill="#A65B18" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="end">NO CURRENT SHARING SOLVED</text>
+  <text x="3407" y="1372" fill="#A65B18" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="end">CURRENT SHARING NOT SOLVED</text>
   <text x="3407" y="1410" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400" text-anchor="end">Red = potentially conducting branches</text>
   <text x="3407" y="1443" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="400" text-anchor="end">NOT a 12-pulse or EMT model</text>
 </svg>

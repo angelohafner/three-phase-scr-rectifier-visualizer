@@ -39,7 +39,7 @@ def write_timeline(schedule: CombinedSchedule, path: Path) -> None:
     art.txt(root,85,82,'GLOBAL 360° CONDUCTION TIMELINE',size=38,bold=True,
             color=PALETTE['ink'])
     art.txt(root,87,128,
-            'Valve commutation at each station, phase-offset by an independently selected AC reference',
+            'Commutation windows referenced to the rectifier event; station offset is illustrative',
             size=19,color=PALETTE['quiet'])
     left,right=350,3040
     scale=(right-left)/360
@@ -70,20 +70,20 @@ def write_timeline(schedule: CombinedSchedule, path: Path) -> None:
                     color='white',anchor='middle',bold=True)
             art.txt(root,x0+dx/2,580,f'{state.number:02d}',size=16,
                     color=PALETTE['ink'],anchor='middle',bold=True)
-    art.txt(root,92,712,
-            f'μr = {schedule.settings.mu_rectifier:g}°   |   '
-            f'μi = {schedule.settings.mu_inverter:g}°   |   '
-            f'AC phase offset = {schedule.settings.ac_phase_offset:g}°',
-            size=20,color=PALETTE['ink'])
+    art.angle_notation(root,92,712,
+                       [('μ','r',schedule.settings.mu_rectifier),
+                        ('μ','i',schedule.settings.mu_inverter)],
+                       size=20,color=PALETTE['ink'],separator='   |   ',
+                       trailer=f'   |   Relative commutation offset = {schedule.settings.ac_phase_offset:g}°')
     art.txt(root,92,757,f'{len(schedule.intervals)} distinct joint conduction intervals',
             size=20,color=PALETTE['active'],bold=True)
     art.txt(root,92,799,
             'Overlap intervals show which devices conduct; red does not quantify current sharing.',
             size=18,color=PALETTE['quiet'])
     art.txt(root,92,835,
-            'A 30° offset here is pedagogical; it is not an assumed grid phase lock or a 12-pulse transformer phase shift.',
+            'The station offset is illustrative, not a power-system phase lock or transformer phase shift.',
             size=17,color=PALETTE['quiet'])
-    ET.indent(root,space='  ')
+    art.indent_svg(root,space='  ')
     path.parent.mkdir(parents=True,exist_ok=True)
     ET.ElementTree(root).write(path,encoding='utf-8',xml_declaration=True)
 
@@ -106,7 +106,7 @@ def write_manifest(schedule: CombinedSchedule, topology: HVDCLinkTopology, folde
         'angles_deg':asdict(schedule.settings),
         'gamma_inverter_deg':schedule.settings.gamma,
         'timeline_reference':'rectifier local overlap start=0; inverter local=global-phase_offset',
-        'phase_offset_note':'Independent illustrative grid phase reference; not a transformer shift',
+        'phase_offset_note':'Illustrative station commutation offset; not a modeled AC voltage phase shift or transformer shift',
         'line_model':'L_DR + R_LINE + L_DI in positive pole; explicit metallic return',
         'transformer_note':'Idealized isolated Y/Y three-phase transformer at each station',
         'physical_limitations':(
