@@ -88,3 +88,16 @@ The HTML build emits a matching `lcc_hvdc_interactive.build.json` containing
 the source Git blob fingerprints, source commit when available and HTML SHA-256.
 The GitHub Actions downloadable artifact includes both HTML and the manifest.
 See `docs/SECOND_AUDIT_CORRECTIONS.md` for the verification record.
+
+## Fixed scales for interactive waveform comparisons
+
+Every interactive graph now uses a fixed angular or time-domain x-axis and
+vertical domains computed from the **permitted global parameter ranges**,
+not from the current waveform amplitude. R, RL and RLE currents share one
+range; the unbounded-over-cycles ideal LE initial-value model receives its
+own conservative one-cycle current range. Combined load-voltage/current
+plots have independent voltage (left) and current (right) scales.
+
+The central axis specification is in `src/fixed_axes.js`. Browser and
+numerical endpoint regressions run in CI. See
+[`docs/FIXED_AXES.md`](../docs/FIXED_AXES.md) for detailed assumptions.
