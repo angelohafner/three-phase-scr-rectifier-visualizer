@@ -8,6 +8,7 @@ on:
       - 'hvdc_link*.py'
       - 'output_lcc/**'
       - 'output_hvdc/**'
+      - 'docs/RECTIFIER_R_RL_TEACHING.md'
       - '.github/workflows/build-lcc-presentation.yml'
 permissions:
   contents: read
@@ -19,15 +20,30 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - name: Create offline HTML
-        run: python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html
-      - name: Run presentation checks
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Python dependencies
         run: |
-          python -m pip install pytest
-          python -m pytest -q presentation/tests
-      - name: Attach downloadable presentation
+          python -m pip install -r requirements-waveforms.txt pytest playwright pillow
+          python -m playwright install --with-deps chromium
+      - name: Generate R and RL diagrams and waveforms
+        run: python rectifier_loads.py
+      - name: Build the self-contained HTML
+        run: python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html
+      - name: Run model and HTML source tests
+        run: python -m pytest -q tests presentation/tests
+      - name: Capture PowerPoint slide visuals
+        run: python presentation/pptx/capture_html.py
+      - name: Install PowerPoint generator
+        run: npm install --no-save --prefix presentation/pptx pptxgenjs
+      - name: Build interactive-navigation PowerPoint
+        run: node presentation/pptx/make_presentation.js
+      - name: Upload standalone HTML and PPTX
         uses: actions/upload-artifact@v4
         with:
-          name: lcc-hvdc-interactive-offline
-          path: dist/lcc_hvdc_interactive.html
-          retention-days: 30
+          name: lcc-hvdc-interactive-R-RL
+          path: |
+            dist/lcc_hvdc_interactive.html
+            dist/LCC_HVDC_R_RL_Presentation.pptx
+          retention-days: 90

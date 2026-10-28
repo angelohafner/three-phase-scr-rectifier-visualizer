@@ -251,3 +251,15 @@ python -m pytest -q tests
 The current transfer is an illustrative linear interpolation during overlap and the DC voltage is a simplified equal-reactance arithmetic average, **not an EMT solution**. The inverter voltage chart uses a positive pole-to-return convention; the negative signed converter voltage is the opposite quantity. The full-link phase offset remains illustrative, not physically solved.
 
 [Detailed model, limitations and notation](docs/LCC_DIDACTIC_WAVEFORMS.md)
+
+---
+
+## Stage 0 — Pure R load followed by RL
+
+The teaching sequence now starts with a purely resistive load (ideal AC sources and μ = 0°), moves through α = 0°, 30°, 75° and 90° with explicit zero-current intervals, and compares those states against the dynamic RL load before the original LCC commutation sequence.
+
+- [R/RL editable diagrams and waveforms](output_lcc/rectifier/resistive_load/)
+- [Electrical assumptions and the six-pulse gating sequence](docs/RECTIFIER_R_RL_TEACHING.md)
+- [Interactive HTML and clickable PowerPoint build](presentation/README.md)
+
+Run `python rectifier_loads.py` to regenerate the vector figures; run `python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html` to produce the offline lecture. The GitHub Actions workflow publishes the HTML and PPTX as downloadable artifacts.

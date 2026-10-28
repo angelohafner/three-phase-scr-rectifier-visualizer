@@ -1,48 +1,37 @@
-# HVDC LCC — Interactive Lecture
+# HVDC LCC interactive lecture — R, RL, commutation, and complete link
 
-This project includes an offline, self-contained HTML presentation for the three instructional stages of an LCC link: rectifier (12 reference states), inverter (12), and the complete HVDC circuit (24).
+The offline, standalone HTML contains **61 slides**: seven introductory R/RL slides followed by the original 48 LCC conduction/commutation states and chapter slides. It retains all original rectifier, inverter and HVDC features.
 
-## Build
+## New instructional progression
 
-Run the generator from the repository root:
+1. RECTIFIER — Normal conduction with R load.
+2. Ideal firing delay α = 0°, 30°, 75°, 90°.
+3. Discontinuous R-load current and all-SCRs-OFF intervals.
+4. Comparison of R and RL under the same AC source and firing delay.
+5. RECTIFIER — Normal conduction with RL load.
+6. Existing twelve rectifier states, inverter states and complete HVDC link.
+
+The introductory R and RL models use zero AC commutation inductance (μ = 0°). Load mode can be switched live; firing angle, resistance and DC inductance update the associated analytical waveforms, active SCR pair and circuit SVG. DC inductor and AC-side commutation inductance are treated separately.
+
+## Build and test
+
+From the repository root:
 
 ```bash
+python -m pip install -r requirements-waveforms.txt
+python rectifier_loads.py
 python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html
+python -m pytest -q tests presentation/tests
 ```
 
-Open `dist/lcc_hvdc_interactive.html` directly in a browser. It embeds the vector circuits, source waveforms, styles and JavaScript. No HTTP server or network is required.
+Open `dist/lcc_hvdc_interactive.html` in Chrome, Edge or Firefox. No network or server is required. Keyboard arrows navigate slides; use O for the state overview and P for animation.
 
-**Outputs:** 54 slides, 48 waveform-reference states, 144 computed rectifier/inverter SCR-state combinations for the dynamically selected full-link circuit.
+## PowerPoint
 
-## Controls
+The PowerPoint is a **63-slide, clickable snapshot edition** (61 HTML slides + state overview + help). It preserves the circuit and waveform appearance and offers clickable navigation; live analytical sliders, actual parameter recomputation and continuous animation are available in the companion HTML only.
 
-Use Left/Right or Space to change slides; O for the 48-state overview; F for fullscreen; P to play/pause the angle sweep. The 0–360° slider selects the active state. Settings modify firing angles, overlap, voltage amplitude, DC current and animation speed. Switch between live plots and original reference SVGs; reference SVGs do not respond to updated settings.
+Build it using `presentation/pptx/capture_html.py` and `presentation/pptx/make_presentation.js`, or download the HTML/PPTX together from the GitHub Actions build artifact. The slides are presented as high-quality screenshots with native PowerPoint hyperlink hotspots and notes; they are not fully editable vector shapes.
 
-The inverter extinction angle uses `gamma = 180 - alpha_i - mu_i` under the simplified angle convention, with `gamma >= 10` enforced.
+## Further information
 
-## Models
-
-The JavaScript source mirrors `lcc_waveform_model.py`: ideal SCRs, constant DC current, balanced sinusoidal sources, linear current transfer during commutation overlap, and an illustrative equal-reactance midpoint for overlap DC voltage.
-
-**This is conceptual teaching software, not an EMT simulation.** No real commutation-failure prediction, DC load flow, transformer saturation, surge transient, or distributed DC-line physics is modeled. The relative 30-degree inter-station timing offset is illustrative and is not a calculated AC system phase shift.
-
-## Source
-
-- `src/waveforms.js`: 360° state schedules, SCR and voltage/current calculations.
-- `src/charts.js`: interactive waveform plots.
-- `src/presentation.js`: slide navigation, parameter controls, autoplay and responsive UI.
-- `src/styles.css`: 16:9 visual design and responsive layouts.
-- `src/template.html`: completely local HTML skeleton.
-- `build_presentation.py`: source-SVG embedding and HTML build.
-
-The standalone HTML is 17 MB because it contains all schematic and waveform vectors. A build artifact can be produced through GitHub Actions when the workflow is enabled.
-
-## Validate
-
-```bash
-python -m pip install pytest
-python -m pytest -q tests
-python -m pytest -q presentation/tests
-```
-
-The conceptual browser waveforms have been compared numerically against the Python source at multiple electrical angles. The deck was exercised in Chromium with external HTTP(S) requests blocked. Browser automation in the authoring environment did not permit navigating to `file://` directly, but the final file contains no external fetches, scripts, fonts or image requests.
+See [the R versus RL teaching guide](../docs/RECTIFIER_R_RL_TEACHING.md) and the existing LCC guides. No electromagnetic transient simulation is performed.

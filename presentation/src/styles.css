@@ -20,3 +20,12 @@
 
 [hidden]{display:none!important}
 @media(max-width:620px){.topactions{gap:4px}.icon-btn{min-width:32px;width:32px;height:32px}.topactions #help-open,.topactions #fullscreen-btn{display:none}}
+/* R and RL introductory slides retain the established presentation grid. */
+.load-workspace .panel{min-height:0}
+.load-diagram svg{max-width:100%;max-height:100%;object-fit:contain}
+.load-workspace .dual-circuit{display:grid;grid-template-columns:1fr 1fr;align-items:center;width:100%;height:100%;gap:7px}
+.dual-circuit>div{height:100%;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.dual-circuit svg{max-width:100%;width:100%;height:89%;display:block}
+.circuit-tag{font-size:10px;font-weight:800;letter-spacing:.12em;color:#47768a;background:#eaf4f8;padding:5px 9px;border-radius:7px}
+.mini-select{font-size:10px;font-weight:750;color:#5d7b8f;display:flex;align-items:center;gap:7px}
+@media(max-width:990px){.dual-circuit .circuit-tag{font-size:8px}.load-diagram{padding:3px}}

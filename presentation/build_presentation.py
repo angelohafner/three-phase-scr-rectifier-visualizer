@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Build a one-file offline LCC HVDC slide deck from existing project SVGs."""
+"""Build a self-contained, offline 16:9 LCC HTML slide deck.
+
+Uses the existing SCR and HVDC topology models rather than inventing wire paths.
+All external assets are inlined; the final HTML works over file://.
+"""
 from __future__ import annotations
 import argparse
 import json
@@ -12,16 +16,18 @@ SVG_NS = 'http://www.w3.org/2000/svg'
 ET.register_namespace('', SVG_NS)
 ET.register_namespace('xlink', 'http://www.w3.org/1999/xlink')
 
+
 def svg_xml(source: str, *, hvdc: bool = False) -> str:
-    """Normalize a trusted SVG and remove nominal-time text annotations."""
+    """Normalize a trusted repository SVG and omit stale static annotations."""
     raw = re.sub(r'<\?xml[^>]*\?>', '', source, count=1).lstrip()
     raw = re.sub(r'<!DOCTYPE\s+svg\s+PUBLIC\s+"[^"]+"\s+"[^"]+"\s*>', '', raw, count=1).lstrip()
     root = ET.fromstring(raw)
     if root.tag != '{%s}svg' % SVG_NS:
-        raise ValueError('Expected SVG circuit data')
+        raise ValueError('Asset must be SVG')
     for parent in list(root.iter()):
         for child in list(parent):
             local = child.tag.rpartition('}')[2]
+            # Strip metadata, active scripts and linked external content.
             if local in ('metadata', 'script', 'foreignObject'):
                 parent.remove(child)
                 continue
@@ -31,7 +37,7 @@ def svg_xml(source: str, *, hvdc: bool = False) -> str:
             if hvdc and local == 'rect' and child.get('y') in ('0', '1323') and child.get('fill') in ('#21334A', '#FFFFFF'):
                 parent.remove(child)
                 continue
-            if local == 'text':
+            if hvdc and local == 'text':
                 try:
                     y = float(child.get('y', '-1'))
                 except ValueError:
@@ -43,79 +49,118 @@ def svg_xml(source: str, *, hvdc: bool = False) -> str:
                 if attr.lower().startswith('on'):
                     del child.attrib[attr]
     if hvdc:
+        # Crop nominal annotation banners and leave the electrical circuit.
         root.set('viewBox', '40 158 3420 1160')
     for el in root.iter():
-        if el.tail is not None and not el.tail.strip():
-            el.tail = None
+        el.tail = None if el.tail is not None and not el.tail.strip() else el.tail
     root.set('preserveAspectRatio', 'xMidYMid meet')
     root.attrib.pop('width', None)
     root.attrib.pop('height', None)
     return ET.tostring(root, encoding='unicode', short_empty_elements=True)
 
+
 def build(source: Path, out: Path, src: Path) -> dict:
-    """Embed all diagrams and source figures without runtime HTTP requests."""
+    """Inline 48 reference waveforms and 168 topology-valid circuit figures."""
     source = source.resolve()
     out.parent.mkdir(parents=True, exist_ok=True)
     sys.path.insert(0, str(source))
-    from rectifier_model import CommutationSequence
-    from hvdc_link_model import LinkSettings, CombinedState
-    from hvdc_link_renderer import HVDCLinkRenderer
-
-    settings = LinkSettings(**json.loads((source / 'config_hvdc.json').read_text(encoding='utf-8')))
+    try:
+        from rectifier_model import CommutationSequence
+        from hvdc_link_model import LinkSettings, CombinedState
+        from hvdc_link_renderer import HVDCLinkRenderer
+    except ImportError as exc:
+        raise RuntimeError('Run the builder against the full LCC repository') from exc
+    settings_file = source / 'config_hvdc.json'
+    settings = LinkSettings(**json.loads(settings_file.read_text(encoding='utf-8')))
     renderer = HVDCLinkRenderer(settings)
     rect = CommutationSequence(settings.mu_rectifier)
     inv = CommutationSequence(settings.mu_inverter)
-    figures = {'rectifier': {}, 'inverter': {}, 'hvdc': {}}
-    refs = {'rectifier': {}, 'inverter': {}, 'hvdc': {}}
+    figures: dict = {'rectifier': {}, 'inverter': {}, 'hvdc': {}}
+    refs: dict = {'rectifier': {}, 'inverter': {}, 'hvdc': {}}
 
     for side, count in [('rectifier', 12), ('inverter', 12), ('hvdc', 24)]:
-        base = source / ('output_hvdc' if side == 'hvdc' else 'output_lcc/' + side)
+        root = source / ('output_hvdc' if side == 'hvdc' else 'output_lcc/' + side)
         for i in range(1, count + 1):
             filename = f'hvdc_joint_state_{i:02d}.svg' if side == 'hvdc' else f'estado_{i:02d}.svg'
-            circuit = base / filename
-            waveform = base / 'waveforms' / filename
-            if not circuit.exists() or not waveform.exists():
-                raise FileNotFoundError(f'Missing circuit/waveform: {circuit} or {waveform}')
-            refs[side][str(i)] = svg_xml(waveform.read_text(encoding='utf-8'))
+            filename_path = root / filename
+            reference_path = root / 'waveforms' / filename
+            if not filename_path.exists():
+                raise FileNotFoundError(filename_path)
+            if not reference_path.exists():
+                raise FileNotFoundError(reference_path)
+            refs[side][str(i)] = svg_xml(reference_path.read_text(encoding='utf-8'))
             if side != 'hvdc':
-                figures[side][str(i)] = svg_xml(circuit.read_text(encoding='utf-8'))
+                figures[side][str(i)] = svg_xml(filename_path.read_text(encoding='utf-8'))
 
+    # Every possible pair of 12 per-station states is precomputed from the
+    # graph-validated topology. This avoids stale pre-rendered joint highlights
+    # when a user changes overlap and a previously absent pair becomes active.
     for r in rect.states:
         for i in inv.states:
             state = CombinedState(1, 0, 1, r, i)
             svg = ET.tostring(renderer.render(state).getroot(), encoding='unicode')
             figures['hvdc'][f'{r.number}:{i.number}'] = svg_xml(svg, hvdc=True)
 
+    from rectifier_loads import LoadParameters, ResistiveCircuitRenderer
+    load_renderer = ResistiveCircuitRenderer()
+    load_figures = {}
+    for mode in ('R','RL'):
+        for idx in range(-1,6):
+            tree = load_renderer.render(LoadParameters(), 105.0, idx if idx>=0 else None, mode)
+            for parent in tree.getroot().iter():
+                for child in list(parent):
+                    if child.get('id') == 'legend':
+                        parent.remove(child)
+            clean = svg_xml(ET.tostring(tree.getroot(), encoding='unicode'))
+            image = ET.fromstring(clean)
+            image.set('viewBox', '55 174 1420 550')
+            load_figures[f'{mode}:{idx}'] = ET.tostring(image, encoding='unicode')
     data = {
+        'load_figures': load_figures,
         'format': 'LCC interactive deck v1',
         'source': 'angelohafner/three-phase-scr-rectifier-visualizer',
-        'angle_reference': 'relative commutation; illustrative 30-degree station offset',
-        'limitations': 'Linear current transfer and approximate overlap voltage, not EMT',
-        'diagrams': figures, 'references': refs,
+        'angle_reference': 'relative commutation angle; station offset=30 degrees, illustrative',
+        'limitations': 'Conceptual linear current transfer; equal-reactance overlap midpoint voltage; not EMT',
+        'diagrams': figures,
+        'references': refs,
     }
     template = (src / 'template.html').read_text(encoding='utf-8')
-    bindings = {
+    assets = {
         '<!--INLINE_CSS-->': (src / 'styles.css').read_text(encoding='utf-8'),
         '<!--INLINE_WAVEFORMS-->': (src / 'waveforms.js').read_text(encoding='utf-8'),
         '<!--INLINE_CHARTS-->': (src / 'charts.js').read_text(encoding='utf-8'),
+        '<!--INLINE_LOAD_MODELS-->': (src / 'load_models.js').read_text(encoding='utf-8'),
+        '<!--INLINE_LOAD_CHARTS-->': (src / 'load_charts.js').read_text(encoding='utf-8'),
         '<!--INLINE_PRESENTATION-->': (src / 'presentation.js').read_text(encoding='utf-8'),
         '<!--INLINE_DATA-->': json.dumps(data, ensure_ascii=False, separators=(',', ':'))
-            .replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026')
+            .replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026'),
     }
-    for key, value in bindings.items():
-        if template.count(key) != 1:
-            raise ValueError('Expected one template token: ' + key)
-        template = template.replace(key, value)
+    for tag, content in assets.items():
+        if template.count(tag) != 1:
+            raise ValueError(f'Missing or duplicate template token: {tag}')
+        template = template.replace(tag, content)
+    if re.search(r'<(?:script|link)[^>]+(?:src|href)\s*=\s*["\']https?://', template):
+        raise ValueError('Found external dependency')
     out.write_text(template, encoding='utf-8')
-    return {'html': str(out), 'bytes': out.stat().st_size,
-            'waveform_sets': 48, 'joint_topology_combinations': 144, 'slides': 54}
+    return {
+        'html': str(out),
+        'bytes': out.stat().st_size,
+        'individual_circuits': len(figures['rectifier']) + len(figures['inverter']),
+        'hvdc_topology_pairs': len(figures['hvdc']),
+        'reference_waveforms': sum(map(len, refs.values())),
+        'slides': 61,
+        'offline': True,
+    }
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--project', type=Path, default=Path(__file__).resolve().parent.parent)
     parser.add_argument('--output', type=Path, default=Path(__file__).resolve().parent.parent / 'dist' / 'lcc_hvdc_interactive.html')
     args = parser.parse_args()
-    print(json.dumps(build(args.project, args.output, Path(__file__).resolve().parent / 'src'), indent=2))
+    info = build(args.project, args.output, Path(__file__).resolve().parent/'src')
+    print(json.dumps(info, indent=2))
+
 
 if __name__ == '__main__':
     main()
