@@ -15,7 +15,7 @@
  <header class="topbar" role="banner">
   <div class="brand"><div class="brand-mark" aria-hidden="true">HVDC</div><div class="brand-text"><strong>POWER SYSTEM STUDIES</strong><span>Engineering training · independent educational edition</span></div></div>
   <nav class="topnav" aria-label="Chapters"><button class="tab" id="nav-fund">00 FUNDAMENTALS</button><button class="tab" id="nav-rect">01 RECTIFIER</button><button class="tab" id="nav-inv">02 INVERTER</button><button class="tab" id="nav-hvdc">03 HVDC LINK</button></nav>
-  <div class="topactions"><button id="overview-open" class="icon-btn" aria-label="Open slide overview" title="Slide overview (O)">▦</button><button id="settings-open" class="icon-btn" aria-label="Adjust electrical parameters" title="Parameters">⚙</button><button id="help-open" class="icon-btn" aria-label="Keyboard help" title="Keyboard help">?</button><button id="fullscreen-btn" class="icon-btn" aria-label="Toggle fullscreen" title="Full screen (F)">⛶</button></div>
+  <div class="topactions"><button type="button" id="axis-scale-btn" aria-label="Toggle fixed chart scale between teaching focus and full parameter range" aria-pressed="false">SCALE: FOCUS</button><button id="overview-open" class="icon-btn" aria-label="Open slide overview" title="Slide overview (O)">▦</button><button id="settings-open" class="icon-btn" aria-label="Adjust electrical parameters" title="Parameters">⚙</button><button id="help-open" class="icon-btn" aria-label="Keyboard help" title="Keyboard help">?</button><button id="fullscreen-btn" class="icon-btn" aria-label="Toggle fullscreen" title="Full screen (F)">⛶</button></div>
  </header>
  <main id="deck" class="deck"><article id="slide" class="slide" aria-live="polite"></article></main>
  <footer class="footer">
@@ -25,7 +25,7 @@
 </div>
 <div id="settings-overlay" class="settings-overlay" role="dialog" aria-modal="true" aria-label="Electrical parameters" aria-hidden="true">
  <div class="settings-card"><div class="settings-head"><h2>Live parameters</h2><button class="close" id="settings-close">CLOSE ✕</button></div><p class="settings-sub">These controls recalculate the current waveforms, voltage curves, SCR conduction states, and angular intervals in the interactive model. Relative station commutation offset: 30°.</p>
- <div id="settings-sliders"></div><div class="settings-warn">Extinction angle: <strong id="settings-gamma">20°</strong>. The limit <span class="math-var">γ</span> ≥ 10° is enforced. Overlap uses a linear current transfer and an idealized midpoint DC-voltage notch; the model is educational, not EMT.</div>
+ <div id="settings-sliders"></div><div class="settings-axis-control"><label for="axis-scale-settings">Chart vertical scale (both modes fixed)</label><button type="button" id="axis-scale-settings" aria-pressed="false">SCALE: FOCUS</button></div><div class="settings-warn">Extinction angle: <strong id="settings-gamma">20°</strong>. The limit <span class="math-var">γ</span> ≥ 10° is enforced. Overlap uses a linear current transfer and an idealized midpoint DC-voltage notch; the model is educational, not EMT.</div>
  <div class="settings-actions"><button id="reset-btn">↺ Reset defaults</button><button id="explain-btn">Hide explanations</button></div></div>
 </div>
 <div id="overview-overlay" class="overview-overlay" role="dialog" aria-modal="true" aria-label="Slide overview" aria-hidden="true">

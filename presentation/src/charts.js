@@ -64,6 +64,9 @@ const ChartView=(()=>{
      [complete[focusedPanel]]:complete;
    const count=Math.max(groups.length,1);
    canvas.dataset.visiblePanels=JSON.stringify(groups.map(g=>g.name));
+   canvas.dataset.axisPreset=FixedAxes.preset();
+   canvas.dataset.axisClipped=String(groups.some(group=>
+     group.series.some(line=>FixedAxes.outside(line.values,group.min,group.max))));
    canvas.dataset.axisMode='fixed';
    canvas.dataset.axisLimits=JSON.stringify(groups.map(g=>({kind:g.kind,min:g.min,max:g.max,x:[0,360]})));
    const enlarged=Number.isInteger(focusedPanel)&&groups.length===1;

@@ -145,8 +145,12 @@ const HalfWave = (() => {
     const [vMin,vMax]=FixedAxes.range('halfWaveVoltage');
     const [iMin,iMax]=FixedAxes.range('halfWaveCurrent');
     const [energyMin,energyMax]=FixedAxes.range('halfWaveEnergy');
+    function exceeds(tracks,min,max,modelRef){
+      return tracks.some(line=>FixedAxes.outside(modelRef.sampled.map(p=>p[line.key]),min,max));
+    }
     if(compare){
       const width=(w-12)/2,height=(h-8)/2;
+      let clipped=false;
       for(const [j,item] of [r,rl].entries()){
         const x=3+j*(width+6),name=j?'RL':'R';
         graphPanel(g,{x,y:0,w:width,h:height},item,theta,[
@@ -155,7 +159,10 @@ const HalfWave = (() => {
         graphPanel(g,{x,y:height+7,w:width,h:height},item,theta,[
           {key:'i',label:'i_T',color:color.red}],iMin,iMax,`${name} · CURRENT (A)`,{positiveCurrent:true});
       }
-      canvas.dataset.axisMode='fixed';
+      clipped=[r,rl].some(ref=>exceeds([{key:'vs'},{key:'vo'}],vMin,vMax,ref)||
+        exceeds([{key:'i'}],iMin,iMax,ref));
+      canvas.dataset.axisMode='fixed';canvas.dataset.axisPreset=FixedAxes.preset();
+      canvas.dataset.axisClipped=String(clipped);
       canvas.dataset.axisLimits=JSON.stringify([0,1].flatMap(()=>[
         {kind:'halfWaveVoltage',min:vMin,max:vMax,x:[0,360]},
         {kind:'halfWaveCurrent',min:iMin,max:iMax,x:[0,360]}]));
@@ -195,7 +202,8 @@ const HalfWave = (() => {
     canvas.dataset.panelTitles=JSON.stringify(specs.map(([, , ,title])=>title));
     const gap=3,height=(h-gap*(specs.length-1))/specs.length;
     specs.forEach(([lines,min,max,title,opts],j)=>graphPanel(g,{x:0,y:j*(height+gap),w,h:height},m,theta,lines,min,max,title,opts));
-    canvas.dataset.axisMode='fixed';
+    canvas.dataset.axisMode='fixed';canvas.dataset.axisPreset=FixedAxes.preset();
+    canvas.dataset.axisClipped=String(specs.some(([tracks,min,max])=>exceeds(tracks,min,max,m)));
     canvas.dataset.axisLimits=JSON.stringify(specs.map(([tracks,min,max,title])=>({
       kind:title.includes('ENERGY')?'halfWaveEnergy':title.includes('CURRENT')?'halfWaveCurrent':'halfWaveVoltage',
       min,max,x:[0,360]})));

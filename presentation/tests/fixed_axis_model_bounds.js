@@ -4,6 +4,11 @@ const fs=require('fs'),vm=require('vm'),path=require('path');
 const dir=path.resolve(__dirname,'../src');
 for(const name of ['waveforms','load_models','fixed_axes','charts','halfwave','current_source'])
   vm.runInThisContext(fs.readFileSync(path.join(dir,name+'.js'),'utf8'),{filename:name});
+const focus=FixedAxes.range('loadCurrent');
+if(focus[0]!==0||focus[1]!==3)throw Error('RLE teaching scale must be 0–3 p.u.');
+if(FixedAxes.preset()!=='focus')throw Error('Teaching focus should be the default');
+FixedAxes.setPreset('full');
+if(FixedAxes.range('loadCurrent')[1]<=focus[1])throw Error('Full scale must exceed focus scale');
 const p={alphaR:15,alphaI:145,muR:12,muI:15,idc:2,vPeak:2,
  alphaLoad:0,loadR:.2,loadL:.1,loadE:0,loadI0:2,csLc:.2,csKp:28,csKi:150,csOverlapMode:'manual',
  hAlpha:0,hR:2,hL:140,hV:260,hFrequency:60};

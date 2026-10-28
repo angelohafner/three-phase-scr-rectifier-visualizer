@@ -816,7 +816,29 @@
  }).join('');
    $('overview-body').innerHTML=fundIntro+intro+currentSourceIndex+grids;$('overview-body').querySelectorAll('[data-slide]').forEach(b=>b.addEventListener('click',()=>{switchOverlay('overview-overlay',false);goto(+b.dataset.slide); }));switchOverlay('overview-overlay',true);
  }
+ function refreshAxisButton(){
+   const full=FixedAxes.preset()==='full';
+   for(const id of ['axis-scale-btn','axis-scale-settings']){
+     const btn=$(id);if(!btn)continue;
+     btn.textContent=full?'SCALE: FULL':'SCALE: FOCUS';
+     btn.setAttribute('aria-pressed',String(full));
+     btn.title=full?'Full fixed slider-range scale · click for teaching focus':
+       'Teaching fixed scale · click for full slider-range scale';
+   }
+ }
+ function toggleAxisScale(){
+   FixedAxes.setPreset(FixedAxes.preset()==='focus'?'full':'focus');
+   refreshAxisButton();
+   const s=current();
+   if(s.type==='fundamentals')renderFundamentalsDetails();
+   else if(s.type==='load')renderLoadDetails();
+   else if(s.type==='state')renderPlots();
+   else if(s.type==='current_source')renderCurrentSourceDetails();
+ }
  function setup(){
+   $('axis-scale-btn').onclick=toggleAxisScale;
+   $('axis-scale-settings').onclick=toggleAxisScale;
+   refreshAxisButton();
    $('footer-prev').onclick=()=>navDelta(-1);$('footer-next').onclick=()=>navDelta(1);
    $('nav-fund').onclick=()=>selectStage('fundamentals');$('nav-rect').onclick=()=>selectStage('rectifier');$('nav-inv').onclick=()=>selectStage('inverter');$('nav-hvdc').onclick=()=>selectStage('hvdc');
    $('settings-open').onclick=()=>switchOverlay('settings-overlay',true);$('settings-close').onclick=()=>switchOverlay('settings-overlay',false);
@@ -834,7 +856,11 @@
    });
    window.addEventListener('resize',()=>{if(current().type==='state'&&!showReference)renderPlots();if(current().type==='current_source')renderCurrentSourceDetails();if(current().type==='load')renderLoadDetails();if(current().type==='fundamentals')renderFundamentalsDetails();});
    setupSettings();updateParam('alphaR',params.alphaR);goto(0);
-   window.LCCPresentationTest={params,deck,getSlide:()=>current(),getIndex:()=>slideIndex,setSlide:i=>goto(i),setTheta:a=>{setTheta(a);syncSlideFromAngle();render();},at:LCC.at,sample:LCC.sample,halfWave:HalfWave.get,loadSample:LoadModel.sample,loadAt:LoadModel.at,schedule:()=>runtimeSchedule,currentSource:CurrentSourceModel,reset:()=>Object.assign(params,initial)};
+   window.LCCPresentationTest={params,deck,getSlide:()=>current(),getIndex:()=>slideIndex,setSlide:i=>goto(i),setTheta:a=>{setTheta(a);syncSlideFromAngle();render();},at:LCC.at,sample:LCC.sample,halfWave:HalfWave.get,loadSample:LoadModel.sample,loadAt:LoadModel.at,schedule:()=>runtimeSchedule,currentSource:CurrentSourceModel,axisPreset:FixedAxes.preset,setAxisPreset:mode=>{
+     FixedAxes.setPreset(mode);refreshAxisButton();const s=current();
+     if(s.type==='fundamentals')renderFundamentalsDetails();else if(s.type==='load')renderLoadDetails();
+     else if(s.type==='state')renderPlots();else if(s.type==='current_source')renderCurrentSourceDetails();
+   },reset:()=>Object.assign(params,initial)};
  }
  setup();
 })();

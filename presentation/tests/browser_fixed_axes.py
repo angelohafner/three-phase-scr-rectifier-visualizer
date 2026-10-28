@@ -17,6 +17,7 @@ with sync_playwright() as pw:
     page.wait_for_function('!!window.LCCPresentationTest')
     deck=page.evaluate('window.LCCPresentationTest.deck')
     assert len(deck)==82
+    assert page.evaluate('window.LCCPresentationTest.axisPreset()')=='focus'
 
     def snapshot():
         return page.evaluate("""() => Array.from(document.querySelectorAll('#slide canvas')).map(c => ({
@@ -70,6 +71,36 @@ with sync_playwright() as pw:
     assert len(bounds)==4,bounds
     assert bounds[0]['right']==bounds[1]['right']==bounds[3]['right'],bounds
     assert bounds[2]['right'][1]>bounds[3]['right'][1],bounds
+    # The screenshot regression: RLE versus ideal DC current must use a readable 0–3 p.u.
+    defaults={'idc':1,'vPeak':1,'loadR':1,'loadL':8,'loadE':.2,'loadI0':.5,
+              'hV':120,'hR':12,'hL':70,'muR':12,'muI':15,'alphaI':145}
+    page.evaluate('''([i,defaults])=>{
+       Object.assign(window.LCCPresentationTest.params,defaults);
+       window.LCCPresentationTest.setSlide(i);
+    }''',[lesson_index('current_source','intro'),defaults])
+    focus_chart=page.locator('#cs-left')
+    focus_limits=page.evaluate('JSON.parse(document.getElementById("cs-left").dataset.axisLimits)')
+    assert focus_limits[0]['kind']=='loadCurrent' and focus_limits[0]['max']==3,focus_limits
+    assert focus_chart.get_attribute('data-axis-clipped')=='false'
+    page.locator('#axis-scale-btn').click()
+    full_limits=page.evaluate('JSON.parse(document.getElementById("cs-left").dataset.axisLimits)')
+    assert full_limits[0]['max']>=20,full_limits
+    page.locator('#cs-loadR').evaluate('''el=>{
+      el.value="0.2";el.dispatchEvent(new Event("input",{bubbles:true}));
+    }''')
+    page.wait_for_timeout(150)
+    assert page.locator('#cs-left').get_attribute('data-axis-clipped')=='false'
+    assert page.evaluate('JSON.parse(document.getElementById("cs-left").dataset.axisLimits)')==full_limits
+    page.locator('#axis-scale-btn').click()
+    page.wait_for_timeout(150)
+    assert page.evaluate('JSON.parse(document.getElementById("cs-left").dataset.axisLimits)')==focus_limits
+    assert page.locator('#cs-left').get_attribute('data-axis-clipped')=='true'
+    # The settings control uses the same preset and has no slider-dependent rescaling.
+    page.locator('#settings-open').click()
+    page.locator('#axis-scale-settings').click()
+    page.locator('#settings-close').click()
+    assert page.locator('#cs-left').get_attribute('data-axis-clipped')=='false'
+    assert page.evaluate('window.LCCPresentationTest.axisPreset()')=='full'
     assert not errors,errors
-    print('Global-range chart scales and separate LE current axis verified.',flush=True)
+    print('82-slide fixed-axis audit, readable RLE focus and full-envelope switching verified.',flush=True)
     browser.close()

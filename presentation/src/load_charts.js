@@ -58,7 +58,10 @@ const LoadCharts=(()=>{
      g.save();g.strokeStyle=ln.color||palette[(ln.index||0)%6];g.globalAlpha=ln.opacity??.85;g.lineWidth=1.7;g.setLineDash(ln.dash||dashes[(ln.index||0)%6]);g.beginPath();g.moveTo(pos,y+11);g.lineTo(pos+13,y+11);g.stroke();g.restore();
      MathUI.paint(g,ln.label,pos+16,y+14,{size:10});
    }
-   return {kind,min,max,right:secondary,x:[0,360],model:modelMode};
+   const clipped=entries.some(ln=>FixedAxes.outside(ln.data,
+     secondary&&ln.label==='i_dc'?secondary[0]:min,
+     secondary&&ln.label==='i_dc'?secondary[1]:max));
+   return {kind,min,max,right:secondary,x:[0,360],model:modelMode,clipped};
  }
  function render(canvas,mode,params,theta,chartMode='overview',selected='all'){
    if(!canvas||!canvas.isConnected)return;
@@ -77,7 +80,9 @@ const LoadCharts=(()=>{
          {label:'i_dc',data:s.current,index:0,color:palette[0]}
        ],Math.max(v,iMax),-.65*params.vPeak,theta,win.windows,win.blocked,which));
      });
-     canvas.dataset.axisMode='fixed';canvas.dataset.axisLimits=JSON.stringify(axes);
+     canvas.dataset.axisMode='fixed';canvas.dataset.axisPreset=FixedAxes.preset();
+     canvas.dataset.axisClipped=String(axes.some(a=>a.clipped));
+     canvas.dataset.axisLimits=JSON.stringify(axes);
      return;
    }
    const s=model(mode,params),win=LoadModel.activeWindow(s,theta);
@@ -99,7 +104,9 @@ const LoadCharts=(()=>{
    const H=h/plans.length;
    const axes=[];
    plans.forEach(([title,values,max,min],j)=>axes.push(drawPanel(g,{x:0,y:j*H,w,h:H},title,values,max,min,theta,win.windows,win.blocked,mode)));
-   canvas.dataset.axisMode='fixed';canvas.dataset.axisLimits=JSON.stringify(axes);
+   canvas.dataset.axisMode='fixed';canvas.dataset.axisPreset=FixedAxes.preset();
+   canvas.dataset.axisClipped=String(axes.some(a=>a.clipped));
+   canvas.dataset.axisLimits=JSON.stringify(axes);
    if(chartMode==='vak'&&win.blocked){g.fillStyle='#4c687d';g.font='normal 10px "Segoe UI",Arial';g.fillText('Floating DC buses: individual vAK undefined.',50,Math.min(67,h/5));}
  }
  return {render,model};

@@ -49,9 +49,31 @@ const FixedAxes = (() => {
     halfWaveCurrent:[-roundUp(halfWaveCurrentPeak,10)*.1,halfCurrentMax],
     halfWaveEnergy:[0,energyMax]
   });
+  // Focus is a second fixed, nominal teaching scale, not curve-driven autoscaling.
+  // Full retains the original envelope derived from permitted parameter extrema.
+  const focus=Object.freeze({
+    phaseVoltage:[-1.5,1.5],lineVoltage:[-2,2],dcVoltage:[-2,2],
+    valveVoltage:[-2,2],mixedDC:[-2,2],
+    scrCurrent:[0,2.5],poleCurrent:[0,2.5],acCurrent:[-2.5,2.5],
+    loadCurrent:[0,3],loadAcCurrent:[-3,3],
+    leCurrent:[0,3],leAcCurrent:[-3,3],
+    controllerCurrent:[0,3],firingAngle:[0,90],
+    halfWaveVoltage:[-150,150],halfWaveCurrent:[0,15],
+    halfWaveEnergy:[0,3]
+  });
+  let selectedPreset='focus';
+  function preset(){return selectedPreset;}
+  function setPreset(next){
+    if(next!=='focus'&&next!=='full')throw Error('Unknown axis preset: '+next);
+    selectedPreset=next;
+  }
   function range(kind){
     if(!Object.prototype.hasOwnProperty.call(bounds,kind))throw Error('Unknown fixed axis: '+kind);
-    return bounds[kind].slice();
+    return (selectedPreset==='focus'?focus:bounds)[kind].slice();
+  }
+  function outside(values,min,max){
+    // Floating SCR voltages are undefined and intentionally skipped.
+    return values.some(v=>Number.isFinite(v)&&(v<min-1e-8||v>max+1e-8));
   }
   function lccKind(title){
     if(title.includes('SCR anode–cathode voltages'))return 'valveVoltage';
@@ -78,5 +100,5 @@ const FixedAxes = (() => {
     return ({scr:'scrCurrent',transfer:'scrCurrent',phase:'lineVoltage',power:'dcVoltage',
       dc:'mixedDC',rle:'loadCurrent',control:'controllerCurrent',alphaControl:'firingAngle'})[chart];
   }
-  return {controls,range,lccKind,loadKind,sourceKind};
+  return {controls,range,preset,setPreset,outside,lccKind,loadKind,sourceKind};
 })();

@@ -92,8 +92,9 @@ See `docs/SECOND_AUDIT_CORRECTIONS.md` for the verification record.
 ## Fixed scales for interactive waveform comparisons
 
 Every interactive graph now uses a fixed angular or time-domain x-axis and
-vertical domains computed from the **permitted global parameter ranges**,
-not from the current waveform amplitude. R, RL and RLE currents share one
+vertical domains selected from two **fixed** presets: FOCUS for clear nominal
+teaching waveforms (default) and FULL for the global permitted parameter
+ranges. Neither preset follows the instantaneous waveform amplitude. R, RL and RLE currents share one
 range; the unbounded-over-cycles ideal LE initial-value model receives its
 own conservative one-cycle current range. Combined load-voltage/current
 plots have independent voltage (left) and current (right) scales.
@@ -101,3 +102,7 @@ plots have independent voltage (left) and current (right) scales.
 The central axis specification is in `src/fixed_axes.js`. Browser and
 numerical endpoint regressions run in CI. See
 [`docs/FIXED_AXES.md`](../docs/FIXED_AXES.md) for detailed assumptions.
+
+Switch scales using **SCALE: FOCUS / SCALE: FULL** in the desktop header,
+or under Parameters on phones. If the focused domain is exceeded, the chart
+shows a warning and the full-range scale preserves the entire trace.

@@ -20,7 +20,7 @@ const CurrentSourceCharts = (() => {
       g.font='600 12px "Segoe UI",Arial';g.fillStyle='#b43d50';
       g.fillText('OUTSIDE MODEL OPERATING RANGE',14,30);
       g.font='11px "Segoe UI",Arial';g.fillText(result.error,14,53);
-      canvas.dataset.valid='false';return;
+      canvas.dataset.valid='false';canvas.dataset.axisClipped='false';return;
     }
     canvas.dataset.valid='true';canvas.dataset.mu=result.mu.toFixed(4);
     const {angle,data}=result;
@@ -81,6 +81,8 @@ const CurrentSourceCharts = (() => {
     // Global parameter extrema determine each domain, never the live sampled peaks.
     const [low,high]=FixedAxes.range(FixedAxes.sourceKind(chart));
     canvas.dataset.axisMode='fixed';
+    canvas.dataset.axisPreset=FixedAxes.preset();
+    canvas.dataset.axisClipped=String(vals.some(line=>FixedAxes.outside(line.values,low,high)));
     canvas.dataset.axisLimits=JSON.stringify([{kind:FixedAxes.sourceKind(chart),min:low,max:high,x:chart==='control'||chart==='alphaControl'?[0,.35]:[0,360]}]);
     const x0=46,x1=w-12,y0=44,y1=h-26;
     const N=vals[0].values.length;

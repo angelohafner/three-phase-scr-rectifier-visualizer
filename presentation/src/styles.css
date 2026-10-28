@@ -238,3 +238,27 @@ body{font-family:"Segoe UI",Arial,sans-serif;font-style:normal;font-variant-nume
 /* Keep decorative cover artwork inside the slide viewport. */
 .presentation-hero {overflow:hidden;}
 .fact-grid .fact strong {white-space:normal;overflow-wrap:anywhere;min-width:0;}
+
+/* Two fixed chart presets: nominal teaching focus and full slider-range envelope. */
+#axis-scale-btn{border:1px solid #588094;background:#17445b;border-radius:7px;color:#e7f6f8;
+ height:35px;padding:0 10px;font:700 10px "Segoe UI",Arial,sans-serif;
+ letter-spacing:.035em;white-space:nowrap;cursor:pointer}
+#axis-scale-btn:hover,#axis-scale-btn:focus-visible{background:#1d6579;border-color:#78bdc9}
+#axis-scale-btn[aria-pressed="true"]{background:#f0f8f9;color:#15516b;border-color:#70adbc}
+.settings-axis-control{margin:10px 0 1px;display:flex;align-items:center;
+ justify-content:space-between;gap:8px;flex-wrap:wrap}
+.settings-axis-control label{font-size:12px;font-weight:700;color:#284d67}
+.settings-axis-control button{padding:6px 10px;background:#eaf7fa;border:1px solid #a8c2d0;
+ border-radius:6px;color:#15546b;font-weight:750;cursor:pointer}
+.plot-wrapper:has(canvas[data-axis-clipped="true"])::after{
+ content:"FOCUS LIMIT EXCEEDED  ·  Select SCALE: FULL";position:absolute;
+ top:48px;left:50%;transform:translateX(-50%);z-index:2;pointer-events:none;
+ max-width:calc(100% - 20px);border:1px solid #e1b670;border-radius:4px;
+ padding:5px 8px;background:#fff4d8ed;color:#81531b;
+ font:700 10px "Segoe UI",Arial,sans-serif;white-space:normal;
+ text-align:center;box-shadow:0 1px 3px #0002}
+@media(max-width:800px){#axis-scale-btn{font-size:9px;padding:0 5px;height:32px}}
+@media(max-width:620px){#axis-scale-btn{display:none}
+ .plot-wrapper:has(canvas[data-axis-clipped="true"])::after{font-size:8px;top:31px}
+ .topactions{gap:2px}
+ .topactions .icon-btn{min-width:28px;height:30px;font-size:14px}}
