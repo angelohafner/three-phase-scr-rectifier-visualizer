@@ -1,19 +1,19 @@
-name: Build offline LCC presentation
+name: Build advanced offline LCC presentation (HTML only)
 on:
   workflow_dispatch:
   push:
     paths:
       - 'presentation/**'
       - 'rectifier_*.py'
+      - 'lcc_advanced_*.py'
       - 'hvdc_link*.py'
       - 'output_lcc/**'
       - 'output_hvdc/**'
-      - 'docs/RECTIFIER_R_RL_TEACHING.md'
       - '.github/workflows/build-lcc-presentation.yml'
 permissions:
   contents: read
 jobs:
-  build:
+  html:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,26 +23,24 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Install Python dependencies
+      - name: Install model and graphics dependencies
         run: |
-          python -m pip install -r requirements-waveforms.txt pytest playwright pillow
+          python -m pip install -r requirements-waveforms.txt pytest pillow playwright
           python -m playwright install --with-deps chromium
-      - name: Generate R and RL diagrams and waveforms
-        run: python rectifier_loads.py
-      - name: Build the self-contained HTML
+      - name: Build editable LE and RLE circuit diagrams and waveforms
+        run: python lcc_advanced_figures.py --output-dir output_lcc/rectifier/advanced_loads
+      - name: Build standalone offline HTML
         run: python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html
-      - name: Run model and HTML source tests
-        run: python -m pytest -q tests presentation/tests
-      - name: Generate Python SCR A-K waveform figures
-        run: python rectifier_load_extended.py --out output_lcc/extended
-      - name: Check JavaScript syntax
+      - name: Syntax validation
         run: |
           for source in presentation/src/*.js; do node --check "$source"; done
-      - name: Verify HTML in offline Chromium
+      - name: Test physical models and presentation
+        run: python -m pytest -q tests presentation/tests
+      - name: Verify interactive HTML in offline Chromium
         run: python presentation/tests/browser_smoke.py
-      - name: Upload standalone HTML
+      - name: Upload HTML-only deliverable
         uses: actions/upload-artifact@v4
         with:
-          name: lcc-hvdc-interactive-R-RL-LE-RLE
+          name: lcc-hvdc-pti-inspired-offline-html
           path: dist/lcc_hvdc_interactive.html
           retention-days: 90

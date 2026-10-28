@@ -29,3 +29,65 @@
 .circuit-tag{font-size:10px;font-weight:800;letter-spacing:.12em;color:#47768a;background:#eaf4f8;padding:5px 9px;border-radius:7px}
 .mini-select{font-size:10px;font-weight:750;color:#5d7b8f;display:flex;align-items:center;gap:7px}
 @media(max-width:990px){.dual-circuit .circuit-tag{font-size:8px}.load-diagram{padding:3px}}
+
+/* PTI-inspired independent engineering report: restrained tones, no corporate marks. */
+:root{
+ --deep:#103247;--deep2:#164257;--ink:#15364b;--muted:#536e7f;
+ --paper:#fff;--body:#f5f8fa;--line:#cddce3;--teal:#009caa;
+ --blue:#176f9e;--red:#bb3d55;--cyan:#a8dfe4;
+}
+html,body{background:#eaf0f3;color:#193a4e}
+body{font-family:"Segoe UI",Arial,sans-serif;font-style:normal;font-variant-numeric:tabular-nums}
+.shell{padding:10px clamp(12px,2vw,28px);gap:8px}
+.topbar{background:#fff;border:1px solid #d6e3e8;border-bottom:3px solid #009caa;
+ border-radius:6px;padding:6px 18px;height:63px;box-shadow:0 1px 5px #092c4310}
+.brand-mark{background:#e8f5f5;border:1px solid #b0d9da;border-radius:3px;
+ color:#00858d;font-size:11px;width:48px;height:35px;letter-spacing:0}
+.brand-text strong{color:#103247;font-size:15px;letter-spacing:.055em}
+.brand-text span{color:#526e7e;letter-spacing:.06em;font-size:10px}
+.tab{background:#f6fafb;border:1px solid #ccdce3;color:#27516a;border-radius:4px}
+.tab.active,.tab:hover{color:#fff;background:#11627a;border-color:#11627a}
+.icon-btn{background:#f4f8fa;border:1px solid #d0e0e8;color:#235369;border-radius:4px}
+.icon-btn:hover{background:#dff2f5}
+.deck{background:#f8fafb;border:1px solid #cbdce4;border-radius:6px;box-shadow:0 5px 20px #12364a17}
+.technical{padding:17px clamp(15px,2vw,30px) 12px}
+.tech-head{border-bottom:1px solid #d3e2e8;padding-bottom:10px;min-height:65px}
+.tech-index{border-radius:3px;background:#0b667c}
+.tech-title h1{color:#12394f;font-weight:750;letter-spacing:0}
+.tech-title p{color:#5d7785}
+.mode-badge{border-radius:3px;background:#e1f3f3;border-color:#b8e1df;color:#146e71}
+.panel{border:1px solid #c9dbe2;border-radius:4px;box-shadow:0 1px 5px #14374a0c}
+.panel-head{background:#f4f8fa;border-bottom:1px solid #d5e1e6;color:#284a5c}
+.soft-btn,.mini-select .soft-btn{background:white;border:1px solid #bad3dc;color:#20596e;border-radius:4px}
+.soft-btn:focus,.mini-select .soft-btn:focus{outline:2px solid #15acb7}
+.footer{color:#36566a;border-top:1px solid #cadce3;min-height:36px}
+.footer .mini-controls button{background:#fff;color:#224c61;border:1px solid #c4d9e1;border-radius:4px}
+.footer-note,.document-footnote{color:#526f7f;font-size:10px;letter-spacing:.055em}
+.progress-track{background:#d5e6e9}.progress-track div{background:#0098a7}
+.counter{color:#16465d}
+.presentation-hero{background:linear-gradient(115deg,#12384d,#1d5665);border-top:6px solid #19b4b9}
+.presentation-hero:after{opacity:.2}
+.chapter-hero{background:linear-gradient(115deg,#123b50,#205d68)}
+.hero-kicker{color:#80d5dc}
+.timeline{border-radius:4px;border:1px solid #d0e0e5;background:#fff}
+.timeline-actions button{border-radius:3px}.timeline-actions button.primary{background:#077e91;border-color:#077e91}
+.angle-range{accent-color:#079caa}
+.settings-overlay,.overview-overlay,.zoom-overlay,.help-overlay{background:#103347cf}
+.settings-card,.overview-card,.help-card{border-radius:6px;background:#fff}
+.settings-warn{border-left:3px solid #cf9c47;background:#fffaf0}
+.slider-row input{accent-color:#0897a6}
+.math-var{font-family:"STIX Two Math","Cambria Math",Georgia,serif;font-style:italic;font-weight:400}
+.math-var .math-sub,.math-sub{font-family:"Segoe UI",Arial,sans-serif;font-style:normal;font-size:.69em;vertical-align:sub}
+.math-unit,.math-number{font-style:normal;font-family:"Segoe UI",Arial,sans-serif;font-weight:inherit}
+.load-equation{display:inline-block;margin-left:7px;color:#155e74;font-size:1.04em;padding:2px 5px;background:#eef6f7;border-radius:2px;white-space:nowrap}
+.floating-note{font-size:11px;color:#775a24;background:#fff6e9;border-left:3px solid #d5a45c;padding:6px 10px}
+.quad-circuit{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:1fr 1fr;height:100%;width:100%;gap:5px;padding:4px}
+.quad-circuit>div{display:flex;align-items:center;justify-content:center;min-height:0;min-width:0;flex-direction:column;overflow:hidden;background:#fff}
+.quad-circuit svg{width:100%;height:90%;max-width:100%;display:block}
+.quad-circuit .circuit-tag{padding:3px 8px;font-size:9px;border-radius:2px}
+@media(max-width:1000px){.document-footnote{display:none}.topbar{padding:5px 8px}.brand-text strong{font-size:12px}}
+@media(max-width:680px){.shell{padding:5px}.topbar{height:46px}.tech-head{padding-bottom:5px}.panel-head{height:auto;min-height:31px}.panel-actions{gap:3px}.soft-btn{font-size:9px;padding:4px}.floating-note{font-size:9px}}
+
+.fact strong{font-style:normal}.load-equation:empty{display:none}
+
+.math-matrix{font-family:"STIX Two Math","Cambria Math",Georgia,serif;font-style:normal;font-weight:700}

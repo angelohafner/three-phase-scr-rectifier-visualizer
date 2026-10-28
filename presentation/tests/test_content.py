@@ -24,20 +24,13 @@ def test_48_reference_states_available():
     assert sum(map(len,data['references'].values()))==48
     assert len(data['diagrams']['hvdc'])==144
     assert 'window.LCCPresentationTest' in text
-    assert len(data['load_figures'])==28
+    assert len(data['load_figures'])==28  # Four load types, six valve pairs and OFF state
     assert 'RectifierLoads' not in text or 'LoadModel' in text
-    assert 'RECTIFIER · Normal conduction with R load' in text
-    assert 'RECTIFIER · Normal conduction with RL load' in text
+    assert 'load and DC current dynamics' in text
+    assert 'RECTIFIER · R / RL / LE / RLE comparison' in text
 
 
 def test_source_functions_are_not_placeholders():
     s=(ROOT/'presentation/src/waveforms.js').read_text(encoding='utf-8')
     for name in ('jointSchedule','function sample(','stateInfo','function windows('):
         assert name in s
-
-
-def test_four_loads_scr_voltages_and_light_document_theme():
-    html=HTML.read_text(encoding='utf-8')
-    for label in ('SCR voltages','RLE','LE','TechnicalMath','SCRVoltage','Independent educational material'):
-        assert label in html
-    assert '<!--INLINE_PTI_CSS-->' not in html

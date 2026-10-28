@@ -70,7 +70,19 @@ const LCC = (() => {
     const ac=PHASES.map(ph=>(scr[UPPER[ph]]-scr[LOWER[ph]])*(inv?-1:1));
     function lv(pair){return voltages[pair[0]]-voltages[pair[1]];}
     const vNew=lv(PAIRS[sector]),vOld=lv(PAIRS[prev]);
-    return {phase:v,line:lines,scr,ac,dc:sel.overlap?(vNew+vOld)/2:vNew,dcIdeal:vNew,idc:params.idc,selected:sel};
+    // The valve drop is zero for any conducting ideal SCR. During overlap,
+    // equal source reactances motivate the illustrative midpoint bus potential.
+    const [oldHigh,oldLow]=PAIRS[prev], [newHigh,newLow]=PAIRS[sector];
+    const pplus=sel.overlap?(voltages[oldHigh]+voltages[newHigh])/2:voltages[newHigh];
+    const pminus=sel.overlap?(voltages[oldLow]+voltages[newLow])/2:voltages[newLow];
+    const polarity=inv?-1:1;
+    const vak={};
+    for(const ph of PHASES){
+      const upper=UPPER[ph],lower=LOWER[ph];
+      vak[upper]=scr[upper]>1e-9?0:polarity*(voltages[ph]-pplus);
+      vak[lower]=scr[lower]>1e-9?0:polarity*(pminus-voltages[ph]);
+    }
+    return {phase:v,line:lines,scr,vak,ac,dc:sel.overlap?(vNew+vOld)/2:vNew,dcIdeal:vNew,idc:params.idc,selected:sel};
   }
   function describe(side,id){
     let st=stateInfo(id); const direction=side==='rectifier'?'AC → DC':'DC → AC';
