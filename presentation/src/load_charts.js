@@ -82,7 +82,7 @@ const LoadCharts=(()=>{
      });
      canvas.dataset.axisMode='fixed';canvas.dataset.axisPreset=FixedAxes.preset();
      canvas.dataset.axisClipped=String(axes.some(a=>a.clipped));
-     canvas.dataset.axisLimits=JSON.stringify(axes);
+     canvas.dataset.axisLimits=JSON.stringify(axes.map(({clipped,...limits})=>limits));
      return;
    }
    const s=model(mode,params),win=LoadModel.activeWindow(s,theta);
@@ -106,7 +106,7 @@ const LoadCharts=(()=>{
    plans.forEach(([title,values,max,min],j)=>axes.push(drawPanel(g,{x:0,y:j*H,w,h:H},title,values,max,min,theta,win.windows,win.blocked,mode)));
    canvas.dataset.axisMode='fixed';canvas.dataset.axisPreset=FixedAxes.preset();
    canvas.dataset.axisClipped=String(axes.some(a=>a.clipped));
-   canvas.dataset.axisLimits=JSON.stringify(axes);
+   canvas.dataset.axisLimits=JSON.stringify(axes.map(({clipped,...limits})=>limits));
    if(chartMode==='vak'&&win.blocked){g.fillStyle='#4c687d';g.font='normal 10px "Segoe UI",Arial';g.fillText('Floating DC buses: individual vAK undefined.',50,Math.min(67,h/5));}
  }
  return {render,model};
