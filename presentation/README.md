@@ -35,3 +35,14 @@ Build it using `presentation/pptx/capture_html.py` and `presentation/pptx/make_p
 ## Further information
 
 See [the R versus RL teaching guide](../docs/RECTIFIER_R_RL_TEACHING.md) and the existing LCC guides. No electromagnetic transient simulation is performed.
+
+## HTML-only enhancement: R, RL, LE, RLE and valve voltages
+
+The current build generates **HTML only**, without producing PowerPoint. The historical `presentation/pptx` folder remains unchanged but is not called by CI. Additive controls let users compare R, RL, LE and RLE, select A-K voltage curves for six SCRs, and move continuous-resolution sliders. Plots use distinguishable dashes, color and transparency. The clean PTI-inspired visual design is labeled as independent educational material, without a Siemens logo.
+
+See [physics, limitations, and polarity](../docs/rectifier-loads-and-scr-voltage.md).
+
+```bash
+python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html
+python rectifier_load_extended.py --out output_lcc/extended
+```

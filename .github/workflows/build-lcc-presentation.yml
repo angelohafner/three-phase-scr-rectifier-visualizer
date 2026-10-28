@@ -33,17 +33,16 @@ jobs:
         run: python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html
       - name: Run model and HTML source tests
         run: python -m pytest -q tests presentation/tests
-      - name: Capture PowerPoint slide visuals
-        run: python presentation/pptx/capture_html.py
-      - name: Install PowerPoint generator
-        run: npm install --no-save --prefix presentation/pptx pptxgenjs
-      - name: Build interactive-navigation PowerPoint
-        run: node presentation/pptx/make_presentation.js
-      - name: Upload standalone HTML and PPTX
+      - name: Generate Python SCR A-K waveform figures
+        run: python rectifier_load_extended.py --out output_lcc/extended
+      - name: Check JavaScript syntax
+        run: |
+          for source in presentation/src/*.js; do node --check "$source"; done
+      - name: Verify HTML in offline Chromium
+        run: python presentation/tests/browser_smoke.py
+      - name: Upload standalone HTML
         uses: actions/upload-artifact@v4
         with:
-          name: lcc-hvdc-interactive-R-RL
-          path: |
-            dist/lcc_hvdc_interactive.html
-            dist/LCC_HVDC_R_RL_Presentation.pptx
+          name: lcc-hvdc-interactive-R-RL-LE-RLE
+          path: dist/lcc_hvdc_interactive.html
           retention-days: 90

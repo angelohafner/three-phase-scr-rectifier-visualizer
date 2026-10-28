@@ -102,11 +102,13 @@ def build(source: Path, out: Path, src: Path) -> dict:
             figures['hvdc'][f'{r.number}:{i.number}'] = svg_xml(svg, hvdc=True)
 
     from rectifier_loads import LoadParameters, ResistiveCircuitRenderer
+    from presentation.extended_load_diagrams import render_extended_load
     load_renderer = ResistiveCircuitRenderer()
     load_figures = {}
-    for mode in ('R','RL'):
+    for mode in ('R','RL','LE','RLE'):
         for idx in range(-1,6):
-            tree = load_renderer.render(LoadParameters(), 105.0, idx if idx>=0 else None, mode)
+            tree = render_extended_load(load_renderer, LoadParameters(), 105.0,
+                                        idx if idx>=0 else None, mode)
             for parent in tree.getroot().iter():
                 for child in list(parent):
                     if child.get('id') == 'legend':
@@ -117,7 +119,7 @@ def build(source: Path, out: Path, src: Path) -> dict:
             load_figures[f'{mode}:{idx}'] = ET.tostring(image, encoding='unicode')
     data = {
         'load_figures': load_figures,
-        'format': 'LCC interactive deck v1',
+        'format': 'LCC interactive deck v2 (R/RL/LE/RLE, SCR A-K voltages)',
         'source': 'angelohafner/three-phase-scr-rectifier-visualizer',
         'angle_reference': 'relative commutation angle; station offset=30 degrees, illustrative',
         'limitations': 'Conceptual linear current transfer; equal-reactance overlap midpoint voltage; not EMT',
@@ -127,9 +129,12 @@ def build(source: Path, out: Path, src: Path) -> dict:
     template = (src / 'template.html').read_text(encoding='utf-8')
     assets = {
         '<!--INLINE_CSS-->': (src / 'styles.css').read_text(encoding='utf-8'),
+        '<!--INLINE_PTI_CSS-->': (src / 'pti.css').read_text(encoding='utf-8'),
         '<!--INLINE_WAVEFORMS-->': (src / 'waveforms.js').read_text(encoding='utf-8'),
         '<!--INLINE_CHARTS-->': (src / 'charts.js').read_text(encoding='utf-8'),
         '<!--INLINE_LOAD_MODELS-->': (src / 'load_models.js').read_text(encoding='utf-8'),
+        '<!--INLINE_MATH_CANVAS-->': (src / 'math_canvas.js').read_text(encoding='utf-8'),
+        '<!--INLINE_SCR_VOLTAGES-->': (src / 'scr_voltage.js').read_text(encoding='utf-8'),
         '<!--INLINE_LOAD_CHARTS-->': (src / 'load_charts.js').read_text(encoding='utf-8'),
         '<!--INLINE_PRESENTATION-->': (src / 'presentation.js').read_text(encoding='utf-8'),
         '<!--INLINE_DATA-->': json.dumps(data, ensure_ascii=False, separators=(',', ':'))
@@ -148,7 +153,7 @@ def build(source: Path, out: Path, src: Path) -> dict:
         'individual_circuits': len(figures['rectifier']) + len(figures['inverter']),
         'hvdc_topology_pairs': len(figures['hvdc']),
         'reference_waveforms': sum(map(len, refs.values())),
-        'slides': 61,
+        'slides': 63,
         'offline': True,
     }
 

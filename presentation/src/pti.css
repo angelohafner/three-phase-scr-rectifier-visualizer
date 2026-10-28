@@ -1,0 +1,65 @@
+/* Independent engineering-document styling inspired by restrained PTI technical reports. */
+:root{
+ --deep:#063f58;--deep2:#0a4e65;--ink:#17364a;--muted:#567185;
+ --paper:#fff;--body:#f5f9fa;--line:#cfdde2;--red:#bb3549;
+ --teal:#078c93;--blue:#18788f;--cyan:#a1d4d6;--gold:#b07c39;
+}
+body{background:#eaf1f3;color:#14394f;font-family:"Segoe UI",Arial,sans-serif}
+.shell{padding:10px clamp(14px,1.7vw,25px) 8px;gap:6px}
+.topbar{height:61px;border-bottom:2px solid #048a96;padding:0 4px 7px}
+.brand-mark{background:#0b7080;color:#fff;border-radius:3px;font-size:13px}
+.brand-text strong{color:#12384d;font-size:15px;letter-spacing:.025em}
+.brand-text span{color:#647c88;letter-spacing:.06em;font-size:10px}
+.tab{background:#fff;color:#194659;border:1px solid #c6d8de;border-radius:4px;font-weight:650}
+.tab:hover,.tab.active{background:#e7f4f4;border-color:#0a8590;color:#075663}
+.icon-btn{color:#24556b;border:1px solid #c7d8dd;background:#fff;border-radius:4px}
+.icon-btn:hover{background:#e1f1f3}
+.deck{border-radius:4px;background:#f8fafb;border:1px solid #cbdde0;box-shadow:0 5px 16px #24445b12;max-width:1720px}
+.panel{border-radius:5px;border-color:#cddde2;box-shadow:0 1px 2px #112e4409}
+.panel-head{border-bottom:1px solid #dfe9ed;background:#f8fbfc}
+.panel-head strong{color:#194d60;letter-spacing:.01em}
+.technical{gap:9px;padding:12px clamp(13px,1.8vw,26px) 10px}
+.tech-head{min-height:56px}
+.tech-index{background:#086a7c;border-radius:3px;font-weight:750;font-size:11px}
+.tech-title h1{font-size:clamp(17px,1.55vw,24px);font-weight:700}
+.tech-title p{font-size:11.5px}
+.mode-badge{border-radius:3px;color:#126977;background:#e7f6f5;border:1px solid #afd4d4}
+.explainer{border-left:3px solid #078997;border-radius:3px;background:#edf6f7;color:#234d62}
+.fact{border-radius:3px}
+.soft-btn{border-radius:3px;background:#fff;border-color:#b8d3da;color:#1c5c6d}
+.soft-btn.active,.soft-btn:hover{background:#e2f4f5;border-color:#62b8c2}
+.timeline{border-radius:4px!important}
+.timeline button,.timeline .primary{border-radius:3px!important}
+.presentation-hero,.chapter-hero{background:#fff!important;color:#143b50!important}
+.presentation-hero:after{display:none!important}
+.hero-kicker{color:#027e8b}
+.hero-title{color:#0e3e59;letter-spacing:-.032em;font-size:clamp(35px,4.7vw,72px);font-weight:760}
+.hero-title:after{display:block;content:'';width:150px;border-bottom:5px solid #088a94;margin-top:28px}
+.hero-sub{color:#496d7e;max-width:850px}
+.hero-cta{color:#426a7e}
+.hero-stat{background:#f1f8f9;border:1px solid #c9e2e4;border-radius:3px;color:#1a5263}
+.hero-stat strong{font-style:normal}
+.hero-stat span{color:#607a86}
+.chapter-index{color:#91bcc6;opacity:.13}
+.flow-node{color:#17566a;background:#e9f6f6;border:1px solid #b9d9de;border-radius:4px}
+.flow-arrow{color:#0b8997}
+.keycap{color:#174f65;background:#ebf5f7;border-color:#bbdae2}
+.counter{color:#2f5b6d;font-variant-numeric:tabular-nums;font-style:normal}
+.footer-note{color:#627a86!important}
+.footer{color:#365a6b}
+.footer button{color:#1f5163!important}
+.math-expression,.formula{font-family:"STIX Math","Cambria Math","DejaVu Serif",serif;font-style:normal}
+.math-expression i{font-style:italic}
+.math-expression sub,.math-expression sup{font-style:normal;font-size:.72em}
+.unit,.number,.ticks,.counter,output{font-style:normal;font-variant-numeric:tabular-nums}
+.math-expression .unit{font-style:normal}
+.settings-card{border-radius:6px!important}
+.slider-row output{font-style:normal!important}
+.independent-notice{font-size:10px;color:#6d8794;font-style:normal;white-space:nowrap}
+.math-status{font-size:11px;color:#416a7b;line-height:1.2}
+.scr-selector{display:flex;align-items:center;gap:4px;font-size:10px;color:#4e7181}
+.scr-selector[hidden]{display:none!important}
+@media(max-width:1100px){.independent-notice{display:none}.tab{padding:8px 6px}}
+@media(max-height:720px){.technical{gap:6px}.tech-note{min-height:53px}.tech-head{min-height:46px}.panel-head{height:33px}}
+
+.scr-note{position:absolute;bottom:8px;left:10px;right:10px;font-size:10px;padding:6px 8px;color:#785127;background:#fff8e7df;border:1px solid #ddcba1;border-radius:3px;pointer-events:none}

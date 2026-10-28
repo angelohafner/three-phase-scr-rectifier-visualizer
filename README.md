@@ -263,3 +263,7 @@ The teaching sequence now starts with a purely resistive load (ideal AC sources 
 - [Interactive HTML and clickable PowerPoint build](presentation/README.md)
 
 Run `python rectifier_loads.py` to regenerate the vector figures; run `python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html` to produce the offline lecture. The GitHub Actions workflow publishes the HTML and PPTX as downloadable artifacts.
+
+## HTML teaching extension: R, RL, LE, RLE and six SCR A-K voltages
+
+The offline HTML teaching presentation now includes four selectable DC loads and ideal valve anode-cathode voltages with forward blocking, reverse blocking and explicitly unresolved intervals. The presentation has a restrained **Siemens PTI-inspired** technical-document layout, but is independent educational material without official corporate branding. Current CI publishes only HTML; legacy PPTX scripts are not executed. See [technical notes](docs/rectifier-loads-and-scr-voltage.md).
