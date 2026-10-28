@@ -57,42 +57,28 @@ def round_rect(root: ET.Element, x: float, y: float, w: float, h: float,
                 fill=fill, stroke=stroke, stroke_width=sw)
 
 
-def coil(root: ET.Element, x1: float, x2: float, y: float, color: str,
-         width: float = 3.8, upper: bool = True) -> None:
-    """A continuous four-loop, IEEE-like horizontally oriented reactor coil."""
-    sign = -1 if upper else 1
-    count = 4
-    step = (x2 - x1) / count
-    pieces = [f'M {x1:g},{y:g}']
-    for i in range(count):
-        xi = x1 + i * step
-        pieces.append(
-            f'C {xi + step*.2:g},{y + sign*28:g} '
-            f'{xi + step*.8:g},{y + sign*28:g} '
-            f'{xi + step:g},{y:g}'
-        )
-    art.path(root, ' '.join(pieces), color, width)
+def coil(root: ET.Element, x1: float, x2: float, y: float,
+         color: str, width: float = 3.6) -> None:
+    """Render a Schemdraw Inductor with exact start/end electrical anchors."""
+    from schemdraw_symbols import draw_inductor
+    draw_inductor(root,(x1,y),(x2,y),color,width,
+                  transverse_scale=190,group_id=f'inductor-{x1:g}-{x2:g}-{y:g}')
 
 
 def horizontal_resistor(root: ET.Element, x1: float, x2: float, y: float,
                         color: str, width: float = 3.8) -> None:
-    """Draw the U.S. ANSI/IEEE resistor zigzag."""
-    pitch = (x2 - x1) / 8
-    pts = [(x1,y), (x1+pitch,y-18), (x1+2*pitch,y+18),
-           (x1+3*pitch,y-18), (x1+4*pitch,y+18),
-           (x1+5*pitch,y-18), (x1+6*pitch,y+18),
-           (x1+7*pitch,y-18), (x2,y)]
-    polyline(root,pts,color,width)
+    """Use Schemdraw's native ResistorIEEE element."""
+    from schemdraw_symbols import draw_resistor
+    draw_resistor(root,(x1,y),(x2,y),color,width,
+                  transverse_scale=72,group_id=f'resistor-{x1:g}-{x2:g}-{y:g}')
 
 
 def source_symbol(root: ET.Element, cx: float, cy: float, radius: float,
                   color: str, width: float = 3.5) -> None:
-    art.element(root,'circle',cx=cx,cy=cy,r=radius,fill=PALETTE['paper'],
-                stroke=color,stroke_width=width)
-    art.path(root,
-             f'M {cx-15:g},{cy:g} C {cx-12:g},{cy-12:g} {cx-5:g},{cy-12:g} {cx:g},{cy:g}'
-             f' C {cx+5:g},{cy+12:g} {cx+12:g},{cy+12:g} {cx+15:g},{cy:g}',
-             color,2.1)
+    """Use native SourceSin for the converter transformer primary."""
+    from schemdraw_symbols import draw_ac_source
+    draw_ac_source(root,(cx-radius,cy),(cx+radius,cy),color,width,
+                   group_id=f'ac-source-{cx:g}-{cy:g}')
 
 
 def scr(root: ET.Element, x: float, cy: float, ident: str,
