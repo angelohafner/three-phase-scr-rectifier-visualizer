@@ -13,7 +13,7 @@ def test_signed_inverter_dc_voltage_and_power_are_identical_across_models():
     if not shutil.which('node'):
         pytest.skip('Node.js is required for electrical cross-model verification')
     src='\n'.join((ROOT/'presentation/src'/n).read_text(encoding='utf-8')
-        for n in ('waveforms.js','current_source.js','charts.js'))
+        for n in ('waveforms.js','fixed_axes.js','current_source.js','charts.js'))
     test=src+'''
     const p={alphaR:15,alphaI:145,muR:12,muI:15,idc:1,vPeak:1,
       csOverlapMode:'manual',csLc:.2};
