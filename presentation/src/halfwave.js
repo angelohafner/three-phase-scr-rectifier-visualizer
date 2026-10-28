@@ -107,8 +107,9 @@ const HalfWave = (() => {
     }
     g.setLineDash([]);
     const lines=[{a:alpha,color:color.teal,name:'α',dash:[4,5]},
-                 {a:180,color:color.gold,name:'180°',dash:[2,4]},
-                 {a:beta,color:color.red,name:'β',dash:[5,3]}];
+                 {a:180,color:color.gold,name:'180°',dash:[2,4]}];
+    // R-load extinction coincides with the fixed 180-degree zero crossing.
+    if(beta>180.0001)lines.push({a:beta,color:color.red,name:'β',dash:[5,3]});
     for(const line of lines){
       const xx=X(line.a);g.beginPath();g.strokeStyle=line.color;g.setLineDash(line.dash);g.lineWidth=1.4;
       g.moveTo(xx,top);g.lineTo(xx,bottom);g.stroke();g.setLineDash([]);
@@ -135,7 +136,11 @@ const HalfWave = (() => {
     if(!canvas||!canvas.isConnected)return;
     const {g,width:w,height:h}=view(canvas),rect={x:0,y:0,w,h};
     const rl=get(params,'RL'),r=get(params,'R'),compare=lesson==='compare';
-    const m=lesson==='r_intro'||lesson==='r_delay'||lesson==='r_circuit'?r:rl;
+    // Use the electrical load model that matches the circuit drawn on the slide.
+    const resistiveOnly=['scr_intro','r_circuit','r_delay'].includes(lesson);
+    const m=resistiveOnly?r:rl;
+    // No inductor-only quantities may appear when the circuit contains only R.
+    if(resistiveOnly&&graphMode==='energy')graphMode='overview';
     const v=m.config.V, imax=Math.max(1.2*v/m.config.R,rl.sampled.reduce((p,q)=>Math.max(p,q.i),0)*1.08);
     const vLimit=1.16*v;
     if(compare){
@@ -153,8 +158,11 @@ const HalfWave = (() => {
     if(graphMode==='voltages')specs=[
       [[{key:'vs',label:'v_s',color:color.blue,dash:[8,3]},
         {key:'vo',label:'v_o',color:color.red}],-vLimit,vLimit,'SOURCE / OUTPUT VOLTAGE (V)',{negativeVoltage:true}],
-      [[{key:'vr',label:'v_R',color:color.red},
-        {key:'vl',label:'v_L',color:color.teal,dash:[2,3]}],-vLimit,vLimit,'LOAD COMPONENT VOLTAGES (V)',{}]
+      [resistiveOnly?
+        [{key:'vr',label:'v_R',color:color.red}]:
+        [{key:'vr',label:'v_R',color:color.red},
+         {key:'vl',label:'v_L',color:color.teal,dash:[2,3]}],
+        -vLimit,vLimit,resistiveOnly?'RESISTOR VOLTAGE (V)':'LOAD COMPONENT VOLTAGES (V)',{}]
     ];
     else if(graphMode==='vak')specs=[
       [[{key:'vak',label:'v_AK',color:color.blue}],-vLimit,vLimit,'SCR ANODE–CATHODE VOLTAGE (V)',{}],
@@ -168,9 +176,16 @@ const HalfWave = (() => {
       [[{key:'vs',label:'v_s',color:color.blue,dash:[8,3],opacity:.76},
         {key:'vo',label:'v_o',color:color.red}],-vLimit,vLimit,'AC SOURCE / LOAD VOLTAGE (V)',{negativeVoltage:true}],
       [[{key:'i',label:'i_T',color:color.red}],-.12*imax,imax,'SCR CURRENT (A)',{positiveCurrent:true}],
-      [[{key:'vak',label:'v_AK',color:color.blue,dash:[8,3],opacity:.82},
-        {key:'vl',label:'v_L',color:color.teal,dash:[2,3],opacity:.82}],-vLimit,vLimit,'SCR / INDUCTOR VOLTAGE (V)',{}]
+      [resistiveOnly?
+        [{key:'vak',label:'v_AK',color:color.blue,dash:[8,3],opacity:.82}]:
+        [{key:'vak',label:'v_AK',color:color.blue,dash:[8,3],opacity:.82},
+         {key:'vl',label:'v_L',color:color.teal,dash:[2,3],opacity:.82}],
+        -vLimit,vLimit,resistiveOnly?'SCR VOLTAGE (V)':'SCR / INDUCTOR VOLTAGE (V)',{}]
     ];
+    // Expose only the rendered signals for accessibility and automated checks.
+    canvas.dataset.activeLoad=m.config.load;
+    canvas.dataset.signals=JSON.stringify(specs.flatMap(([lines])=>lines.map(t=>t.key)));
+    canvas.dataset.panelTitles=JSON.stringify(specs.map(([, , ,title])=>title));
     const gap=3,height=(h-gap*(specs.length-1))/specs.length;
     specs.forEach(([lines,min,max,title,opts],j)=>graphPanel(g,{x:0,y:j*(height+gap),w,h:height},m,theta,lines,min,max,title,opts));
   }
