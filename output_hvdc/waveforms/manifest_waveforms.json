@@ -1,0 +1,375 @@
+{
+  "station": "full_hvdc",
+  "model": "conceptual only",
+  "settings": {
+    "alpha_rectifier": 15.0,
+    "alpha_inverter": 145.0,
+    "mu_rectifier": 12.0,
+    "mu_inverter": 15.0,
+    "gamma_min": 10.0,
+    "ac_phase_offset": 30.0
+  },
+  "relative_offset_note": "Station timeline shift only, not a calculated AC phase angle",
+  "states": [
+    {
+      "state": "hvdc_joint_state_01",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_01.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_01.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_01.svg",
+      "windows_deg": [
+        [
+          0.0,
+          12.0
+        ]
+      ],
+      "rectifier_state": 12,
+      "inverter_state": 11,
+      "note": "Rectifier: T1 + T4 + T6 | T4 outgoing → T6 incoming   |   Inverter: T1 + T4 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "hvdc_joint_state_02",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_02.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_02.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_02.svg",
+      "windows_deg": [
+        [
+          12.0,
+          30.0
+        ]
+      ],
+      "rectifier_state": 1,
+      "inverter_state": 11,
+      "note": "Rectifier: T1 + T6 | one upper and one lower SCR carry the DC current   |   Inverter: T1 + T4 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "hvdc_joint_state_03",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_03.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_03.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_03.svg",
+      "windows_deg": [
+        [
+          30.0,
+          45.0
+        ]
+      ],
+      "rectifier_state": 1,
+      "inverter_state": 12,
+      "note": "Rectifier: T1 + T6 | one upper and one lower SCR carry the DC current   |   Inverter: T1 + T4 + T6 | T4 outgoing → T6 incoming"
+    },
+    {
+      "state": "hvdc_joint_state_04",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_04.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_04.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_04.svg",
+      "windows_deg": [
+        [
+          45.0,
+          60.0
+        ]
+      ],
+      "rectifier_state": 1,
+      "inverter_state": 1,
+      "note": "Rectifier: T1 + T6 | one upper and one lower SCR carry the DC current   |   Inverter: T1 + T6 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "hvdc_joint_state_05",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_05.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_05.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_05.svg",
+      "windows_deg": [
+        [
+          60.0,
+          72.0
+        ]
+      ],
+      "rectifier_state": 2,
+      "inverter_state": 1,
+      "note": "Rectifier: T1 + T3 + T6 | T1 outgoing → T3 incoming   |   Inverter: T1 + T6 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "hvdc_joint_state_06",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_06.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_06.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_06.svg",
+      "windows_deg": [
+        [
+          72.0,
+          90.0
+        ]
+      ],
+      "rectifier_state": 3,
+      "inverter_state": 1,
+      "note": "Rectifier: T3 + T6 | one upper and one lower SCR carry the DC current   |   Inverter: T1 + T6 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "hvdc_joint_state_07",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_07.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_07.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_07.svg",
+      "windows_deg": [
+        [
+          90.0,
+          105.0
+        ]
+      ],
+      "rectifier_state": 3,
+      "inverter_state": 2,
+      "note": "Rectifier: T3 + T6 | one upper and one lower SCR carry the DC current   |   Inverter: T1 + T3 + T6 | T1 outgoing → T3 incoming"
+    },
+    {
+      "state": "hvdc_joint_state_08",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_08.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_08.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_08.svg",
+      "windows_deg": [
+        [
+          105.0,
+          120.0
+        ]
+      ],
+      "rectifier_state": 3,
+      "inverter_state": 3,
+      "note": "Rectifier: T3 + T6 | one upper and one lower SCR carry the DC current   |   Inverter: T3 + T6 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "hvdc_joint_state_09",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_09.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_09.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_09.svg",
+      "windows_deg": [
+        [
+          120.0,
+          132.0
+        ]
+      ],
+      "rectifier_state": 4,
+      "inverter_state": 3,
+      "note": "Rectifier: T2 + T3 + T6 | T6 outgoing → T2 incoming   |   Inverter: T3 + T6 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "hvdc_joint_state_10",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_10.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_10.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_10.svg",
+      "windows_deg": [
+        [
+          132.0,
+          150.0
+        ]
+      ],
+      "rectifier_state": 5,
+      "inverter_state": 3,
+      "note": "Rectifier: T2 + T3 | one upper and one lower SCR carry the DC current   |   Inverter: T3 + T6 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "hvdc_joint_state_11",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_11.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_11.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_11.svg",
+      "windows_deg": [
+        [
+          150.0,
+          165.0
+        ]
+      ],
+      "rectifier_state": 5,
+      "inverter_state": 4,
+      "note": "Rectifier: T2 + T3 | one upper and one lower SCR carry the DC current   |   Inverter: T2 + T3 + T6 | T6 outgoing → T2 incoming"
+    },
+    {
+      "state": "hvdc_joint_state_12",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_12.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_12.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_12.svg",
+      "windows_deg": [
+        [
+          165.0,
+          180.0
+        ]
+      ],
+      "rectifier_state": 5,
+      "inverter_state": 5,
+      "note": "Rectifier: T2 + T3 | one upper and one lower SCR carry the DC current   |   Inverter: T2 + T3 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "hvdc_joint_state_13",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_13.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_13.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_13.svg",
+      "windows_deg": [
+        [
+          180.0,
+          192.0
+        ]
+      ],
+      "rectifier_state": 6,
+      "inverter_state": 5,
+      "note": "Rectifier: T2 + T3 + T5 | T3 outgoing → T5 incoming   |   Inverter: T2 + T3 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "hvdc_joint_state_14",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_14.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_14.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_14.svg",
+      "windows_deg": [
+        [
+          192.0,
+          210.0
+        ]
+      ],
+      "rectifier_state": 7,
+      "inverter_state": 5,
+      "note": "Rectifier: T2 + T5 | one upper and one lower SCR carry the DC current   |   Inverter: T2 + T3 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "hvdc_joint_state_15",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_15.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_15.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_15.svg",
+      "windows_deg": [
+        [
+          210.0,
+          225.0
+        ]
+      ],
+      "rectifier_state": 7,
+      "inverter_state": 6,
+      "note": "Rectifier: T2 + T5 | one upper and one lower SCR carry the DC current   |   Inverter: T2 + T3 + T5 | T3 outgoing → T5 incoming"
+    },
+    {
+      "state": "hvdc_joint_state_16",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_16.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_16.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_16.svg",
+      "windows_deg": [
+        [
+          225.0,
+          240.0
+        ]
+      ],
+      "rectifier_state": 7,
+      "inverter_state": 7,
+      "note": "Rectifier: T2 + T5 | one upper and one lower SCR carry the DC current   |   Inverter: T2 + T5 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "hvdc_joint_state_17",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_17.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_17.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_17.svg",
+      "windows_deg": [
+        [
+          240.0,
+          252.0
+        ]
+      ],
+      "rectifier_state": 8,
+      "inverter_state": 7,
+      "note": "Rectifier: T2 + T4 + T5 | T2 outgoing → T4 incoming   |   Inverter: T2 + T5 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "hvdc_joint_state_18",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_18.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_18.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_18.svg",
+      "windows_deg": [
+        [
+          252.0,
+          270.0
+        ]
+      ],
+      "rectifier_state": 9,
+      "inverter_state": 7,
+      "note": "Rectifier: T4 + T5 | one upper and one lower SCR carry the DC current   |   Inverter: T2 + T5 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "hvdc_joint_state_19",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_19.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_19.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_19.svg",
+      "windows_deg": [
+        [
+          270.0,
+          285.0
+        ]
+      ],
+      "rectifier_state": 9,
+      "inverter_state": 8,
+      "note": "Rectifier: T4 + T5 | one upper and one lower SCR carry the DC current   |   Inverter: T2 + T4 + T5 | T2 outgoing → T4 incoming"
+    },
+    {
+      "state": "hvdc_joint_state_20",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_20.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_20.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_20.svg",
+      "windows_deg": [
+        [
+          285.0,
+          300.0
+        ]
+      ],
+      "rectifier_state": 9,
+      "inverter_state": 9,
+      "note": "Rectifier: T4 + T5 | one upper and one lower SCR carry the DC current   |   Inverter: T4 + T5 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "hvdc_joint_state_21",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_21.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_21.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_21.svg",
+      "windows_deg": [
+        [
+          300.0,
+          312.0
+        ]
+      ],
+      "rectifier_state": 10,
+      "inverter_state": 9,
+      "note": "Rectifier: T1 + T4 + T5 | T5 outgoing → T1 incoming   |   Inverter: T4 + T5 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "hvdc_joint_state_22",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_22.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_22.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_22.svg",
+      "windows_deg": [
+        [
+          312.0,
+          330.0
+        ]
+      ],
+      "rectifier_state": 11,
+      "inverter_state": 9,
+      "note": "Rectifier: T1 + T4 | one upper and one lower SCR carry the DC current   |   Inverter: T4 + T5 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "hvdc_joint_state_23",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_23.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_23.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_23.svg",
+      "windows_deg": [
+        [
+          330.0,
+          345.0
+        ]
+      ],
+      "rectifier_state": 11,
+      "inverter_state": 10,
+      "note": "Rectifier: T1 + T4 | one upper and one lower SCR carry the DC current   |   Inverter: T1 + T4 + T5 | T5 outgoing → T1 incoming"
+    },
+    {
+      "state": "hvdc_joint_state_24",
+      "svg": "output_hvdc/waveforms/hvdc_joint_state_24.svg",
+      "circuit": "output_hvdc/hvdc_joint_state_24.svg",
+      "combined": "output_hvdc/sheets/hvdc_joint_state_24.svg",
+      "windows_deg": [
+        [
+          345.0,
+          360.0
+        ]
+      ],
+      "rectifier_state": 11,
+      "inverter_state": 11,
+      "note": "Rectifier: T1 + T4 | one upper and one lower SCR carry the DC current   |   Inverter: T1 + T4 | one upper and one lower SCR carry the DC current"
+    }
+  ]
+}

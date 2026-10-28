@@ -1,0 +1,16 @@
+{
+  "sides": ["rectifier", "inverter", "hvdc"],
+  "ac_peak": 1.0,
+  "dc_current": 1.0,
+  "samples": 1441,
+  "png_dpi": 105,
+  "alpha_rectifier": 15.0,
+  "alpha_inverter": 145.0,
+  "mu_rectifier": 15.0,
+  "mu_inverter": 15.0,
+  "gamma_min": 10.0,
+  "hvdc_settings_file": "config_hvdc.json",
+  "signals": ["phase", "line", "scr", "dc", "idc"],
+  "combined": true,
+  "png": true
+}

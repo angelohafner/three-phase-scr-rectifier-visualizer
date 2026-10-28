@@ -229,3 +229,25 @@ topology conventions, architecture, output files, validation and limitations.
 - In overlap states, red means a possible conducting branch, not equal currents or a calculated instantaneous division.
 
 Audit and regenerate all galleries with the commands in `docs/FIGURE_AUDIT.md`.
+
+---
+
+## Stage 4: Conceptual conduction waveforms (48 synchronized figures)
+
+The waveform extension adds **12 rectifier**, **12 inverter** and **24 HVDC joint-state** charts, with corresponding fully editable combined circuit+waveform SVG sheets. PNG previews are also provided. The original circuit figures remain available.
+
+![Rectifier overlap with synchronized waveform panels](output_lcc/rectifier/sheets/estado_02.png)
+
+```bash
+python -m pip install -r requirements-waveforms.txt
+python generate_lcc_waveforms.py --config config_waveforms.json --side all
+python -m pytest -q tests
+```
+
+- `output_lcc/rectifier/waveforms/` and `output_lcc/rectifier/sheets/`
+- `output_lcc/inverter/waveforms/` and `output_lcc/inverter/sheets/`
+- `output_hvdc/waveforms/` and `output_hvdc/sheets/`
+
+The current transfer is an illustrative linear interpolation during overlap and the DC voltage is a simplified equal-reactance arithmetic average, **not an EMT solution**. The inverter voltage chart uses a positive pole-to-return convention; the negative signed converter voltage is the opposite quantity. The full-link phase offset remains illustrative, not physically solved.
+
+[Detailed model, limitations and notation](docs/LCC_DIDACTIC_WAVEFORMS.md)

@@ -1,0 +1,193 @@
+{
+  "station": "rectifier",
+  "model": "conceptual only",
+  "parameters": {
+    "alpha_deg": 15.0,
+    "mu_deg": 15.0,
+    "gamma_deg": null,
+    "ac_peak": 1.0,
+    "idc": 1.0
+  },
+  "states": [
+    {
+      "state": "estado_01",
+      "svg": "output_lcc/rectifier/waveforms/estado_01.svg",
+      "circuit": "output_lcc/rectifier/estado_01.svg",
+      "combined": "output_lcc/rectifier/sheets/estado_01.svg",
+      "windows_deg": [
+        [
+          15.0,
+          60
+        ]
+      ],
+      "rectifier_state": 1,
+      "inverter_state": null,
+      "note": "T1 + T6 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "estado_02",
+      "svg": "output_lcc/rectifier/waveforms/estado_02.svg",
+      "circuit": "output_lcc/rectifier/estado_02.svg",
+      "combined": "output_lcc/rectifier/sheets/estado_02.svg",
+      "windows_deg": [
+        [
+          60,
+          75.0
+        ]
+      ],
+      "rectifier_state": 2,
+      "inverter_state": null,
+      "note": "T1 + T3 + T6 | T1 outgoing → T3 incoming"
+    },
+    {
+      "state": "estado_03",
+      "svg": "output_lcc/rectifier/waveforms/estado_03.svg",
+      "circuit": "output_lcc/rectifier/estado_03.svg",
+      "combined": "output_lcc/rectifier/sheets/estado_03.svg",
+      "windows_deg": [
+        [
+          75.0,
+          120
+        ]
+      ],
+      "rectifier_state": 3,
+      "inverter_state": null,
+      "note": "T3 + T6 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "estado_04",
+      "svg": "output_lcc/rectifier/waveforms/estado_04.svg",
+      "circuit": "output_lcc/rectifier/estado_04.svg",
+      "combined": "output_lcc/rectifier/sheets/estado_04.svg",
+      "windows_deg": [
+        [
+          120,
+          135.0
+        ]
+      ],
+      "rectifier_state": 4,
+      "inverter_state": null,
+      "note": "T2 + T3 + T6 | T6 outgoing → T2 incoming"
+    },
+    {
+      "state": "estado_05",
+      "svg": "output_lcc/rectifier/waveforms/estado_05.svg",
+      "circuit": "output_lcc/rectifier/estado_05.svg",
+      "combined": "output_lcc/rectifier/sheets/estado_05.svg",
+      "windows_deg": [
+        [
+          135.0,
+          180
+        ]
+      ],
+      "rectifier_state": 5,
+      "inverter_state": null,
+      "note": "T2 + T3 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "estado_06",
+      "svg": "output_lcc/rectifier/waveforms/estado_06.svg",
+      "circuit": "output_lcc/rectifier/estado_06.svg",
+      "combined": "output_lcc/rectifier/sheets/estado_06.svg",
+      "windows_deg": [
+        [
+          180,
+          195.0
+        ]
+      ],
+      "rectifier_state": 6,
+      "inverter_state": null,
+      "note": "T2 + T3 + T5 | T3 outgoing → T5 incoming"
+    },
+    {
+      "state": "estado_07",
+      "svg": "output_lcc/rectifier/waveforms/estado_07.svg",
+      "circuit": "output_lcc/rectifier/estado_07.svg",
+      "combined": "output_lcc/rectifier/sheets/estado_07.svg",
+      "windows_deg": [
+        [
+          195.0,
+          240
+        ]
+      ],
+      "rectifier_state": 7,
+      "inverter_state": null,
+      "note": "T2 + T5 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "estado_08",
+      "svg": "output_lcc/rectifier/waveforms/estado_08.svg",
+      "circuit": "output_lcc/rectifier/estado_08.svg",
+      "combined": "output_lcc/rectifier/sheets/estado_08.svg",
+      "windows_deg": [
+        [
+          240,
+          255.0
+        ]
+      ],
+      "rectifier_state": 8,
+      "inverter_state": null,
+      "note": "T2 + T4 + T5 | T2 outgoing → T4 incoming"
+    },
+    {
+      "state": "estado_09",
+      "svg": "output_lcc/rectifier/waveforms/estado_09.svg",
+      "circuit": "output_lcc/rectifier/estado_09.svg",
+      "combined": "output_lcc/rectifier/sheets/estado_09.svg",
+      "windows_deg": [
+        [
+          255.0,
+          300
+        ]
+      ],
+      "rectifier_state": 9,
+      "inverter_state": null,
+      "note": "T4 + T5 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "estado_10",
+      "svg": "output_lcc/rectifier/waveforms/estado_10.svg",
+      "circuit": "output_lcc/rectifier/estado_10.svg",
+      "combined": "output_lcc/rectifier/sheets/estado_10.svg",
+      "windows_deg": [
+        [
+          300,
+          315.0
+        ]
+      ],
+      "rectifier_state": 10,
+      "inverter_state": null,
+      "note": "T1 + T4 + T5 | T5 outgoing → T1 incoming"
+    },
+    {
+      "state": "estado_11",
+      "svg": "output_lcc/rectifier/waveforms/estado_11.svg",
+      "circuit": "output_lcc/rectifier/estado_11.svg",
+      "combined": "output_lcc/rectifier/sheets/estado_11.svg",
+      "windows_deg": [
+        [
+          315.0,
+          360
+        ]
+      ],
+      "rectifier_state": 11,
+      "inverter_state": null,
+      "note": "T1 + T4 | one upper and one lower SCR carry the DC current"
+    },
+    {
+      "state": "estado_12",
+      "svg": "output_lcc/rectifier/waveforms/estado_12.svg",
+      "circuit": "output_lcc/rectifier/estado_12.svg",
+      "combined": "output_lcc/rectifier/sheets/estado_12.svg",
+      "windows_deg": [
+        [
+          0.0,
+          15.0
+        ]
+      ],
+      "rectifier_state": 12,
+      "inverter_state": null,
+      "note": "T1 + T4 + T6 | T4 outgoing → T6 incoming"
+    }
+  ]
+}

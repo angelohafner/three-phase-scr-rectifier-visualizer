@@ -221,7 +221,7 @@ class HVDCLinkRenderer:
         if len(active_phases)>1:
             y_values=[PHASE_Y[p] for p in active_phases]
             active_span=(min(y_values),max(y_values))
-            art.line(root,x,*active_span,PALETTE['active'],5.1)
+            art.line(root,x,active_span[0],x,active_span[1],PALETTE['active'],5.1)
         for phase in 'abc':
             ypos=PHASE_Y[phase]
             on=phase in active_phases or (active_span is not None
