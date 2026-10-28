@@ -31,6 +31,34 @@ with sync_playwright() as playwright:
         page.evaluate('(ix)=>window.LCCPresentationTest.setSlide(ix)',ix)
         page.locator('#chart-mode').select_option('valvePair')
         assert page.locator('#plot-canvas').evaluate('(canvas)=>canvas.width>100')
+    # Regression: a dragged range control must remain mounted across state changes.
+    for side in ('rectifier', 'inverter', 'hvdc'):
+        index = page.evaluate(
+            "side => window.LCCPresentationTest.deck.findIndex("
+            "s => s.side === side && s.type === 'state' && s.id === 1)", side)
+        assert index >= 0
+        page.evaluate('(i) => window.LCCPresentationTest.setSlide(i)', index)
+        slider = page.locator('#angle-range')
+        slider.scroll_into_view_if_needed()
+        page.evaluate('window.__sliderNode = document.getElementById("angle-range")')
+        initial = float(slider.input_value())
+        box = slider.bounding_box()
+        assert box is not None
+        left, travel = box['x'] + 8, box['width'] - 16
+        y = box['y'] + box['height'] / 2
+        page.mouse.move(left + travel * initial / 359.75, y)
+        page.mouse.down()
+        seen = set()
+        for angle in (90, 165, 250, 315):
+            page.mouse.move(left + travel * angle / 359.75, y, steps=5)
+            page.wait_for_timeout(80)
+            assert page.evaluate(
+                'window.__sliderNode === document.getElementById("angle-range")'), side
+            actual = float(slider.input_value())
+            assert abs(actual - angle) < 6, (side, angle, actual)
+            seen.add(page.evaluate('window.LCCPresentationTest.getIndex()'))
+        page.mouse.up()
+        assert len(seen) > 1, side
     assert not errors, '\n'.join(errors)
     browser.close()
 print('PASS: 64 slides, four load models, SCR vAK, selected valves, offline charts.')
