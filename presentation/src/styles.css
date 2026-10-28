@@ -115,3 +115,8 @@ body{font-family:"Segoe UI",Arial,sans-serif;font-style:normal;font-variant-nume
 /* Preserve upright sans-serif prose and italic mathematical SVG variables. */
 .fund-diagram svg text{font-family:"Segoe UI",Arial,sans-serif}
 .fund-diagram svg text[font-style="italic"]{font-family:"STIX Math","Cambria Math","DejaVu Serif",serif}
+
+/* Inductance controls are interactive only if L is present in the topology. */
+.fund-tuner.inductor-disabled,.slider-row.inductor-disabled{opacity:.42;filter:grayscale(.8)}
+.fund-tuner.inductor-disabled input,.slider-row.inductor-disabled input{cursor:not-allowed;accent-color:#8498a2}
+.fund-tuner.inductor-disabled output,.slider-row.inductor-disabled output{color:#657884}
