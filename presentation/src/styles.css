@@ -91,3 +91,27 @@ body{font-family:"Segoe UI",Arial,sans-serif;font-style:normal;font-variant-nume
 .fact strong{font-style:normal}.load-equation:empty{display:none}
 
 .math-matrix{font-family:"STIX Two Math","Cambria Math",Georgia,serif;font-style:normal;font-weight:700}
+
+/* Chapter 00: scientific half-wave fundamentals and persistent native sliders. */
+.topnav .tab{padding-inline:10px}
+.fundamentals-slide{gap:8px}
+.fund-workspace{grid-template-columns:minmax(0,1fr) minmax(0,1.08fr)}
+.fund-diagram{padding:6px;min-height:0}
+.fund-controlbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;flex-shrink:0;padding:5px 8px;background:#f3f8fa;border:1px solid #cadde4;border-radius:4px}
+.fund-tuner{min-width:0;display:flex;flex-direction:column;gap:4px;color:#1d4d64;font-size:11px;font-weight:700}
+.fund-tuner>span{display:flex;justify-content:space-between;align-items:center;gap:5px}
+.fund-tuner output{font-variant-numeric:tabular-nums;white-space:nowrap;color:#1c5d75;font-weight:600;font-size:11px}
+.fund-tuner input{width:100%;margin:0;accent-color:#078995;touch-action:none}
+.fund-note{min-height:53px}
+.fund-note .explainer{padding:8px 12px;font-size:12px;line-height:1.34}
+.fund-note .fact-grid{width:min(39%,420px)}
+.fund-note .fact strong{font-size:11px;white-space:normal;line-height:1.2}
+.fund-dual{display:grid;grid-template-columns:1fr 1fr;gap:3px;width:100%;height:100%;align-items:center}
+.fund-dual>div{min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%}
+.fund-dual svg{width:100%;height:90%}
+.fund-tag{font-size:10px;font-weight:800;color:#146275;letter-spacing:.06em}
+@media(max-width:1000px){.fund-workspace{grid-template-columns:1fr;grid-template-rows:48% 52%}.fund-controlbar{gap:5px}.fund-tuner{font-size:10px}.topnav{gap:3px}.topnav .tab{padding:6px;font-size:10px}}
+@media(max-width:640px){.fundamentals-slide{gap:4px}.fund-controlbar{grid-template-columns:repeat(2,1fr);padding:3px 5px;gap:4px}.fund-tuner{gap:2px;font-size:9px}.fund-tuner input{height:8px}.fund-note .fact-grid{display:none}.fund-note .explainer{font-size:10px}.topnav .tab{font-size:8px;padding:5px 3px}}
+/* Preserve upright sans-serif prose and italic mathematical SVG variables. */
+.fund-diagram svg text{font-family:"Segoe UI",Arial,sans-serif}
+.fund-diagram svg text[font-style="italic"]{font-family:"STIX Math","Cambria Math","DejaVu Serif",serif}

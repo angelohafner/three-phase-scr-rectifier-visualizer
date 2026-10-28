@@ -118,7 +118,15 @@ def build(source: Path, out: Path, src: Path) -> dict:
             image = ET.fromstring(clean)
             image.set('viewBox', '55 174 1420 550')
             load_figures[f'{mode}:{idx}'] = ET.tostring(image, encoding='unicode')
+    from halfwave_figures import circuit_svg
+    halfwave_figures={}
+    for load in ('R','RL'):
+        for conducting in (False,True):
+            key=load+':'+('on' if conducting else 'off')
+            xml=ET.tostring(circuit_svg(load,conducting).getroot(),encoding='unicode')
+            halfwave_figures[key]=svg_xml(xml)
     data = {
+        'halfwave_figures': halfwave_figures,
         'load_figures': load_figures,
         'format': 'LCC interactive engineering teaching deck v2 · R RL LE RLE · SCR vAK',
         'source': 'angelohafner/three-phase-scr-rectifier-visualizer',
@@ -135,6 +143,7 @@ def build(source: Path, out: Path, src: Path) -> dict:
         '<!--INLINE_CHARTS-->': (src / 'charts.js').read_text(encoding='utf-8'),
         '<!--INLINE_LOAD_MODELS-->': (src / 'load_models.js').read_text(encoding='utf-8'),
         '<!--INLINE_LOAD_CHARTS-->': (src / 'load_charts.js').read_text(encoding='utf-8'),
+        '<!--INLINE_HALFWAVE-->': (src / 'halfwave.js').read_text(encoding='utf-8'),
         '<!--INLINE_PRESENTATION-->': (src / 'presentation.js').read_text(encoding='utf-8'),
         '<!--INLINE_DATA-->': json.dumps(data, ensure_ascii=False, separators=(',', ':'))
             .replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026'),
@@ -152,7 +161,7 @@ def build(source: Path, out: Path, src: Path) -> dict:
         'individual_circuits': len(figures['rectifier']) + len(figures['inverter']),
         'hvdc_topology_pairs': len(figures['hvdc']),
         'reference_waveforms': sum(map(len, refs.values())),
-        'slides': 64,
+        'slides': 73,
         'offline': True,
     }
 

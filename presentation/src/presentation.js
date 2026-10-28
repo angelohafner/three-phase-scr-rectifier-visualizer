@@ -3,13 +3,17 @@
 (() => {
  const DATA=JSON.parse(document.getElementById('presentation-data').textContent);
  const $=id=>document.getElementById(id);
- const params={alphaR:15,alphaI:145,muR:12,muI:15,idc:1,vPeak:1,speed:30,alphaLoad:75,loadR:1,loadL:8,loadE:.2,loadI0:.5,loadMode:'R'};
+ const params={alphaR:15,alphaI:145,muR:12,muI:15,idc:1,vPeak:1,speed:30,alphaLoad:75,loadR:1,loadL:8,loadE:.2,loadI0:.5,loadMode:'R',hAlpha:50,hR:12,hL:70,hV:120,hFrequency:60};
  const initial={...params};
  let theta=65,slideIndex=0,playing=false,raf=0,lastTick=0,mode='overview',selectedSCR='all',showReference=false,showExplanation=true;
  let cachedSVG='',cachedKey='',runtimeSchedule=[],deck=[];
  const stages=['rectifier','inverter','hvdc'];
  function slide(side,type,id=0){return {side,type,id};}
- deck=[slide('intro','title'),slide('intro','roadmap'),slide('rectifier','chapter')];
+ deck=[slide('intro','title'),slide('intro','roadmap'),slide('fundamentals','chapter')];
+ for(const lesson of ['scr_intro','r_circuit','r_delay','rl_circuit','after180','extinction','compare','commutation']){
+   deck.push({side:'fundamentals',type:'fundamentals',lesson});
+ }
+ deck.push(slide('rectifier','chapter'));
  deck.push({side:'rectifier',type:'load',lesson:'r_intro',alpha:0});
  for(const alpha of [0,30,75,90])deck.push({side:'rectifier',type:'load',lesson:'r_case',alpha});
  deck.push({side:'rectifier',type:'load',lesson:'r_compare',alpha:75});
@@ -26,7 +30,7 @@
  const iMap=Object.fromEntries(stages.map(side=>[side,deck.findIndex(x=>x.side===side&&x.type==='state')]));
  const chapterIndex=Object.fromEntries(stages.map(side=>[side,deck.findIndex(x=>x.side===side&&x.type==='chapter')]));
  function current(){return deck[slideIndex];}
- function activeStage(){return stages.includes(current().side)?current().side:'rectifier';}
+ function activeStage(){return current().side==='fundamentals'?'fundamentals':stages.includes(current().side)?current().side:'rectifier';}
  function setTheta(a){theta=+(LCC.mod(a,360)).toFixed(2);}
  function startOfWindow(w){const [a,b]=w;return LCC.mod((a+b)/2,360);}
  function liveWindow(s=current()){
@@ -41,6 +45,12 @@
  function goto(idx,opts={}){
    const next=Math.max(0,Math.min(deck.length-1,idx));
    const previous=slideIndex;slideIndex=next;
+   if(current().type==='fundamentals'&&!opts.keepAngle&&next!==previous){
+     const lesson=current().lesson;
+     const beta=HalfWave.get(params,'RL').beta;
+     const targets={scr_intro:30,r_circuit:85,r_delay:120,rl_circuit:195,after180:Math.min(beta-5,212),extinction:Math.max(181,beta-1),compare:200,commutation:215};
+     setTheta(targets[lesson]??140);
+   }
    if(current().type==='load'&&!opts.keepAngle&&next!==previous){
      params.alphaLoad=current().alpha;
      params.loadMode=({rl_intro:'RL',le_intro:'LE',rle_intro:'RLE'}[current().lesson]||'R');
@@ -73,7 +83,7 @@
    const id=LCC.mod(s.id-1+v,count)+1;
    goto(iMap[s.side]+id-1);
  }
- function selectStage(stage){pause();goto(chapterIndex[stage]);}
+ function selectStage(stage){pause();goto(stage==='fundamentals'?deck.findIndex(s=>s.side==='fundamentals'&&s.type==='chapter'):chapterIndex[stage]);}
  function diagramSource(s,active){
    if(s.side==='hvdc')return DATA.diagrams.hvdc[`${active.r}:${active.i}`]||null;
    return DATA.diagrams[s.side][String(s.id)]||null;
@@ -137,6 +147,8 @@
     :`Valves ${LCC.stateInfo(s.id).scrs.join(' + ')} · ${w.map(([lo,hi])=>`${lo.toFixed(1)}–${hi.toFixed(1)}°`).join(', ')}`;
    return {a,type,overlap,desc,sub};
  }
+ // Update state-specific content without rebuilding the angle range input.
+ // Replacing the input during its input event causes the browser to lose drag capture.
  function refreshStateInPlace(){
    const s=current();
    if(s.type!=='state'||!$('angle-range'))return;
@@ -150,7 +162,7 @@
    badge.textContent=overlap?'OVERLAP':'NORMAL';
    root.querySelector('.explainer').innerHTML=desc;
    $('facts').innerHTML=facts(s,a);
-   // Keep the same range input and its native pointer capture across state changes.
+   // The same range DOM element must survive all state transitions.
    $('angle-range').value=String(theta);
    renderCircuit(s,a);
    applyTransfer();
@@ -255,24 +267,107 @@
    renderLoadDetails();
  }
 
+ function fundamentalsDetails(s){
+   const data={
+    scr_intro:['What Is a Thyristor?','Three terminals: anode, cathode and gate. The gate initiates forward conduction.'],
+    r_circuit:['Half-Wave Rectifier with R Load','Current follows the source voltage immediately after firing.'],
+    r_delay:['R Load · Effect of Firing Angle','Move the firing delay and observe the shrinking conduction interval.'],
+    rl_circuit:['Half-Wave Rectifier with RL Load','An inductor stores energy and slows the change in current.'],
+    after180:['Why Does the SCR Remain ON After 180°?','The source voltage reverses at 180°, but the current stays positive until extinction.'],
+    extinction:['Natural Current Extinction','The dynamically calculated angle β marks the first zero of SCR current.'],
+    compare:['R versus RL · Same Source, Different Current','Compare a resistive current and a delayed inductive current with fixed axes.'],
+    commutation:['Natural Extinction versus Line Commutation','Current extinction in one SCR differs from transferring current between valves.']
+   };
+   return data[s.lesson]||['Thyristor Fundamentals','Single-phase SCR operation'];
+ }
+ function fundamentalsMessage(s,rl,r,point){
+   const beta=rl.beta.toFixed(1);
+   switch(s.lesson){
+    case 'scr_intro':return 'An SCR conducts only after a valid gate pulse under forward bias. Removing the gate signal does not turn an ordinary SCR off.';
+    case 'r_circuit':return `${MathUI.v('i','T')} = ${MathUI.v('v','s')} / ${MathUI.v('R')} during conduction. With pure R, current naturally falls to zero at ${MathUI.num('180')}${MathUI.unit('°')}.`;
+    case 'r_delay':return `Increasing ${MathUI.v('α')} delays turn-on. For R, the SCR stops at ${MathUI.num('180')}${MathUI.unit('°')}; the gate cannot keep it conducting in reverse bias.`;
+    case 'rl_circuit':return `${MathUI.v('L')}d${MathUI.v('i','T')}/d${MathUI.v('t')}+${MathUI.v('R')}${MathUI.v('i','T')}=${MathUI.v('v','s')}. The inductor stores ${MathUI.num('½')}${MathUI.v('L')}${MathUI.v('i','T')}² and current can extend beyond the source zero crossing.`;
+    case 'after180':return (theta>=180&&theta<rl.beta)?
+       `Between the fixed ${MathUI.num('180')}${MathUI.unit('°')} marker and ${MathUI.v('β')} = ${MathUI.num(beta)}${MathUI.unit('°')}, source voltage is negative while SCR current remains positive. The inductor releases stored energy.`:
+       `Watch the interval from ${MathUI.num('180')}${MathUI.unit('°')} to the movable extinction marker ${MathUI.v('β')} = ${MathUI.num(beta)}${MathUI.unit('°')}. Move the cursor inside the shaded region.`;
+    case 'extinction':return `The model finds ${MathUI.v('β')} = ${MathUI.num(beta)}${MathUI.unit('°')} by solving the RL equation. Current reaches zero naturally; the SCR then blocks. Real SCRs additionally require a holding-current and recovery margin.`;
+    case 'compare':return `At the same firing angle, R has extinction at ${MathUI.num('180')}${MathUI.unit('°')}; RL extinguishes at ${MathUI.v('β')} = ${MathUI.num(beta)}${MathUI.unit('°')}. The comparison uses the same axes and source amplitude.`;
+    case 'commutation':return `Here the SCR stops when its current reaches zero at ${MathUI.v('β')}. In a three-phase LCC, the next valve turns on and current transfers between phases during ${MathUI.v('μ')}; these are different phenomena.`;
+   }
+ }
+ function renderFundamentalsDetails(){
+   const s=current();if(s.type!=='fundamentals'||!$('fund-circuit-host'))return;
+   const rl=HalfWave.get(params,'RL'),r=HalfWave.get(params,'R');
+   const load=['scr_intro','r_circuit','r_delay'].includes(s.lesson)?'R':'RL';
+   const m=load==='R'?r:rl,point=m.at(theta),on=point.on;
+   const activeKey=s.lesson==='compare'?`compare:${r.at(theta).on}:${rl.at(theta).on}`:`${load}:${on}`;
+   if(cachedKey!==activeKey){
+     const asset=DATA.halfwave_figures;
+     const src=label=>asset[label]||'<p>Missing SVG circuit</p>';
+     $('fund-circuit-host').innerHTML=s.lesson==='compare'?
+       `<div class="fund-dual"><div><span class="fund-tag">R LOAD</span>${src(`R:${r.at(theta).on?'on':'off'}`)}</div><div><span class="fund-tag">RL LOAD</span>${src(`RL:${rl.at(theta).on?'on':'off'}`)}</div></div>`:
+       src(`${load}:${on?'on':'off'}`);
+     cachedKey=activeKey;
+   }
+   const betaTxt=rl.beta.toFixed(1);
+   $('fund-beta').innerHTML=MathUI.angle('β',load==='R'?180:rl.beta);
+   $('fund-state').textContent=s.lesson==='compare'?`R: ${r.at(theta).on?'ON':'OFF'} · RL: ${rl.at(theta).on?'ON':'OFF'}`:on?'T1 conducting':'T1 blocking';
+   $('fund-i').innerHTML=MathUI.angle('θ',theta)+' · '+MathUI.num(point.i.toFixed(2))+MathUI.unit(' A');
+   $('fund-description').innerHTML=fundamentalsMessage(s,rl,r,point);
+   $('fund-angle-status').innerHTML=MathUI.angle('θ',theta)+' · '+MathUI.angle('α',params.hAlpha)+' · '+MathUI.angle('β',rl.beta);
+   const marker=$('fund-marker-status');if(marker)marker.innerHTML=(s.lesson==='after180'||s.lesson==='extinction')?
+     `${MathUI.num('180')}${MathUI.unit('°')} fixed source zero · ${MathUI.v('β')} = ${MathUI.num(betaTxt)}${MathUI.unit('°')} (RL turn-off)`:
+     `Conduction highlighted · ${MathUI.v('α')} = ${MathUI.num(params.hAlpha.toFixed(1))}${MathUI.unit('°')}`;
+   const range=$('fund-angle');if(range)range.value=String(theta);
+   for(const name of ['hAlpha','hR','hL','hV']){
+     const el=$(name+'-fund'),out=$(name+'-fund-value');
+     if(out)out.textContent=params[name].toFixed(name==='hL'?1:1)+({hAlpha:'°',hR:' Ω',hL:' mH',hV:' V'}[name]);
+     if(el&&document.activeElement!==el)el.value=params[name];
+   }
+   HalfWave.render($('fund-waveforms'),params,theta,s.lesson,$('fund-mode').value);
+ }
+ function renderFundamentalsSlide(s){
+   const [title,subtitle]=fundamentalsDetails(s);
+   const controls=[['hAlpha',0,175,.1,'α','°'],['hR',2,45,.1,'R','Ω'],
+                   ['hL',.5,140,.1,'L','mH'],['hV',40,260,.5,'V','V']];
+   $('slide').className='slide technical fundamentals-slide';
+   $('slide').innerHTML=`<div class="tech-head"><div class="tech-index">00 · FUNDAMENTALS</div><div class="tech-title"><h1>${title}</h1><p>${subtitle}</p></div><div class="mode-badge" id="fund-state">SCR</div></div>
+    <div class="workspace fund-workspace"><section class="panel"><div class="panel-head"><strong>01 / HALF-WAVE SCR CIRCUIT</strong><div class="panel-actions"><span class="soft-btn" id="fund-beta">β</span></div></div><div class="diagram-area fund-diagram" id="fund-circuit-host"></div></section>
+    <section class="panel"><div class="panel-head"><strong>02 / SYNCHRONIZED WAVEFORMS</strong><select class="soft-btn" id="fund-mode"><option value="overview">Overview</option><option value="voltages">Component voltages</option><option value="vak">SCR voltage & current</option><option value="energy">Inductor energy</option></select></div><div class="plot-wrapper"><canvas id="fund-waveforms" aria-label="Half-wave SCR waveforms with adjustable alpha, fixed 180 degree marker and moving beta marker"></canvas></div></section></div>
+    <div class="fund-controlbar">${controls.map(([name,lo,hi,step,label,unit])=>`<label class="fund-tuner"><span>${MathUI.v(label)} <output id="${name}-fund-value">${params[name].toFixed(1)} ${unit}</output></span><input id="${name}-fund" type="range" min="${lo}" max="${hi}" step="${step}" value="${params[name]}"></label>`).join('')}</div>
+    <div class="tech-note fund-note"><div class="explainer" id="fund-description"></div><div class="fact-grid"><div class="fact"><small>Instantaneous current</small><strong id="fund-i"></strong></div><div class="fact"><small>Reference markers</small><strong id="fund-marker-status"></strong></div></div></div>
+    <div class="timeline"><div class="timeline-top"><span class="timeline-status" id="fund-angle-status"></span><div class="timeline-actions"><button id="fund-step-180">θ = 180°</button><button id="fund-step-beta">θ = β − 5°</button><button class="primary" id="play-btn">▶ PLAY</button></div></div><input class="angle-range" type="range" id="fund-angle" min="0" max="359.99" step="0.01" value="${theta}" aria-label="Electrical angle in degrees"><div class="ticks"><span>0°</span><span>60°</span><span>120°</span><span>180°</span><span>240°</span><span>300°</span><span>360°</span></div></div>`;
+   cachedKey='';
+   $('fund-mode').onchange=renderFundamentalsDetails;
+   for(const name of ['hAlpha','hR','hL','hV']){
+      $(name+'-fund').oninput=e=>{params[name]=+e.currentTarget.value;renderFundamentalsDetails();};
+   }
+   $('fund-angle').oninput=e=>{pause(false);setTheta(+e.currentTarget.value);renderFundamentalsDetails();};
+   $('fund-step-180').onclick=()=>{pause(false);setTheta(180);renderFundamentalsDetails();};
+   $('fund-step-beta').onclick=()=>{pause(false);setTheta(Math.max(0,HalfWave.get(params,'RL').beta-5));renderFundamentalsDetails();};
+   $('play-btn').onclick=()=>togglePlay();
+   $('fund-waveforms').onclick=e=>{const rect=e.currentTarget.getBoundingClientRect();let angle=360*(e.clientX-rect.left-43)/(rect.width-56);if(angle>=0&&angle<360){pause(false);setTheta(angle);renderFundamentalsDetails();}};
+   renderFundamentalsDetails();
+ }
  function renderHero(s){
    let title='',subtitle='',kicker='',stats='',extra='';
    if(s.type==='title'){
     kicker='POWER SYSTEMS · INTERACTIVE LEARNING';title='HVDC LCC<br>Current paths & commutation';
     subtitle='Begin with R, RL, LE and RLE loads. Then explore 48 SCR conduction states, natural commutation and a complete HVDC link, all in one offline lecture.';
-    stats=[['03','Chapters'],['48','Reference states'],['360°','Continuous cycle'],['100%','Offline']];
+    stats=[['04','Chapters'],['48','Reference states'],['360°','Continuous cycle'],['100%','Offline']];
    }else if(s.type==='roadmap'){
     kicker='THE LEARNING PATH';title='One concept<br>at a time.';
-    subtitle='Study R, RL, LE and RLE circuits first. See how opposing DC voltage E interacts with rectifier output; then explore SCR commutation, inverter extinction and the complete HVDC link.';
-    stats=[['01','Rectifier'],['02','Inverter'],['03','Full link'],['→','Next slide']];
+    subtitle='Begin with one SCR and a simple half-wave R/RL circuit. Discover natural extinction at β before learning the six-pulse rectifier, inverter and complete HVDC link.';
+    stats=[['00','Fundamentals'],['01','Rectifier'],['02','Inverter'],['03','HVDC link']];
    }else if(s.type==='end'){
     kicker='END OF PRESENTATION';title='Explore further.';
     subtitle='Change the firing delay, overlap and DC current. Revisit individual SCR currents and compare them with the original editable vector illustrations.';
     stats=[['48','Circuit states'],['±','Polarity matters'],['μ','Current transfer'],['γ','Extinction margin']];
    }else{
-    const chapter={rectifier:['01 / RECTIFIER','AC to DC','Follow one upper and one lower SCR through six normal states and six commutation overlaps.','CA → CC'],inverter:['02 / INVERTER','DC to AC','Trace the reversed energy flow, extinction margin and six SCR current transfers.','CC → CA'],hvdc:['03 / COMPLETE HVDC','Connect the two stations','Follow the pole current through both converters, smoothing reactors and metallic return.','HVDC LINK']}[s.side];
+    const chapter={fundamentals:['00 / THYRISTOR FUNDAMENTALS','How does an SCR turn off?','One SCR, one sinusoidal source and R/RL loads reveal the difference between voltage reversal and current extinction.','GATE → EXTINCTION'],rectifier:['01 / RECTIFIER','AC to DC','Follow one upper and one lower SCR through six normal states and six commutation overlaps.','CA → CC'],inverter:['02 / INVERTER','DC to AC','Trace the reversed energy flow, extinction margin and six SCR current transfers.','CC → CA'],hvdc:['03 / COMPLETE HVDC','Connect the two stations','Follow the pole current through both converters, smoothing reactors and metallic return.','HVDC LINK']}[s.side];
     kicker=chapter[0];title=chapter[1];subtitle=chapter[2];stats=[['12',s.side==='hvdc'?'Joint states (24)':'Conduction states'],['6','Commutation events'],['1','Full cycle'],[chapter[3],'Power flow']];
     if(s.side==='hvdc')stats[0]=['24','Joint states'];
+    if(s.side==='fundamentals')stats=[['01','Single SCR'],['02','R and RL'],['180°','Voltage reversal'],['β','Current extinction']];
    }
    let blocks=stats.map(([n,label])=>`<div class="hero-stat"><strong>${n}</strong><span>${label}</span></div>`).join('');
    $('slide').className='slide';$('slide').innerHTML=`<section class="presentation-hero ${s.type==='chapter'?'chapter-hero':''}">${s.type==='chapter'?'<span class="chapter-index">'+(s.side==='rectifier'?'01':s.side==='inverter'?'02':'03')+'</span>':''}<div class="hero-kicker">${kicker}</div><h1 class="hero-title">${title}</h1><p class="hero-sub">${subtitle}</p><div class="hero-bottom">${blocks}</div><div class="hero-cta">Use <span class="keycap">←</span><span class="keycap">→</span> to navigate · <span class="keycap">O</span> for slide overview · <span class="keycap">F</span> for full screen</div></section>`;
@@ -281,21 +376,22 @@
    const s=current();
    $('page-counter').textContent=`${slideIndex+1} / ${deck.length}`;
    $('progress-fill').style.width=`${((slideIndex+1)/deck.length*100).toFixed(2)}%`;
-   $('nav-rect').classList.toggle('active',s.side==='rectifier');$('nav-inv').classList.toggle('active',s.side==='inverter');$('nav-hvdc').classList.toggle('active',s.side==='hvdc');
+   $('nav-fund').classList.toggle('active',s.side==='fundamentals');$('nav-rect').classList.toggle('active',s.side==='rectifier');$('nav-inv').classList.toggle('active',s.side==='inverter');$('nav-hvdc').classList.toggle('active',s.side==='hvdc');
    $('footer-prev').disabled=slideIndex===0;$('footer-next').disabled=slideIndex===deck.length-1;
-   $('current-chapter').textContent=s.side==='rectifier'?'CH 01 · RECTIFIER':s.side==='inverter'?'CH 02 · INVERTER':s.side==='hvdc'?'CH 03 · HVDC LINK':'HVDC LCC LEARNING LAB';
-   $('settings-gamma').textContent=(180-params.alphaI-params.muI).toFixed(1)+'°'; }
+   $('current-chapter').textContent=s.side==='fundamentals'?'CH 00 · THYRISTOR FUNDAMENTALS':s.side==='rectifier'?'CH 01 · RECTIFIER':s.side==='inverter'?'CH 02 · INVERTER':s.side==='hvdc'?'CH 03 · HVDC LINK':'HVDC LCC LEARNING LAB';
+   $('settings-gamma').textContent=(180-params.alphaI-params.muI).toFixed(1)+'°';
+ }
  function render(){
    updateSchedule();const s=current();
-   if(s.type==='state')renderState(s);else if(s.type==='load')renderLoadSlide(s);else renderHero(s);
+   if(s.type==='state')renderState(s);else if(s.type==='load')renderLoadSlide(s);else if(s.type==='fundamentals')renderFundamentalsSlide(s);else renderHero(s);
    updateSlideChrome();
  }
  function togglePlay(){if(playing){pause();return;}
-   if(current().type!=='state'&&current().type!=='load'){goto(iMap[activeStage()]);}
+   if(!['state','load','fundamentals'].includes(current().type)){goto(iMap[activeStage()]??deck.findIndex(s=>s.type==='fundamentals'));}
    playing=true;lastTick=0;render();raf=requestAnimationFrame(tick);
  }
  function pause(redraw=true){playing=false;if(raf)cancelAnimationFrame(raf);raf=0;lastTick=0;if(redraw&&current().type==='state'&&$('play-btn'))$('play-btn').textContent='▶ PLAY';}
- function tick(t){if(!playing)return;if(lastTick){const old=slideIndex;setTheta(theta+(t-lastTick)*params.speed/1000);if(current().type==='load'){const slider=$('angle-range');if(slider)slider.value=String(theta);renderLoadDetails();}else{syncSlideFromAngle();if(old!==slideIndex){render();}else{const slider=$('angle-range');if(slider)slider.value=String(theta);applyTransfer();renderPlots();}}}lastTick=t;raf=requestAnimationFrame(tick);}
+ function tick(t){if(!playing)return;if(lastTick){const old=slideIndex;setTheta(theta+(t-lastTick)*params.speed/1000);if(current().type==='fundamentals'){renderFundamentalsDetails();}else if(current().type==='load'){const slider=$('angle-range');if(slider)slider.value=String(theta);renderLoadDetails();}else{syncSlideFromAngle();if(old!==slideIndex){render();}else{const slider=$('angle-range');if(slider)slider.value=String(theta);applyTransfer();renderPlots();}}}lastTick=t;raf=requestAnimationFrame(tick);}
  function updateParam(name,value){
    params[name]=+value;
    if(name==='alphaLoad')params.alphaLoad=Math.max(0,Math.min(119,params.alphaLoad));
@@ -307,12 +403,12 @@
    }
    for(const key of Object.keys(params))if($(key+'-range')){
      $(key+'-range').value=params[key];
-     $(key+'-value').textContent=Number(params[key]).toFixed(2)+(key.startsWith('alpha')||key.startsWith('mu')?'°':key==='loadL'?' mH':key==='loadR'?' Ω':key==='speed'?' °/s':' p.u.');
+     $(key+'-value').textContent=Number(params[key]).toFixed(2)+(key.startsWith('alpha')||key.startsWith('mu')||key==='hAlpha'?'°':key==='loadL'||key==='hL'?' mH':key==='loadR'||key==='hR'?' Ω':key==='hV'?' V':key==='speed'?' °/s':' p.u.');
    }
-   updateSchedule();if(current().type==='state'){syncSlideFromAngle();}cachedKey='';render();
+   updateSchedule();if(current().type==='state'){syncSlideFromAngle();}cachedKey='';if(current().type==='fundamentals')renderFundamentalsDetails();else render();
  }
  function setupSettings(){
-   const names=[['alphaR',0,80,.1,'Rectifier firing delay '+MathUI.v('α','r')],['alphaI',105,169,.1,'Inverter firing delay '+MathUI.v('α','i')],['muR',1,50,.1,'Rectifier commutation overlap '+MathUI.v('μ','r')],['muI',1,50,.1,'Inverter commutation overlap '+MathUI.v('μ','i')],['alphaLoad',0,119,.1,'Introductory firing angle '+MathUI.v('α')],['loadR',.3,3,.1,'DC resistance '+MathUI.v('R')+' ('+MathUI.unit('Ω')+')'],['loadL',.1,25,.1,'Smoothing inductance '+MathUI.v('L')+' ('+MathUI.unit('mH')+')'],['loadE',0,1.8,.01,'Opposing source '+MathUI.v('E')+' ('+MathUI.unit('p.u.')+')'],['loadI0',0,2,.01,'Initial current '+MathUI.v('i','dc')+'('+MathUI.num('0')+')'],['idc',.2,2,.01,'Illustrative pole current '+MathUI.v('I','dc')],['vPeak',.2,2,.01,'AC peak voltage '+MathUI.v('V')],['speed',2,180,.1,'Animation speed']];
+   const names=[['hAlpha',0,175,.1,'Half-wave firing angle '+MathUI.v('α')],['hR',2,45,.1,'Half-wave resistance '+MathUI.v('R')],['hL',.5,140,.1,'Half-wave inductance '+MathUI.v('L')],['hV',40,260,.5,'Half-wave source peak '+MathUI.v('V')],['alphaR',0,80,.1,'Rectifier firing delay '+MathUI.v('α','r')],['alphaI',105,169,.1,'Inverter firing delay '+MathUI.v('α','i')],['muR',1,50,.1,'Rectifier commutation overlap '+MathUI.v('μ','r')],['muI',1,50,.1,'Inverter commutation overlap '+MathUI.v('μ','i')],['alphaLoad',0,119,.1,'Introductory firing angle '+MathUI.v('α')],['loadR',.3,3,.1,'DC resistance '+MathUI.v('R')+' ('+MathUI.unit('Ω')+')'],['loadL',.1,25,.1,'Smoothing inductance '+MathUI.v('L')+' ('+MathUI.unit('mH')+')'],['loadE',0,1.8,.01,'Opposing source '+MathUI.v('E')+' ('+MathUI.unit('p.u.')+')'],['loadI0',0,2,.01,'Initial current '+MathUI.v('i','dc')+'('+MathUI.num('0')+')'],['idc',.2,2,.01,'Illustrative pole current '+MathUI.v('I','dc')],['vPeak',.2,2,.01,'AC peak voltage '+MathUI.v('V')],['speed',2,180,.1,'Animation speed']];
    $('settings-sliders').innerHTML=names.map(([n,lo,hi,step,label])=>`<div class="slider-row"><label for="${n}-range">${label}</label><output id="${n}-value"></output><input id="${n}-range" type="range" min="${lo}" max="${hi}" step="${step}" value="${params[n]}"></div>`).join('');
    let queued=false,lastInput=null;for(const [name] of names){$(name+'-range').addEventListener('input',e=>{lastInput=[name,e.target.value];if(!queued){queued=true;requestAnimationFrame(()=>{queued=false;if(lastInput)updateParam(lastInput[0],lastInput[1]);});}});}
    $('reset-btn').onclick=()=>{Object.assign(params,initial);updateParam('alphaR',initial.alphaR);};
@@ -322,16 +418,16 @@
  function openZoom(){if(!current()||current().type!=='state')return;const svg=$('circuit-host').querySelector('svg');if(!svg)return;
    $('zoom-content').innerHTML=svg.outerHTML;$('zoom-title').textContent=shortName(current().side)+' · STATE '+current().id;switchOverlay('zoom-overlay',true);
  }
- function overview(){pause();   const intro='<div class="overview-section">RECTIFIER INTRODUCTION · R, RL, LE AND RLE</div><div class="overview-grid">'+deck.map((item,ix)=>(item.type==='load'?'<button data-slide="'+ix+'">'+(item.lesson==='r_case'?'R · '+item.alpha+'°':item.lesson==='r_intro'?'PURE R':item.lesson==='r_compare'?'R vs RL':item.lesson==='advanced_compare'?'ALL FOUR':item.lesson==='le_intro'?'LE LOAD':item.lesson==='rle_intro'?'RLE LOAD':'RL LOAD')+'</button>':'')).join('')+'</div>';
+ function overview(){pause();   const fundIntro='<div class="overview-section">00 · THYRISTOR FUNDAMENTALS</div><div class="overview-grid">'+deck.map((item,ix)=>item.type==='fundamentals'?'<button data-slide="'+ix+'">'+fundamentalsDetails(item)[0]+'</button>':'').join('')+'</div>';const intro='<div class="overview-section">RECTIFIER INTRODUCTION · R, RL, LE AND RLE</div><div class="overview-grid">'+deck.map((item,ix)=>(item.type==='load'?'<button data-slide="'+ix+'">'+(item.lesson==='r_case'?'R · '+item.alpha+'°':item.lesson==='r_intro'?'PURE R':item.lesson==='r_compare'?'R vs RL':item.lesson==='advanced_compare'?'ALL FOUR':item.lesson==='le_intro'?'LE LOAD':item.lesson==='rle_intro'?'RLE LOAD':'RL LOAD')+'</button>':'')).join('')+'</div>';
    const grids=stages.map(stage=>{
    const n=stage==='hvdc'?24:12;
    return `<div class="overview-section">${shortName(stage)} · ${n} states</div><div class="overview-grid">${Array.from({length:n},(_,k)=>{const ix=iMap[stage]+k,active=ix===slideIndex?'active':'';return `<button data-slide="${ix}" class="${active}">STATE ${String(k+1).padStart(2,'0')}<small>${stage==='hvdc'?'JOINT':(k%2?'OVERLAP':'NORMAL')}</small></button>`;}).join('')}</div>`;
  }).join('');
-   $('overview-body').innerHTML=intro+grids;$('overview-body').querySelectorAll('[data-slide]').forEach(b=>b.addEventListener('click',()=>{switchOverlay('overview-overlay',false);goto(+b.dataset.slide); }));switchOverlay('overview-overlay',true);
+   $('overview-body').innerHTML=fundIntro+intro+grids;$('overview-body').querySelectorAll('[data-slide]').forEach(b=>b.addEventListener('click',()=>{switchOverlay('overview-overlay',false);goto(+b.dataset.slide); }));switchOverlay('overview-overlay',true);
  }
  function setup(){
    $('footer-prev').onclick=()=>navDelta(-1);$('footer-next').onclick=()=>navDelta(1);
-   $('nav-rect').onclick=()=>selectStage('rectifier');$('nav-inv').onclick=()=>selectStage('inverter');$('nav-hvdc').onclick=()=>selectStage('hvdc');
+   $('nav-fund').onclick=()=>selectStage('fundamentals');$('nav-rect').onclick=()=>selectStage('rectifier');$('nav-inv').onclick=()=>selectStage('inverter');$('nav-hvdc').onclick=()=>selectStage('hvdc');
    $('settings-open').onclick=()=>switchOverlay('settings-overlay',true);$('settings-close').onclick=()=>switchOverlay('settings-overlay',false);
    $('overview-open').onclick=overview;$('overview-close').onclick=()=>switchOverlay('overview-overlay',false);
    $('help-open').onclick=()=>switchOverlay('help-overlay',true);$('help-close').onclick=()=>switchOverlay('help-overlay',false);
@@ -345,9 +441,9 @@
      if(document.querySelector('.settings-overlay.open,.overview-overlay.open,.zoom-overlay.open,.help-overlay.open'))return;
      if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();navDelta(1);}else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();navDelta(-1);}else if(e.key==='Home'){goto(0);}else if(e.key==='End'){goto(deck.length-1);}else if(e.key.toLowerCase()==='o'){overview();}else if(e.key.toLowerCase()==='f'){$('fullscreen-btn').click();}else if(e.key.toLowerCase()==='p'){togglePlay();}
    });
-   window.addEventListener('resize',()=>{if(current().type==='state'&&!showReference)renderPlots();if(current().type==='load')renderLoadDetails();});
+   window.addEventListener('resize',()=>{if(current().type==='state'&&!showReference)renderPlots();if(current().type==='load')renderLoadDetails();if(current().type==='fundamentals')renderFundamentalsDetails();});
    setupSettings();updateParam('alphaR',params.alphaR);goto(0);
-   window.LCCPresentationTest={params,deck,getSlide:()=>current(),getIndex:()=>slideIndex,setSlide:i=>goto(i),setTheta:a=>{setTheta(a);syncSlideFromAngle();render();},at:LCC.at,sample:LCC.sample,loadSample:LoadModel.sample,loadAt:LoadModel.at,schedule:()=>runtimeSchedule,reset:()=>Object.assign(params,initial)};
+   window.LCCPresentationTest={params,deck,getSlide:()=>current(),getIndex:()=>slideIndex,setSlide:i=>goto(i),setTheta:a=>{setTheta(a);syncSlideFromAngle();render();},at:LCC.at,sample:LCC.sample,halfWave:HalfWave.get,loadSample:LoadModel.sample,loadAt:LoadModel.at,schedule:()=>runtimeSchedule,reset:()=>Object.assign(params,initial)};
  }
  setup();
 })();

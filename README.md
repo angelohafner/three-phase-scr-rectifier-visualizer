@@ -1,3 +1,24 @@
+# HVDC LCC Visualizer — Thyristor Fundamentals, Rectifier, Inverter and Full Link
+
+The HTML-only teaching presentation now includes **Chapter 00 — Thyristor
+Fundamentals**, with eight interactive half-wave SCR lessons before the
+three-phase rectifier. The main slide demonstrates that source voltage becomes
+negative at **180°** while an RL load can keep SCR current positive until the
+dynamically computed extinction angle **β**. The new half-wave sources are
+`halfwave_model.py`, `halfwave_figures.py`, `presentation/src/halfwave.js`, and
+[the technical guide](docs/HALFWAVE_FUNDAMENTALS.md).
+
+Generate the HTML with:
+
+```bash
+python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html
+```
+
+[Figures and waveforms](output_lcc/fundamentals/) ·
+[Presentation sources](presentation/) · [Other LCC stages](output_lcc/)
+
+---
+
 # Three-phase SCR rectifier — twelve conduction states
 
 This project refactors the existing Python/Inkscape six-pulse rectifier into a **graph-validated, reusable SVG generator**. The output remains vector-based and editable in Inkscape.
@@ -264,18 +285,11 @@ The teaching sequence now starts with a purely resistive load (ideal AC sources 
 
 Run `python rectifier_loads.py` to regenerate the vector figures; run `python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html` to produce the offline lecture. The GitHub Actions workflow publishes the HTML and PPTX as downloadable artifacts.
 
-## HTML teaching extension: R, RL, LE, RLE and six SCR A-K voltages
+## Advanced HTML teaching presentation: R / RL / LE / RLE
 
-The offline HTML teaching presentation now includes four selectable DC loads and ideal valve anode-cathode voltages with forward blocking, reverse blocking and explicitly unresolved intervals. The presentation has a restrained **Siemens PTI-inspired** technical-document layout, but is independent educational material without official corporate branding. Current CI publishes only HTML; legacy PPTX scripts are not executed. See [technical notes](docs/rectifier-loads-and-scr-voltage.md).
-
-## Advanced HTML lecture — four DC loads and SCR voltages
-
-The current offline presentation introduces ideal rectifier loads **R**, **RL**, **LE** (initial-value, undamped), and **RLE** (DC-link equivalent with opposing source). It adds individual SCR anode–cathode voltages, including undefined values for floating DC terminals, dynamic angle-window shading, continuous sliders, and distinguishable line patterns. The independent navy/teal document design is inspired by technical power-system consulting materials; it is **not official Siemens PTI material**.
-
-Generate figures: `python lcc_advanced_figures.py --output-dir output_lcc/rectifier/advanced_loads`.
-Build the standalone offline HTML: `python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html`.
-Run model and browser tests: `python -m pytest -q tests presentation/tests` and `python presentation/tests/browser_smoke.py` (requires Playwright/Chromium).
-
-[Technical assumptions and limitations](docs/ADVANCED_LOADS_SCR_VOLTAGES.md) · [Advanced editable figures](output_lcc/rectifier/advanced_loads/)
-
-**No PPTX is produced by this release or by its HTML-only CI workflow.**
+The new HTML-only edition adds the LE and RLE opposing-source load equivalents,
+continuous controls, phase-dependent SCR anode–cathode voltage plots, and a
+Siemens PTI-inspired independent technical-document layout. See
+[Advanced loads and SCR voltages](docs/ADVANCED_LOADS_SCR_VOLTAGES.md).
+The HTML can be built using `python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html`.
+No PowerPoint file is produced in this release.

@@ -1,48 +1,57 @@
-# HVDC LCC interactive lecture — R, RL, commutation, and complete link
+# HVDC LCC Interactive Lecture — HTML Only
 
-The offline, standalone HTML contains **61 slides**: seven introductory R/RL slides followed by the original 48 LCC conduction/commutation states and chapter slides. It retains all original rectifier, inverter and HVDC features.
+The **offline, standalone 73-slide HTML presentation** teaches line-commutated
+converters progressively: first a single-phase half-wave SCR with R/RL loads,
+then the three-phase rectifier, the inverter and the complete two-station HVDC
+link. No PowerPoint is generated or required.
 
-## New instructional progression
+## Chapter 00 — Thyristor Fundamentals
 
-1. RECTIFIER — Normal conduction with R load.
-2. Ideal firing delay α = 0°, 30°, 75°, 90°.
-3. Discontinuous R-load current and all-SCRs-OFF intervals.
-4. Comparison of R and RL under the same AC source and firing delay.
-5. RECTIFIER — Normal conduction with RL load.
-6. Existing twelve rectifier states, inverter states and complete HVDC link.
+Eight interactive technical slides follow the Chapter 00 cover:
 
-The introductory R and RL models use zero AC commutation inductance (μ = 0°). Load mode can be switched live; firing angle, resistance and DC inductance update the associated analytical waveforms, active SCR pair and circuit SVG. DC inductor and AC-side commutation inductance are treated separately.
+1. What Is a Thyristor?
+2. Half-Wave Rectifier with R Load
+3. R Load: Effect of Firing Angle
+4. Half-Wave Rectifier with RL Load
+5. **Why Does the SCR Remain ON After 180°?**
+6. Natural Current Extinction
+7. R versus RL: Same Source, Different Current
+8. From Natural Extinction to Line Commutation
 
-## Build and test
+Move the angular slider continuously while watching the SCR and its waveforms.
+The **180° source-voltage reversal marker remains fixed**. The extinction
+marker **β moves dynamically** as the firing angle, resistance and inductance
+are changed, and the region between the markers shows negative source voltage
+alongside positive SCR current. The analytical RL current is solved rather
+than shifted manually. The native slider DOM is preserved during dragging.
 
-From the repository root:
+The new section uses physical V, A, Ω, mH and J units with mathematical italic
+variables and upright digits/units. Its SVG circuit uses the project's
+Schemdraw SCR vector primitives and an American zigzag resistor.
+
+## Retained chapters
+
+- **01 Rectifier** — six-pulse bridge, R/RL/LE/RLE DC loads, twelve
+  conducting/overlap states and SCR anode-cathode voltages.
+- **02 Inverter** — natural commutation, extinction-angle margin, valve voltages.
+- **03 Complete HVDC link** — 24 joint converter states and metallic return.
+
+The total includes **48 reference LCC states**. Controls are interactive and
+analytical rather than an EMT simulation. Figures are bundled within the HTML.
+
+## Build and validate
 
 ```bash
 python -m pip install -r requirements-waveforms.txt
-python rectifier_loads.py
+python halfwave_figures.py --output-dir output_lcc/fundamentals
 python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html
 python -m pytest -q tests presentation/tests
+python presentation/tests/browser_fundamentals.py
 ```
 
-Open `dist/lcc_hvdc_interactive.html` in Chrome, Edge or Firefox. No network or server is required. Keyboard arrows navigate slides; use O for the state overview and P for animation.
+Open the resulting HTML directly in Chrome/Edge/Firefox with no internet.
+Keyboard: Left/Right for slides, O for the overview, F for fullscreen,
+P for animation. All sliders support continuous drag on supporting devices.
 
-## PowerPoint
-
-The PowerPoint is a **63-slide, clickable snapshot edition** (61 HTML slides + state overview + help). It preserves the circuit and waveform appearance and offers clickable navigation; live analytical sliders, actual parameter recomputation and continuous animation are available in the companion HTML only.
-
-Build it using `presentation/pptx/capture_html.py` and `presentation/pptx/make_presentation.js`, or download the HTML/PPTX together from the GitHub Actions build artifact. The slides are presented as high-quality screenshots with native PowerPoint hyperlink hotspots and notes; they are not fully editable vector shapes.
-
-## Further information
-
-See [the R versus RL teaching guide](../docs/RECTIFIER_R_RL_TEACHING.md) and the existing LCC guides. No electromagnetic transient simulation is performed.
-
-## HTML-only enhancement: R, RL, LE, RLE and valve voltages
-
-The current build generates **HTML only**, without producing PowerPoint. The historical `presentation/pptx` folder remains unchanged but is not called by CI. Additive controls let users compare R, RL, LE and RLE, select A-K voltage curves for six SCRs, and move continuous-resolution sliders. Plots use distinguishable dashes, color and transparency. The clean PTI-inspired visual design is labeled as independent educational material, without a Siemens logo.
-
-See [physics, limitations, and polarity](../docs/rectifier-loads-and-scr-voltage.md).
-
-```bash
-python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html
-python rectifier_load_extended.py --out output_lcc/extended
-```
+See [Half-wave technical notes](../docs/HALFWAVE_FUNDAMENTALS.md).
+No PPTX is part of this release.

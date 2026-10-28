@@ -14,13 +14,13 @@
 <div class="shell" id="shell">
  <header class="topbar" role="banner">
   <div class="brand"><div class="brand-mark" aria-hidden="true">HVDC</div><div class="brand-text"><strong>POWER SYSTEM STUDIES</strong><span>Engineering training · independent educational edition</span></div></div>
-  <nav class="topnav" aria-label="Chapters"><button class="tab" id="nav-rect">01 RECTIFIER</button><button class="tab" id="nav-inv">02 INVERTER</button><button class="tab" id="nav-hvdc">03 HVDC LINK</button></nav>
+  <nav class="topnav" aria-label="Chapters"><button class="tab" id="nav-fund">00 FUNDAMENTALS</button><button class="tab" id="nav-rect">01 RECTIFIER</button><button class="tab" id="nav-inv">02 INVERTER</button><button class="tab" id="nav-hvdc">03 HVDC LINK</button></nav>
   <div class="topactions"><button id="overview-open" class="icon-btn" aria-label="Open slide overview" title="Slide overview (O)">▦</button><button id="settings-open" class="icon-btn" aria-label="Adjust electrical parameters" title="Parameters">⚙</button><button id="help-open" class="icon-btn" aria-label="Keyboard help" title="Keyboard help">?</button><button id="fullscreen-btn" class="icon-btn" aria-label="Toggle fullscreen" title="Full screen (F)">⛶</button></div>
  </header>
  <main id="deck" class="deck"><article id="slide" class="slide" aria-live="polite"></article></main>
  <footer class="footer">
    <div class="mini-controls"><button id="footer-prev" aria-label="Previous slide">← PREVIOUS</button><button id="footer-next" aria-label="Next slide">NEXT →</button></div>
-   <span class="footer-note" id="current-chapter">ENGINEERING STUDY · REV 2.0</span><div class="progress-track" aria-hidden="true"><div id="progress-fill"></div></div><span class="document-footnote">INDEPENDENT TRAINING MATERIAL · NOT AN OFFICIAL SIEMENS PUBLICATION</span><span class="counter" id="page-counter">1 / 61</span>
+   <span class="footer-note" id="current-chapter">ENGINEERING STUDY · REV 2.0</span><div class="progress-track" aria-hidden="true"><div id="progress-fill"></div></div><span class="document-footnote">INDEPENDENT TRAINING MATERIAL · NOT AN OFFICIAL SIEMENS PUBLICATION</span><span class="counter" id="page-counter">1 / 73</span>
  </footer>
 </div>
 <div id="settings-overlay" class="settings-overlay" role="dialog" aria-modal="true" aria-label="Electrical parameters" aria-hidden="true">
@@ -29,7 +29,7 @@
  <div class="settings-actions"><button id="reset-btn">↺ Reset defaults</button><button id="explain-btn">Hide explanations</button></div></div>
 </div>
 <div id="overview-overlay" class="overview-overlay" role="dialog" aria-modal="true" aria-label="Slide overview" aria-hidden="true">
- <div class="overview-card"><div class="overview-head"><h2>State overview · 48 reference states</h2><button class="close" id="overview-close">CLOSE ✕</button></div><p class="settings-sub">Select a state to open its electrical circuit and synchronized waveforms. The HVDC joint windows follow the live commutation parameters.</p><div id="overview-body"></div></div>
+ <div class="overview-card"><div class="overview-head"><h2>Fundamentals and 48 reference states</h2><button class="close" id="overview-close">CLOSE ✕</button></div><p class="settings-sub">Select a state to open its electrical circuit and synchronized waveforms. The HVDC joint windows follow the live commutation parameters.</p><div id="overview-body"></div></div>
 </div>
 <div id="zoom-overlay" class="zoom-overlay" role="dialog" aria-modal="true" aria-label="Large circuit viewer" aria-hidden="true">
  <div class="zoom-sheet"><div class="panel-head"><strong id="zoom-title">CIRCUIT</strong><button class="close" id="zoom-close">CLOSE ✕</button></div><div class="diagram-area" id="zoom-content"></div></div><span id="close-zoom-layer" style="position:fixed;right:13px;bottom:12px;color:#d9f6ff;cursor:pointer;font-size:12px">Esc to close</span>
@@ -53,6 +53,9 @@
 </script>
 <script>
 <!--INLINE_CHARTS-->
+</script>
+<script>
+<!--INLINE_HALFWAVE-->
 </script>
 <script>
 <!--INLINE_PRESENTATION-->

@@ -5,6 +5,7 @@ on:
     paths:
       - 'presentation/**'
       - 'rectifier_*.py'
+      - 'halfwave_*.py'
       - 'lcc_advanced_*.py'
       - 'hvdc_link*.py'
       - 'output_lcc/**'
@@ -29,6 +30,8 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Build editable LE and RLE circuit diagrams and waveforms
         run: python lcc_advanced_figures.py --output-dir output_lcc/rectifier/advanced_loads
+      - name: Generate half-wave R/RL teaching figures
+        run: python halfwave_figures.py --output-dir output_lcc/fundamentals
       - name: Build standalone offline HTML
         run: python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html
       - name: Syntax validation
@@ -37,10 +40,12 @@ jobs:
       - name: Test physical models and presentation
         run: python -m pytest -q tests presentation/tests
       - name: Verify interactive HTML in offline Chromium
-        run: python presentation/tests/browser_smoke.py
+        run: |
+          python presentation/tests/browser_smoke.py
+          python presentation/tests/browser_fundamentals.py
       - name: Upload HTML-only deliverable
         uses: actions/upload-artifact@v4
         with:
-          name: lcc-hvdc-pti-inspired-offline-html
+          name: lcc-hvdc-thyristor-fundamentals-html
           path: dist/lcc_hvdc_interactive.html
           retention-days: 90
