@@ -342,7 +342,8 @@
    $('fund-state').textContent=s.lesson==='compare'?`R: ${r.at(theta).on?'ON':'OFF'} · RL: ${rl.at(theta).on?'ON':'OFF'}`:on?'T1 conducting':'T1 blocking';
    $('fund-i').innerHTML=MathUI.angle('θ',theta)+' · '+MathUI.num(point.i.toFixed(2))+MathUI.unit(' A');
    $('fund-description').innerHTML=fundamentalsMessage(s,rl,r,point);
-   $('fund-angle-status').innerHTML=MathUI.angle('θ',theta)+' · '+MathUI.angle('α',params.hAlpha)+' · '+MathUI.angle('β',rl.beta);
+   // Show extinction for the circuit actually selected on this slide.
+   $('fund-angle-status').innerHTML=MathUI.angle('θ',theta)+' · '+MathUI.angle('α',params.hAlpha)+' · '+MathUI.angle('β',m.beta);
    const marker=$('fund-marker-status');if(marker)marker.innerHTML=(s.lesson==='after180'||s.lesson==='extinction')?
      `${MathUI.num('180')}${MathUI.unit('°')} fixed source zero · ${MathUI.v('β')} = ${MathUI.num(betaTxt)}${MathUI.unit('°')} (RL turn-off)`:
      `Conduction highlighted · ${MathUI.v('α')} = ${MathUI.num(params.hAlpha.toFixed(1))}${MathUI.unit('°')}`;
@@ -353,7 +354,16 @@
      if(el&&document.activeElement!==el)el.value=params[name];
    }
    applyInductorAvailability();
-   HalfWave.render($('fund-waveforms'),params,theta,s.lesson,$('fund-mode').value);
+   // Prevent inductor-only graph modes from appearing on pure-R lessons.
+   const graphMenu=$('fund-mode');
+   const energyOption=graphMenu.querySelector('option[value="energy"]');
+   const hasInductor=load!=='R';
+   if(energyOption){
+     energyOption.disabled=!hasInductor;
+     energyOption.title=hasInductor?'Stored magnetic energy':'No inductor in this circuit';
+   }
+   if(!hasInductor&&graphMenu.value==='energy')graphMenu.value='overview';
+   HalfWave.render($('fund-waveforms'),params,theta,s.lesson,graphMenu.value);
  }
  function renderFundamentalsSlide(s){
    const [title,subtitle]=fundamentalsDetails(s);
@@ -373,7 +383,12 @@
    }
    $('fund-angle').oninput=e=>{pause(false);setTheta(+e.currentTarget.value);renderFundamentalsDetails();};
    $('fund-step-180').onclick=()=>{pause(false);setTheta(180);renderFundamentalsDetails();};
-   $('fund-step-beta').onclick=()=>{pause(false);setTheta(Math.max(0,HalfWave.get(params,'RL').beta-5));renderFundamentalsDetails();};
+   $('fund-step-beta').onclick=()=>{
+     pause(false);
+     const pureR=['scr_intro','r_circuit','r_delay'].includes(current().lesson);
+     setTheta(Math.max(0,HalfWave.get(params,pureR?'R':'RL').beta-5));
+     renderFundamentalsDetails();
+   };
    $('play-btn').onclick=()=>togglePlay();
    $('fund-waveforms').onclick=e=>{const rect=e.currentTarget.getBoundingClientRect();let angle=360*(e.clientX-rect.left-43)/(rect.width-56);if(angle>=0&&angle<360){pause(false);setTheta(angle);renderFundamentalsDetails();}};
    renderFundamentalsDetails();
