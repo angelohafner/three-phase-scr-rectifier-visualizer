@@ -53,6 +53,7 @@ jobs:
           python presentation/tests/browser_smoke.py
           python presentation/tests/browser_fundamentals.py
           python presentation/tests/browser_inductor_controls.py
+          python presentation/tests/browser_no_inductor_voltage.py
       - name: Upload native Schemdraw SVG figures
         uses: actions/upload-artifact@v4
         with:
