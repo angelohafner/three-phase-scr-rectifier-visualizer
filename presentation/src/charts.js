@@ -2,7 +2,7 @@
 'use strict';
 const ChartView = (() => {
   const palette={red:'#d92c46',redLight:'#e88d90',teal:'#00a6b2',blue:'#287fb4',gold:'#ce9338',grey:'#aabac6',ink:'#3c5870',grid:'#e6edf2'};
-  function makeSeries(side,params,mode,active){
+  function makeSeries(side,params,mode,active,theta){
     const thetas=Array.from({length:361},(_,i)=>i);
     const samples=thetas.map(theta=>side==='hvdc'?{
       r:LCC.sample('rectifier',theta,params),i:LCC.sample('inverter',theta,params,LCC.OFFSET)
@@ -26,7 +26,8 @@ const ChartView = (() => {
           min:-2*params.vPeak,max:2*params.vPeak,
           series:LCC.SCRS.map((t,j)=>({label:'v_{AK,'+t.substring(1)+'}',
             color:strokeColors[j],dash:strokes[j],values:volt[t],
-            emphasis:selected.has(t)}))});
+            emphasis:params.scrFocus==='all'?selected.has(t):t===params.scrFocus,
+            opacity:params.scrFocus==='all'?.79:(t===params.scrFocus?.96:.16)}))});
       }
       return groups;
     }
@@ -80,7 +81,7 @@ const ChartView = (() => {
     const dpr=Math.min(2,window.devicePixelRatio||1); const iw=Math.round(w*dpr),ih=Math.round(h*dpr);
     if(canvas.width!==iw||canvas.height!==ih){canvas.width=iw;canvas.height=ih;}
     let g=canvas.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,w,h);
-    const groups=makeSeries(side,params,mode,active),n=groups.length;
+    const groups=makeSeries(side,params,mode,active,theta),n=groups.length;
     let padTop=8,padBottom=13,gap=6,row=(h-padTop-padBottom-(n-1)*gap)/n;
     const x0=38,x1=w-15,plotWidth=x1-x0;
     function xPos(angle){return x0+(angle/360)*plotWidth;}
@@ -107,7 +108,7 @@ const ChartView = (() => {
         g.strokeStyle=series.color;
         g.lineWidth=series.emphasis?2.1:1.5;
         g.setLineDash(series.dash||[[],[7,3],[2,3],[9,3,2,3],[5,3,1,3],[3,3,9,3]][index%6]);
-        g.globalAlpha=series.color===palette.grey?.55:.79;
+        g.globalAlpha=series.opacity??(series.color===palette.grey?.55:.79);
         g.stroke();g.setLineDash([]);g.globalAlpha=1;
       }
       const cursor=xPos(theta);g.strokeStyle='#c72741';g.setLineDash([5,3]);g.lineWidth=1.5;g.beginPath();g.moveTo(cursor,y0);g.lineTo(cursor,y1);g.stroke();g.setLineDash([]);
