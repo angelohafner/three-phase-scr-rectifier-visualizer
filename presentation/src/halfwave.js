@@ -141,46 +141,53 @@ const HalfWave = (() => {
     const m=resistiveOnly?r:rl;
     // No inductor-only quantities may appear when the circuit contains only R.
     if(resistiveOnly&&graphMode==='energy')graphMode='overview';
-    const v=m.config.V, imax=Math.max(1.2*v/m.config.R,rl.sampled.reduce((p,q)=>Math.max(p,q.i),0)*1.08);
-    const vLimit=1.16*v;
+    // Voltage, current and energy domains follow global slider extrema.
+    const [vMin,vMax]=FixedAxes.range('halfWaveVoltage');
+    const [iMin,iMax]=FixedAxes.range('halfWaveCurrent');
+    const [energyMin,energyMax]=FixedAxes.range('halfWaveEnergy');
     if(compare){
       const width=(w-12)/2,height=(h-8)/2;
       for(const [j,item] of [r,rl].entries()){
         const x=3+j*(width+6),name=j?'RL':'R';
         graphPanel(g,{x,y:0,w:width,h:height},item,theta,[
           {key:'vs',label:'v_s',color:color.blue,dash:[8,4]},
-          {key:'vo',label:'v_o',color:color.red}],-vLimit,vLimit,`${name} · VOLTAGE (V)`,{negativeVoltage:true});
+          {key:'vo',label:'v_o',color:color.red}],vMin,vMax,`${name} · VOLTAGE (V)`,{negativeVoltage:true});
         graphPanel(g,{x,y:height+7,w:width,h:height},item,theta,[
-          {key:'i',label:'i_T',color:color.red}],-.12*imax,imax,`${name} · CURRENT (A)`,{positiveCurrent:true});
-      }return;
+          {key:'i',label:'i_T',color:color.red}],iMin,iMax,`${name} · CURRENT (A)`,{positiveCurrent:true});
+      }
+      canvas.dataset.axisMode='fixed';
+      canvas.dataset.axisLimits=JSON.stringify([0,1].flatMap(()=>[
+        {kind:'halfWaveVoltage',min:vMin,max:vMax,x:[0,360]},
+        {kind:'halfWaveCurrent',min:iMin,max:iMax,x:[0,360]}]));
+      return;
     }
     let specs=[];
     if(graphMode==='voltages')specs=[
       [[{key:'vs',label:'v_s',color:color.blue,dash:[8,3]},
-        {key:'vo',label:'v_o',color:color.red}],-vLimit,vLimit,'SOURCE / OUTPUT VOLTAGE (V)',{negativeVoltage:true}],
+        {key:'vo',label:'v_o',color:color.red}],vMin,vMax,'SOURCE / OUTPUT VOLTAGE (V)',{negativeVoltage:true}],
       [resistiveOnly?
         [{key:'vr',label:'v_R',color:color.red}]:
         [{key:'vr',label:'v_R',color:color.red},
          {key:'vl',label:'v_L',color:color.teal,dash:[2,3]}],
-        -vLimit,vLimit,resistiveOnly?'RESISTOR VOLTAGE (V)':'LOAD COMPONENT VOLTAGES (V)',{}]
+        vMin,vMax,resistiveOnly?'RESISTOR VOLTAGE (V)':'LOAD COMPONENT VOLTAGES (V)',{}]
     ];
     else if(graphMode==='vak')specs=[
-      [[{key:'vak',label:'v_AK',color:color.blue}],-vLimit,vLimit,'SCR ANODE–CATHODE VOLTAGE (V)',{}],
-      [[{key:'i',label:'i_T',color:color.red}],-.12*imax,imax,'SCR CURRENT (A)',{positiveCurrent:true}]
+      [[{key:'vak',label:'v_AK',color:color.blue}],vMin,vMax,'SCR ANODE–CATHODE VOLTAGE (V)',{}],
+      [[{key:'i',label:'i_T',color:color.red}],iMin,iMax,'SCR CURRENT (A)',{positiveCurrent:true}]
     ];
     else if(graphMode==='energy')specs=[
-      [[{key:'i',label:'i_T',color:color.red}],-.12*imax,imax,'SCR CURRENT (A)',{positiveCurrent:true}],
-      [[{key:'w',label:'W_L',color:color.teal}],0,Math.max(.2,rl.sampled.reduce((p,q)=>Math.max(p,q.w),0)*1.14),'STORED MAGNETIC ENERGY (J)',{}]
+      [[{key:'i',label:'i_T',color:color.red}],iMin,iMax,'SCR CURRENT (A)',{positiveCurrent:true}],
+      [[{key:'w',label:'W_L',color:color.teal}],energyMin,energyMax,'STORED MAGNETIC ENERGY (J)',{}]
     ];
     else specs=[
       [[{key:'vs',label:'v_s',color:color.blue,dash:[8,3],opacity:.76},
-        {key:'vo',label:'v_o',color:color.red}],-vLimit,vLimit,'AC SOURCE / LOAD VOLTAGE (V)',{negativeVoltage:true}],
-      [[{key:'i',label:'i_T',color:color.red}],-.12*imax,imax,'SCR CURRENT (A)',{positiveCurrent:true}],
+        {key:'vo',label:'v_o',color:color.red}],vMin,vMax,'AC SOURCE / LOAD VOLTAGE (V)',{negativeVoltage:true}],
+      [[{key:'i',label:'i_T',color:color.red}],iMin,iMax,'SCR CURRENT (A)',{positiveCurrent:true}],
       [resistiveOnly?
         [{key:'vak',label:'v_AK',color:color.blue,dash:[8,3],opacity:.82}]:
         [{key:'vak',label:'v_AK',color:color.blue,dash:[8,3],opacity:.82},
          {key:'vl',label:'v_L',color:color.teal,dash:[2,3],opacity:.82}],
-        -vLimit,vLimit,resistiveOnly?'SCR VOLTAGE (V)':'SCR / INDUCTOR VOLTAGE (V)',{}]
+        vMin,vMax,resistiveOnly?'SCR VOLTAGE (V)':'SCR / INDUCTOR VOLTAGE (V)',{}]
     ];
     // Expose only the rendered signals for accessibility and automated checks.
     canvas.dataset.activeLoad=m.config.load;
@@ -188,6 +195,10 @@ const HalfWave = (() => {
     canvas.dataset.panelTitles=JSON.stringify(specs.map(([, , ,title])=>title));
     const gap=3,height=(h-gap*(specs.length-1))/specs.length;
     specs.forEach(([lines,min,max,title,opts],j)=>graphPanel(g,{x:0,y:j*(height+gap),w,h:height},m,theta,lines,min,max,title,opts));
+    canvas.dataset.axisMode='fixed';
+    canvas.dataset.axisLimits=JSON.stringify(specs.map(([tracks,min,max,title])=>({
+      kind:title.includes('ENERGY')?'halfWaveEnergy':title.includes('CURRENT')?'halfWaveCurrent':'halfWaveVoltage',
+      min,max,x:[0,360]})));
   }
   return {config,model,get,render};
 })();

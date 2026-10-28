@@ -160,6 +160,7 @@ def build(source: Path, out: Path, src: Path) -> dict:
         '<!--INLINE_CSS-->': (src / 'styles.css').read_text(encoding='utf-8'),
         '<!--INLINE_WAVEFORMS-->': (src / 'waveforms.js').read_text(encoding='utf-8'),
         '<!--INLINE_MATH_UI-->': (src / 'math_ui.js').read_text(encoding='utf-8'),
+        '<!--INLINE_FIXED_AXES-->': (src / 'fixed_axes.js').read_text(encoding='utf-8'),
         '<!--INLINE_CHARTS-->': (src / 'charts.js').read_text(encoding='utf-8'),
         '<!--INLINE_LOAD_MODELS-->': (src / 'load_models.js').read_text(encoding='utf-8'),
         '<!--INLINE_LOAD_CHARTS-->': (src / 'load_charts.js').read_text(encoding='utf-8'),
@@ -191,8 +192,9 @@ def build(source: Path, out: Path, src: Path) -> dict:
                 capture_output=True,text=True,check=True,timeout=3).stdout.strip()
         except (OSError,subprocess.SubprocessError):
             revision='local-uncommitted'
-    source_files=['waveforms.js','charts.js','current_source.js',
-        'current_source_charts.js','presentation.js','styles.css','halfwave.js']
+    source_files=['waveforms.js','fixed_axes.js','charts.js','load_charts.js',
+        'current_source.js','current_source_charts.js','presentation.js',
+        'styles.css','halfwave.js']
     trace={
         'source_revision':revision,
         'built_with':[{'path':'presentation/src/'+name,

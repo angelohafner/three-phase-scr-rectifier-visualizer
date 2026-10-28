@@ -9,7 +9,11 @@ const ChartView=(()=>{
   const samples=Array.from({length:361},(_,angle)=>side==='hvdc'?{r:LCC.sample('rectifier',angle,p),i:LCC.sample('inverter',angle,p,LCC.OFFSET)}:LCC.sample(side,angle,p));
   const joint=side==='hvdc';
   const states=joint?{r:new Set(LCC.stateInfo(active.r).scrs),i:new Set(LCC.stateInfo(active.i).scrs)}:{single:new Set(LCC.stateInfo(active.id).scrs)};
-  function make(name,signals,min,max){return {name,series:signals,min,max};}
+  function make(name,signals,min,max){
+   // All traces of a given physical quantity share the same global slider-range domain.
+   const kind=FixedAxes.lccKind(name),[fixedMin,fixedMax]=FixedAxes.range(kind);
+   return {name,series:signals,min:fixedMin,max:fixedMax,kind};
+ }
   const groups=[];
   const source=station=>samples.map(x=>joint?x[station]:x);
   const stationNames=joint?[['r','Rectifier'],['i','Inverter']]:[['single',side==='inverter'?'Inverter':'Rectifier']];
@@ -60,6 +64,8 @@ const ChartView=(()=>{
      [complete[focusedPanel]]:complete;
    const count=Math.max(groups.length,1);
    canvas.dataset.visiblePanels=JSON.stringify(groups.map(g=>g.name));
+   canvas.dataset.axisMode='fixed';
+   canvas.dataset.axisLimits=JSON.stringify(groups.map(g=>({kind:g.kind,min:g.min,max:g.max,x:[0,360]})));
    const enlarged=Number.isInteger(focusedPanel)&&groups.length===1;
    const gap=7,top=6,bottom=8,row=(h-top-bottom-gap*(count-1))/count,x0=45,x1=w-16;
    const xPos=a=>x0+(a/360)*(x1-x0);

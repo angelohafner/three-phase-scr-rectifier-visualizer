@@ -27,17 +27,17 @@ const CurrentSourceCharts = (() => {
     const transfer=CurrentSourceModel.sample(theta,p,{valid:true,mu:result.mu,mode:result.mode});
     const selected=new Set([transfer.outgoing,transfer.incoming,transfer.stationary].filter(Boolean));
     const vals=[],target=(label,values,color,dash=[],opacity=.8,width=1.7,em=false)=>vals.push({label,values,color,dash,opacity,width,em});
-    let title='',low=-1,high=1,hiShade=true;
+    let title='',hiShade=true;
     if(chart==='scr'||chart==='transfer'){
       title=chart==='transfer'?'OUTGOING · INCOMING · STATIONARY SCR CURRENTS':'ALL SIX SCR CURRENTS';
-      low=-.05*p.idc;high=1.25*p.idc;
+      // The common SCR-current range is independent of the selected I_dc.
       const names=chart==='transfer'&&transfer.overlap?
         [transfer.outgoing,transfer.incoming,transfer.stationary]:CurrentSourceModel.SCRS;
       names.forEach(t=>{const sty=styles[t];target(t,data.map(d=>d.scr[t]),sty.color,sty.dash,
         selected.has(t)?.98:sty.alpha,selected.has(t)?2.4:1.7,selected.has(t));});
       target('i_dc',data.map(d=>d.idc),'#23485b',[11,6],.48,1.6);
     }else if(chart==='phase'){
-      title='COMMUTATING AC PHASE VOLTAGES';low=-2.1*p.vPeak;high=2.1*p.vPeak;
+      title='COMMUTATING AC PHASE VOLTAGES';
       ['v_a','v_b','v_c'].forEach((label,k)=>target(label,data.map(d=>d.phase[k]),
         ['#c43f57','#068e99','#4a75a5'][k],[[],[8,4],[2,4]][k],.85,k===0?2:1.55));
       if(transfer.overlap){
@@ -49,35 +49,39 @@ const CurrentSourceCharts = (() => {
         target('v_comm',data.map(d=>d.phase[j]-d.phase[i]),'#9f7637',[7,3,2,3],.76,2.0);
       }
     }else if(chart==='power'){
-      title='SIGNED CONVERTER DC VOLTAGES (I_dc: RECTIFIER TO INVERTER)';low=-2.1*p.vPeak;high=2.1*p.vPeak;
+      title='SIGNED CONVERTER DC VOLTAGES (I_dc: RECTIFIER TO INVERTER)';
       target('v_dc,r',angle.map(t=>LCC.sample('rectifier',t,p).dc),'#237da2',[],.9,2.0);
       target('v_dc,i',angle.map(t=>LCC.sample('inverter',t,p,LCC.OFFSET).dc),'#ba3f58',[8,4],.87,2.0);
     }else if(chart==='alphaControl'){
-      title='CURRENT CONTROLLER OUTPUT · FIRING ANGLE';low=0;high=90;
+      title='CURRENT CONTROLLER OUTPUT · FIRING ANGLE';
       const controlled=CurrentSourceModel.controller(p);
       target('α_r',controlled.alpha,'#237fa5',[7,4],.94,2);
       hiShade=false;
     }else if(chart==='dc'){
       title='DC CURRENT AND CONVERTER VOLTAGE';
-      low=-2.1*p.vPeak;high=2.1*p.vPeak;
+      // DC quantities share one fixed per-unit chart domain.
       target('i_dc',data.map(d=>d.idc),base.red,[],.95,2.1);
       target('v_dc',data.map(d=>d.dc),base.blue,[7,4],.86,1.8);
     }else if(chart==='rle'){
       title='RLE RESPONSE VERSUS IDEAL CONSTANT CURRENT';
       const rle=LoadCharts.model('RLE',{...p,alphaLoad:p.alphaR});const iRLE=rle.current||[];
-      low=0;high=Math.max(1.4*p.idc,Math.max(...iRLE)*1.16,.5);
+      // The fixed current range accommodates the complete RLE slider domain.
       target('i_RLE',iRLE,'#237ea1',[8,4],.87,2);
       target('I_ref',data.map(d=>d.idc),base.red,[],.93,2.1);
     }else if(chart==='control'){
       title='CURRENT-REGULATED RLE · AVERAGED ILLUSTRATION';
       const controlled=CurrentSourceModel.controller(p);
       const mapped=controlled.current;
-      low=0;high=Math.max(p.idc*1.45,Math.max(...mapped)*1.15);
+      // The fixed controller-current domain accounts for the minimum L and R.
       target('I_ref',controlled.ref,base.teal,[7,4],.83,2);
       target('i_dc',mapped,base.red,[],.95,2.1);
       hiShade=false;
     }
     if(!vals.length)return;
+    // Global parameter extrema determine each domain, never the live sampled peaks.
+    const [low,high]=FixedAxes.range(FixedAxes.sourceKind(chart));
+    canvas.dataset.axisMode='fixed';
+    canvas.dataset.axisLimits=JSON.stringify([{kind:FixedAxes.sourceKind(chart),min:low,max:high,x:chart==='control'||chart==='alphaControl'?[0,.35]:[0,360]}]);
     const x0=46,x1=w-12,y0=44,y1=h-26;
     const N=vals[0].values.length;
     const transient=chart==='control'||chart==='alphaControl';

@@ -51,6 +51,8 @@ jobs:
           for source in presentation/src/*.js; do node --check "$source"; done
       - name: Test physical models and presentation
         run: REQUIRE_NATIVE_SCHEMDRAW=1 python -m pytest -q tests presentation/tests
+      - name: Validate global fixed axes against physical model endpoints
+        run: node presentation/tests/fixed_axis_model_bounds.js
       - name: Verify interactive HTML in offline Chromium
         run: |
           python presentation/tests/browser_smoke.py
@@ -58,6 +60,7 @@ jobs:
           python presentation/tests/browser_inductor_controls.py
           python presentation/tests/browser_current_source.py
           python presentation/tests/browser_post_audit.py
+          python presentation/tests/browser_fixed_axes.py
       - name: Upload native Schemdraw SVG gallery
         uses: actions/upload-artifact@v4
         with:
