@@ -1,6 +1,6 @@
 # HVDC LCC Interactive Lecture — HTML Only
 
-The **offline, standalone 73-slide HTML presentation** teaches line-commutated
+The **offline, standalone 82-slide HTML presentation** teaches line-commutated
 converters progressively: first a single-phase half-wave SCR with R/RL loads,
 then the three-phase rectifier, the inverter and the complete two-station HVDC
 link. No PowerPoint is generated or required.
@@ -68,3 +68,23 @@ Regenerate all new SVG/PNG figures with `python current_source_figures.py`; buil
 ## Teaching-control audit (2026-10-28)
 
 The presentation was audited across **82 slides**. See [slide-by-slide report](../docs/SLIDE_PHYSICS_AUDIT.md). In the two principal commutation lessons, DC current and rectifier delay remain fixed and overlap is computed from AC-side commutation inductance. Inverter-side waveforms now follow the inverter station, and inapplicable controls are suppressed. The 6-pulse reference-state slides retain an explicitly assumed overlap model; they are not an EMT simulation.
+
+## Technical audit revision — consistent DC polarity and mobile readability
+
+**Signed DC reference:** pole current is positive from the rectifier toward the inverter.
+Use this same current-direction reference at both converter stations.
+The rectifier voltage/power is positive when the rectifier delivers DC power;
+the inverter voltage/power is negative when the inverter absorbs DC-link power
+and transfers it to its AC system. These signed values are converter contributions,
+not the positive local magnitude of the voltage across the inverter terminals.
+
+On narrow screens, the state viewer offers independent **Circuit/Waveforms**
+buttons. The waveform view shows one selected panel at a time at full available
+height. Current-source slides offer the same mobile focus choice between the
+circuit and the two chart panels. The existing angular slider remains mounted
+through changes in state. Long technical fact labels wrap inside their cards.
+
+The HTML build emits a matching `lcc_hvdc_interactive.build.json` containing
+the source Git blob fingerprints, source commit when available and HTML SHA-256.
+The GitHub Actions downloadable artifact includes both HTML and the manifest.
+See `docs/SECOND_AUDIT_CORRECTIONS.md` for the verification record.

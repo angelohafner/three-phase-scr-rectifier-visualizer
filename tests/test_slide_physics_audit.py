@@ -69,7 +69,7 @@ def test_current_source_policy_per_lesson():
     assert values['polarity']['mode']=='manual'
 
 
-def test_inverter_waveforms_follow_true_inverter_reference():
+def test_inverter_waveforms_follow_common_dc_current_reference():
     if not shutil.which('node'):
         pytest.skip('Node.js is required for inverter parity assertions')
     source='\n'.join((ROOT/'presentation/src'/fn).read_text(encoding='utf-8')
@@ -81,7 +81,7 @@ def test_inverter_waveforms_follow_true_inverter_reference():
         const reference=LCC.sample('inverter',90,p,LCC.OFFSET);
         process.stdout.write(JSON.stringify({wave:wave.scr,reference:reference.scr,
            phase:wave.phase,referencePhase:reference.phase,dc:wave.dc,
-           expected:-reference.dc,ac:wave.ac,expectedAc:reference.ac}));
+           expected:reference.dc,ac:wave.ac,expectedAc:reference.ac}));
     """
     proc=subprocess.run(['node','-e',code],check=True,
                         capture_output=True,text=True,cwd=ROOT)

@@ -82,7 +82,14 @@ const LCC = (() => {
       vak[upper]=scr[upper]>1e-9?0:polarity*(voltages[ph]-pplus);
       vak[lower]=scr[lower]>1e-9?0:polarity*(pminus-voltages[ph]);
     }
-    return {phase:v,line:lines,scr,vak,ac,dc:sel.overlap?(vNew+vOld)/2:vNew,dcIdeal:vNew,idc:params.idc,selected:sel};
+    // Shared DC current reference is positive from rectifier to inverter.
+    // A rectifier voltage is positive in this reference; an inverter voltage
+    // is negative when power flows from the DC link into the inverter AC grid.
+    // The phase and individual valve voltages above retain local AC polarities.
+    const bridgeDc=sel.overlap?(vNew+vOld)/2:vNew;
+    const converterDcSign=inv?-1:1;
+    return {phase:v,line:lines,scr,vak,ac,dc:converterDcSign*bridgeDc,
+      dcIdeal:converterDcSign*vNew,idc:params.idc,selected:sel};
   }
   function describe(side,id){
     let st=stateInfo(id); const direction=side==='rectifier'?'AC → DC':'DC → AC';

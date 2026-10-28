@@ -125,6 +125,17 @@
    }
    const text=$('angle-status');if(text)text.innerHTML=MathUI.angle('θ',theta)+(transferNotes.length?' · '+transferNotes.join(' | '):' · Normal conduction');
  }
+ function setStateMobilePanel(panel){
+   stateMobilePanel=panel==='circuit'?'circuit':'waveforms';
+   const root=$('slide');
+   if(!root||current().type!=='state')return;
+   root.classList.toggle('state-show-circuit',stateMobilePanel==='circuit');
+   root.classList.toggle('state-show-waveforms',stateMobilePanel==='waveforms');
+   for(const [id,value] of [['mobile-show-circuit','circuit'],['mobile-show-waveforms','waveforms']]){
+     const btn=$(id);if(btn)btn.setAttribute('aria-pressed',String(stateMobilePanel===value));
+   }
+   if(stateMobilePanel==='waveforms')renderPlots();
+ }
  function renderPlots(){
    const s=current();if(s.type!=='state')return;
    const canvas=$('plot-canvas'),reference=$('reference-view');
@@ -134,7 +145,19 @@
    if(showReference){
      const key=s.side+':'+s.id;if(reference.dataset.key!==key){reference.innerHTML=src||'<p>No reference available</p>';reference.dataset.key=key;}
    }else{
-     ChartView.render(canvas,s.side,params,liveWindow(),liveActive(),theta,mode,selectedSCR);
+     const groups=ChartView.makeSeries(s.side,params,mode,liveActive(),selectedSCR);
+     const select=$('mobile-plot-select');
+     if(select){
+       const signature=groups.map(g=>g.name).join('||');
+       if(select.dataset.signature!==signature){
+         select.replaceChildren(...groups.map((group,i)=>new Option(group.name,String(i))));
+         select.dataset.signature=signature;
+       }
+       mobileGraphIndex=Math.max(0,Math.min(groups.length-1,mobileGraphIndex));
+       select.value=String(mobileGraphIndex);
+     }
+     const focus=window.matchMedia('(max-width:700px)').matches?mobileGraphIndex:null;
+     ChartView.render(canvas,s.side,params,liveWindow(),liveActive(),theta,mode,selectedSCR,focus);
    }
  }
  function facts(s,a){
@@ -146,7 +169,13 @@
    const angles=s.side==='rectifier'?MathUI.angle('μ',params.muR)+' (assumed)':
      s.side==='inverter'?MathUI.angle('μ',params.muI)+' (assumed) · '+MathUI.angle('γ',180-params.alphaI-params.muI):
      MathUI.angle('μ',params.muR)+' / '+MathUI.angle('μ',params.muI)+' (assumed)';
-   return `<div class="fact"><small>Conducting SCRs</small><strong style="font-size:13px">${scr}</strong></div><div class="fact"><small>Timing model</small><strong>${angles}</strong></div>`;
+   const scrMarkup=s.side==='hvdc'?(
+     `<span class="fact-line">Rectifier: ${LCC.stateInfo(a.r).scrs.join(' / ')}</span>`+
+     `<span class="fact-line">Inverter: ${LCC.stateInfo(a.i).scrs.join(' / ')}</span>`):scr;
+   const angleMarkup=s.side==='hvdc'?MathUI.angle('μ',params.muR)+
+     ' / '+MathUI.angle('μ',params.muI)+' <span class="fact-annotation">(assumed)</span>':angles;
+   return `<div class="fact"><small>Conducting SCRs</small><strong class="fact-value">${scrMarkup}</strong></div>`+
+     `<div class="fact"><small>Timing model</small><strong class="fact-value">${angleMarkup}</strong></div>`;
  }
  // Nine slides use the same analytically validated current-source model.
  const currentSourceLessons={
@@ -173,12 +202,13 @@
      'A bounded averaged PI regulator adjusts firing angle to follow a current reference through an RLE link. This is different from an ideal current source.'],
    polarity:['Current Direction in Rectifier and Inverter Operation',
      'The same DC current-direction convention can describe both power-flow directions.',
-     'A classic LCC reverses power by reversing converter DC voltage, not normal pole-current direction. Rectifier and inverter DC power signs must share an explicit convention.'],
+     'Signed converter DC voltage uses one shared convention: positive DC current flows from rectifier to inverter. The rectifier contributes positive DC power; the inverter absorbs it from the link with a negative signed converter voltage.'],
    transition:['From Current Source to the Complete HVDC Link',
      'Smoothing reactors and current control explain why the HVDC pole current may remain nearly constant.',
      'A real HVDC link includes DC inductance, resistance, commutation reactors, inverter extinction-angle control and a finite response to disturbances.']
  };
  let currentSourceTopology='source',currentSourceSide='rectifier',currentSourceChart='auto';
+ let csMobilePanel='left',stateMobilePanel='waveforms',mobileGraphIndex=0;
  const csEquation=()=>`${MathUI.v('i','dc')} = ${MathUI.v('I','ref')}`;
  function csOperatingPoint(s){return CurrentSourcePolicy.effective(s.lesson,params,s.lesson==='polarity'?currentSourceSide:'rectifier');}
  function csModelLabel(s){
@@ -210,6 +240,7 @@
      `<label>Station <select class="soft-btn" id="cs-side"><option value="rectifier">Rectifier</option><option value="inverter">Inverter</option></select></label>`+
      `<label>Graph <select class="soft-btn" id="cs-chart"><option value="auto">Teaching focus</option><option value="scr">All SCR currents</option><option value="phase">Phase voltages</option><option value="dc">DC voltage / current</option><option value="rle">RLE versus source</option><option value="transfer">SCR current transfer</option><option value="power">Rectifier / inverter DC voltages</option><option value="control">Closed-loop current</option><option value="alphaControl">Controller firing angle</option></select></label>`+
      `<div class="cs-equation" id="cs-equation">${csEquation()}</div></div>`+
+     `<div class="mobile-viewbar cs-mobile-viewbar"><label for="cs-mobile-panel">MOBILE VIEW</label><select id="cs-mobile-panel" aria-label="Choose circuit or full-size graph"><option value="circuit">Circuit</option><option value="left">Graph 02</option><option value="right">Graph 03</option></select></div>`+
      `<div class="workspace cs-workspace ${s.lesson==='commutation'?'cs-main-lesson':''}">`+
      `<section class="panel"><div class="panel-head"><strong>01 / CONDUCTION CIRCUIT</strong><span id="cs-bridge-note" class="cs-small">6-pulse SCR</span></div><div class="diagram-area cs-diagram" id="cs-circuit"></div></section>`+
      `<section class="panel"><div class="panel-head"><strong id="cs-left-title">02 / SCR CURRENTS</strong></div><div class="plot-wrapper"><canvas id="cs-left" aria-label="Current-source thyristor-current waveform"></canvas></div></section>`+
@@ -246,6 +277,9 @@
    modelSelector.onchange=e=>{currentSourceTopology=e.target.value;renderCurrentSourceDetails();};
    $('cs-side').onchange=e=>{currentSourceSide=e.target.value;cachedKey='';renderCurrentSourceDetails();updateSettingsRelevance();};
    $('cs-chart').onchange=e=>{currentSourceChart=CurrentSourcePolicy.normalizeChart(s.lesson,e.target.value);renderCurrentSourceDetails();};
+   $('cs-mobile-panel').value=csMobilePanel;
+   $('cs-mobile-panel').onchange=e=>{csMobilePanel=e.target.value;applyCsMobilePanel();renderCurrentSourceDetails();};
+   applyCsMobilePanel();
    $('cs-overlap-mode').onchange=()=>{}; // Calculated/assumed overlap is determined by the slide's physical objective.
    const numeric=['idc','alphaR','muR','csLc','loadR','loadL','loadE'];
    let queued=false;
@@ -271,6 +305,13 @@
    };
    $('cs-left').onclick=clickCanvas;$('cs-right').onclick=clickCanvas;
    cachedKey='';renderCurrentSourceDetails();
+ }
+ function applyCsMobilePanel(){
+   if(current().type!=='current_source')return;
+   const root=$('slide');if(!root)return;
+   root.classList.remove('cs-view-circuit','cs-view-left','cs-view-right');
+   root.classList.add('cs-view-'+csMobilePanel);
+   const selector=$('cs-mobile-panel');if(selector)selector.value=csMobilePanel;
  }
  let csFrame=0;
  function scheduleCurrentSourceRefresh(){
@@ -338,7 +379,7 @@
    }
    if(s.lesson==='polarity'){
      const p=CurrentSourceModel.inverterPower(operating);
-     d+=` Signed average DC powers (illustrative): rectifier ${MathUI.num(p.rectifier.toFixed(2))}, inverter ${MathUI.num(p.inverter.toFixed(2))} ${MathUI.unit('p.u.')}.`;
+     d+=` Signed average converter powers (common DC current reference): rectifier ${MathUI.num(p.rectifier.toFixed(2))}, inverter ${MathUI.num(p.inverter.toFixed(2))} ${MathUI.unit('p.u.')}. Positive current points from the rectifier toward the inverter; negative inverter power denotes absorption from the DC link.`;
    }
    if(s.lesson==='controller')d+=' The controller uses an averaged six-pulse voltage equation and a finite smoothing reactor, not instantaneous SCR gate-current simulation. The controller response uses seconds, so the electrical-angle cursor is disabled on this slide.';
    $('cs-description').innerHTML=d;
@@ -432,15 +473,20 @@
  function renderState(s){
    const {a,type,overlap,desc,sub}=stateDetails(s);
    const inner=`<div class="tech-head"><div class="tech-index">${s.side==='rectifier'?'01':s.side==='inverter'?'02':'03'} · ${String(s.id).padStart(2,'0')}</div><div class="tech-title"><h1>${shortName(s.side)} · ${type}</h1><p>${sub}</p></div><div class="mode-badge ${overlap?'overlap':s.side==='hvdc'?'joint':''}">${overlap?'OVERLAP':'NORMAL'}</div></div>
-     <div class="workspace"><section class="panel"><div class="panel-head"><strong>01 / CIRCUIT & CONDUCTION PATH</strong><div class="panel-actions"><button class="soft-btn" id="zoom-btn" aria-label="Enlarge diagram">⤢ ENLARGE</button></div></div><div class="diagram-area" id="circuit-host"><span class="empty-msg">Loading vector circuit…</span><span class="diagram-tip">SVG · editable source in GitHub</span></div></section>
-     <section class="panel"><div class="panel-head"><strong>02 / CONCEPTUAL WAVEFORMS</strong><div class="panel-actions"><select class="soft-btn" id="chart-mode" aria-label="Choose signals"><option value="overview">Overview</option><option value="phase">Phase voltages</option><option value="line">Line voltages</option><option value="scr">SCR currents</option><option value="vak">SCR voltages</option><option value="valvePair">SCR voltage &amp; current</option><option value="dc">DC quantities</option></select><label class="mini-select" title="Select SCR for current and voltage">SCR <select class="soft-btn" id="scr-filter">${['all',...LCC.SCRS].map(t=>`<option value="${t}">${t==='all'?'All SCRs':t}</option>`).join('')}</select></label><button class="soft-btn ${showReference?'active':''}" id="ref-btn">${showReference?'LIVE MODEL':'SOURCE SVG'}</button></div></div><div class="plot-wrapper" id="plot-wrapper"><canvas id="plot-canvas" aria-label="Interactive LCC voltage and current plots"></canvas><div class="reference" id="reference-view" hidden></div><span class="reference-banner" id="reference-banner" hidden>Reference SVG: nominal parameters, not updated by sliders</span></div></section></div>
+     <div class="mobile-viewbar state-mobile-viewbar"><div class="mobile-view-tabs"><button type="button" id="mobile-show-circuit">Circuit</button><button type="button" id="mobile-show-waveforms">Waveforms</button></div><label for="mobile-plot-select">GRAPH <select id="mobile-plot-select" aria-label="Choose one enlarged waveform panel"></select></label></div>
+     <div class="workspace"><section class="panel state-circuit-panel"><div class="panel-head"><strong>01 / CIRCUIT & CONDUCTION PATH</strong><div class="panel-actions"><button class="soft-btn" id="zoom-btn" aria-label="Enlarge diagram">⤢ ENLARGE</button></div></div><div class="diagram-area" id="circuit-host"><span class="empty-msg">Loading vector circuit…</span><span class="diagram-tip">SVG · editable source in GitHub</span></div></section>
+     <section class="panel state-waveform-panel"><div class="panel-head"><strong>02 / CONCEPTUAL WAVEFORMS</strong><div class="panel-actions"><select class="soft-btn" id="chart-mode" aria-label="Choose signals"><option value="overview">Overview</option><option value="phase">Phase voltages</option><option value="line">Line voltages</option><option value="scr">SCR currents</option><option value="vak">SCR voltages</option><option value="valvePair">SCR voltage &amp; current</option><option value="dc">DC quantities</option></select><label class="mini-select" title="Select SCR for current and voltage">SCR <select class="soft-btn" id="scr-filter">${['all',...LCC.SCRS].map(t=>`<option value="${t}">${t==='all'?'All SCRs':t}</option>`).join('')}</select></label><button class="soft-btn ${showReference?'active':''}" id="ref-btn">${showReference?'LIVE MODEL':'SOURCE SVG'}</button></div></div><div class="plot-wrapper" id="plot-wrapper"><canvas id="plot-canvas" aria-label="Interactive LCC voltage and current plots"></canvas><div class="reference" id="reference-view" hidden></div><span class="reference-banner" id="reference-banner" hidden>Reference SVG: nominal parameters, not updated by sliders</span></div></section></div>
      <div class="tech-note" id="explain-row" ${showExplanation?'':'hidden'}><div class="explainer">${desc}</div><div class="fact-grid" id="facts">${facts(s,a)}</div></div>
      <div class="timeline"><div class="timeline-top"><span class="timeline-status" id="angle-status">θ = ${theta.toFixed(1)}° · ${type}</span><div class="timeline-actions"><button id="step-prev" title="Previous conduction state">◀ STATE</button><button class="primary" id="play-btn">${playing?'❚❚ PAUSE':'▶ PLAY'}</button><button id="step-next" title="Next conduction state">STATE ▶</button></div></div><input class="angle-range" id="angle-range" type="range" min="0" max="359.75" step="0.01" value="${theta}" aria-label="Electrical angle in degrees"><div class="ticks"><span>0°</span><span>60°</span><span>120°</span><span>180°</span><span>240°</span><span>300°</span><span>360°</span></div></div>`;
-   $('slide').className='slide technical';$('slide').innerHTML=inner;cachedKey='';
+   $('slide').className='slide technical state-slide';$('slide').innerHTML=inner;cachedKey='';
+   $('mobile-show-circuit').onclick=()=>setStateMobilePanel('circuit');
+   $('mobile-show-waveforms').onclick=()=>setStateMobilePanel('waveforms');
+   $('mobile-plot-select').onchange=e=>{mobileGraphIndex=Number(e.target.value);renderPlots();};
+   setStateMobilePanel(stateMobilePanel);
    $('chart-mode').value=mode;
    $('scr-filter').value=selectedSCR;
    $('scr-filter').addEventListener('change',e=>{selectedSCR=e.target.value;renderPlots();});
-   $('chart-mode').addEventListener('change',e=>{mode=e.target.value;renderPlots();});
+   $('chart-mode').addEventListener('change',e=>{mode=e.target.value;mobileGraphIndex=0;renderPlots();});
    $('ref-btn').onclick=()=>{showReference=!showReference;const b=$('ref-btn');b.textContent=showReference?'LIVE MODEL':'SOURCE SVG';b.classList.toggle('active',showReference);renderPlots();};
    $('step-prev').onclick=()=>stepState(-1);$('step-next').onclick=()=>stepState(1);
    $('play-btn').onclick=()=>togglePlay();

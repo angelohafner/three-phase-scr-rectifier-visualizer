@@ -49,9 +49,9 @@ const CurrentSourceCharts = (() => {
         target('v_comm',data.map(d=>d.phase[j]-d.phase[i]),'#9f7637',[7,3,2,3],.76,2.0);
       }
     }else if(chart==='power'){
-      title='RECTIFIER AND INVERTER DC VOLTAGES';low=-2.1*p.vPeak;high=2.1*p.vPeak;
+      title='SIGNED CONVERTER DC VOLTAGES (I_dc: RECTIFIER TO INVERTER)';low=-2.1*p.vPeak;high=2.1*p.vPeak;
       target('v_dc,r',angle.map(t=>LCC.sample('rectifier',t,p).dc),'#237da2',[],.9,2.0);
-      target('v_dc,i',angle.map(t=>-LCC.sample('inverter',t,p,LCC.OFFSET).dc),'#ba3f58',[8,4],.87,2.0);
+      target('v_dc,i',angle.map(t=>LCC.sample('inverter',t,p,LCC.OFFSET).dc),'#ba3f58',[8,4],.87,2.0);
     }else if(chart==='alphaControl'){
       title='CURRENT CONTROLLER OUTPUT · FIRING ANGLE';low=0;high=90;
       const controlled=CurrentSourceModel.controller(p);

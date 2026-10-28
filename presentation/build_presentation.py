@@ -178,6 +178,30 @@ def build(source: Path, out: Path, src: Path) -> dict:
     if re.search(r'<(?:script|link)[^>]+(?:src|href)\s*=\s*["\']https?://', template):
         raise ValueError('Found external dependency')
     out.write_text(template, encoding='utf-8')
+    import hashlib
+    import os
+    import subprocess
+    def _git_blob_sha(path: Path) -> str:
+        content = path.read_bytes()
+        return hashlib.sha1(b'blob '+str(len(content)).encode()+b'\0'+content).hexdigest()
+    revision=os.environ.get('GITHUB_SHA') or os.environ.get('LCC_SOURCE_COMMIT')
+    if not revision:
+        try:
+            revision=subprocess.run(['git','rev-parse','HEAD'], cwd=source,
+                capture_output=True,text=True,check=True,timeout=3).stdout.strip()
+        except (OSError,subprocess.SubprocessError):
+            revision='local-uncommitted'
+    source_files=['waveforms.js','charts.js','current_source.js',
+        'current_source_charts.js','presentation.js','styles.css','halfwave.js']
+    trace={
+        'source_revision':revision,
+        'built_with':[{'path':'presentation/src/'+name,
+                       'git_blob_sha':_git_blob_sha(src/name)} for name in source_files],
+        'html_sha256':hashlib.sha256(out.read_bytes()).hexdigest(),
+        'slides':82,
+        'convention':'I_dc: rectifier to inverter; Vdc,r positive, Vdc,i negative in normal power flow',
+    }
+    (out.parent/(out.stem+'.build.json')).write_text(json.dumps(trace,indent=2)+'\n',encoding='utf-8')
     return {
         'html': str(out),
         'bytes': out.stat().st_size,

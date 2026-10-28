@@ -186,3 +186,55 @@ body{font-family:"Segoe UI",Arial,sans-serif;font-style:normal;font-variant-nume
 .settings-card .slider-row.audit-irrelevant{display:none}
 @media(max-width:1000px){.cs-controlbar{flex-wrap:nowrap;overflow-x:auto;min-height:66px}.cs-controlbar .cs-slider{flex:0 0 190px}.cs-controlbar .cs-slider:nth-child(n){display:flex}.cs-controlbar .cs-slider.cs-disabled:nth-child(n){display:none}}
 @media(max-width:620px){.cs-controlbar .cs-slider{flex:0 0 170px}.cs-controlbar .cs-slider:nth-child(n){display:flex}.cs-controlbar .cs-slider.cs-disabled:nth-child(n){display:none}}
+
+/* Independent audit: prevent technical fact cards from clipping long formulas. */
+.tech-note, .tech-note > .explainer, .tech-note > .fact-grid, .fact-grid > .fact { min-width:0; }
+.tech-note > .explainer {overflow-wrap:anywhere;}
+.tech-note > .fact-grid { grid-template-columns:minmax(0,1fr) minmax(0,1fr); width:min(44%,460px); }
+.fact-grid > .fact {overflow:hidden; padding:6px 9px;}
+.fact-grid .fact-value { display:block; min-width:0; max-width:100%; white-space:normal; overflow-wrap:anywhere; font-size:clamp(10px,.91vw,13px); font-style:normal; font-weight:600; line-height:1.24; }
+.fact-grid .fact-line {display:block;}
+.fact-grid .fact-annotation {font-size:.91em; font-style:normal;}
+/* A dedicated graph selector increases readability at phone/tablet widths. */
+.mobile-viewbar { display:none; flex-shrink:0; align-items:center; justify-content:space-between; gap:8px; min-width:0; padding:5px 7px; background:#eaf3f5; border:1px solid #ccdee6; border-radius:4px; }
+.mobile-viewbar select { min-width:0; width:min(100%,230px); max-width:100%; padding:5px 6px; border:1px solid #b9d5df; border-radius:4px; background:#fff; color:#21475b; font-size:11px; }
+.mobile-viewbar label { display:flex; align-items:center; gap:7px; min-width:0; font-size:10px; font-weight:700; color:#315d70; }
+.mobile-view-tabs {display:flex;gap:5px;flex-shrink:0;}
+.mobile-view-tabs button {padding:5px 9px;background:#fff;border:1px solid #bfd5df;color:#245669;border-radius:4px;font-size:11px;font-weight:700;}
+.mobile-view-tabs button[aria-pressed="true"] {background:#086d80;color:#fff;border-color:#086d80;}
+@media(max-width:700px) {
+  .state-slide, .cs-slide {overflow-y:auto;}
+  .state-slide .state-mobile-viewbar, .cs-slide .cs-mobile-viewbar {display:flex;}
+  .state-slide .workspace, .cs-slide .cs-workspace {display:flex; flex:1; min-height:250px; max-height:100%; gap:0;}
+  .state-slide .workspace > .panel, .cs-slide .cs-workspace > .panel {flex:1; min-width:0; min-height:0; height:100%;}
+  .state-slide.state-show-waveforms .state-circuit-panel, .state-slide.state-show-circuit .state-waveform-panel {display:none;}
+  .cs-slide.cs-view-circuit .cs-workspace > .panel:not(:first-child) {display:none;}
+  .cs-slide.cs-view-left .cs-workspace > .panel:not(:nth-child(2)) {display:none;}
+  .cs-slide.cs-view-right .cs-workspace > .panel:not(:nth-child(3)) {display:none;}
+  .state-slide .panel-head .panel-actions {min-width:0; flex-wrap:wrap; justify-content:flex-end;}
+  .state-slide .panel-head .panel-actions .mini-select {display:none;}
+  .state-slide .panel-head .soft-btn {max-width:110px;}
+  .state-slide .tech-head, .cs-slide .tech-head {gap:6px; min-height:unset; align-items:flex-start;}
+  .state-slide .tech-title h1, .cs-slide .tech-title h1 {font-size:clamp(13px,3.8vw,17px);}
+  .state-slide .tech-title p, .cs-slide .tech-title p {font-size:10px;}
+  .state-slide .tech-note {max-height:106px; min-height:48px; overflow:auto;}
+  .cs-slide .tech-note {max-height:100px; min-height:42px; overflow:auto;}
+  .state-slide .timeline, .cs-slide .timeline {min-height:72px; flex-shrink:0;}
+  .state-slide .mode-badge, .cs-slide .mode-badge {max-width:90px;white-space:normal;overflow-wrap:anywhere;}
+}
+@media(max-width:430px) {
+  .state-mobile-viewbar label {flex:1;}
+  .mobile-viewbar select {width:100%;}
+  .mobile-view-tabs button {padding:5px 6px;font-size:10px;}
+  .tech-note > .fact-grid {display:none;}
+}
+
+@media(max-width:700px){
+  .cs-slide .tech-title p{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;}
+  .cs-slide .tech-head{max-height:87px;overflow:hidden;}
+  .cs-slide .tech-title{min-width:0;}
+  .cs-slide .cs-mobile-viewbar{min-height:31px;}
+}
+/* Keep decorative cover artwork inside the slide viewport. */
+.presentation-hero {overflow:hidden;}
+.fact-grid .fact strong {white-space:normal;overflow-wrap:anywhere;min-width:0;}

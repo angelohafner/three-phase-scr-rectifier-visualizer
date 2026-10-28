@@ -35,7 +35,7 @@ const CurrentSourceModel = (() => {
       return {valid:true,theta:mod(angle,360),sector:sel.sector,mu:data.mu,
         state:sel.id,overlap:sel.overlap,transfer:sel.transfer,idc:p.idc,
         scr:ref.scr,ac:ref.ac,phase:ref.phase,line:ref.line,
-        dc:-ref.dc, // Rectifier-oriented DC voltage reference for power comparison.
+        dc:ref.dc, // Already signed in the common rectifier-to-inverter DC current reference.
         outgoing:info.outgoing,incoming:info.incoming,stationary};
     }
     const a=mod(angle,360),sector=Math.floor(a/60),local=a-sector*60;
@@ -116,7 +116,7 @@ const CurrentSourceModel = (() => {
     let r=0,i=0;
     for(let angle=0;angle<360;angle++){
       r+=LCC.sample('rectifier',angle,inp).dc;
-      i-=LCC.sample('inverter',angle,inp,LCC.OFFSET).dc; // Rectifier-oriented pole-voltage convention.
+      i+=LCC.sample('inverter',angle,inp,LCC.OFFSET).dc; // Negative for inverter absorption from the DC link.
     }
     return {rectifier:r/360*p.idc,inverter:i/360*p.idc};
   }

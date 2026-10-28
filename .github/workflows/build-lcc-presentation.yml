@@ -29,7 +29,7 @@ jobs:
           node-version: '22'
       - name: Install model and graphics dependencies
         run: |
-          python -m pip install -r requirements-waveforms.txt pytest pillow playwright lxml "schemdraw>=0.22,<0.24"
+          python -m pip install -r requirements-waveforms.txt pytest pillow playwright "schemdraw>=0.22,<0.24"
           python -m playwright install --with-deps chromium
       - name: Verify native Schemdraw elements
         run: |
@@ -57,6 +57,7 @@ jobs:
           python presentation/tests/browser_fundamentals.py
           python presentation/tests/browser_inductor_controls.py
           python presentation/tests/browser_current_source.py
+          python presentation/tests/browser_post_audit.py
       - name: Upload native Schemdraw SVG gallery
         uses: actions/upload-artifact@v4
         with:
@@ -74,5 +75,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lcc-hvdc-thyristor-fundamentals-html
-          path: dist/lcc_hvdc_interactive.html
+          path: |
+            dist/lcc_hvdc_interactive.html
+            dist/lcc_hvdc_interactive.build.json
           retention-days: 90
