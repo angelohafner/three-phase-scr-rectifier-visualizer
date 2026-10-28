@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="description" content="Self-contained interactive HVDC LCC 6-pulse rectifier, inverter and full-link teaching presentation">
+<title>HVDC LCC | Interactive Conduction Lab</title>
+<style>
+<!--INLINE_CSS-->
+</style>
+</head>
+<body>
+<div class="shell" id="shell">
+ <header class="topbar" role="banner">
+  <div class="brand"><div class="brand-mark" aria-hidden="true">LCC</div><div class="brand-text"><strong>HVDC CONDUCTION LAB</strong><span>Interactive electrical engineering lecture</span></div></div>
+  <nav class="topnav" aria-label="Chapters"><button class="tab" id="nav-rect">01 RECTIFIER</button><button class="tab" id="nav-inv">02 INVERTER</button><button class="tab" id="nav-hvdc">03 HVDC LINK</button></nav>
+  <div class="topactions"><button id="overview-open" class="icon-btn" aria-label="Open slide overview" title="Slide overview (O)">▦</button><button id="settings-open" class="icon-btn" aria-label="Adjust electrical parameters" title="Parameters">⚙</button><button id="help-open" class="icon-btn" aria-label="Keyboard help" title="Keyboard help">?</button><button id="fullscreen-btn" class="icon-btn" aria-label="Toggle fullscreen" title="Full screen (F)">⛶</button></div>
+ </header>
+ <main id="deck" class="deck"><article id="slide" class="slide" aria-live="polite"></article></main>
+ <footer class="footer">
+   <div class="mini-controls"><button id="footer-prev" aria-label="Previous slide">← PREVIOUS</button><button id="footer-next" aria-label="Next slide">NEXT →</button></div>
+   <span class="footer-note" id="current-chapter">HVDC LCC LEARNING LAB</span><div class="progress-track" aria-hidden="true"><div id="progress-fill"></div></div><span class="counter" id="page-counter">1 / 54</span>
+ </footer>
+</div>
+<div id="settings-overlay" class="settings-overlay" role="dialog" aria-modal="true" aria-label="Electrical parameters" aria-hidden="true">
+ <div class="settings-card"><div class="settings-head"><h2>Live parameters</h2><button class="close" id="settings-close">CLOSE ✕</button></div><p class="settings-sub">These controls recalculate the current waveforms, voltage curves, SCR conduction states, and angular intervals in the interactive model. Relative station commutation offset: 30°.</p>
+ <div id="settings-sliders"></div><div class="settings-warn">Extinction angle: <strong id="settings-gamma">20°</strong>. The limit γ ≥ 10° is enforced. Overlap uses a linear current transfer and an idealized midpoint DC-voltage notch; the model is educational, not EMT.</div>
+ <div class="settings-actions"><button id="reset-btn">↺ Reset defaults</button><button id="explain-btn">Hide explanations</button></div></div>
+</div>
+<div id="overview-overlay" class="overview-overlay" role="dialog" aria-modal="true" aria-label="Slide overview" aria-hidden="true">
+ <div class="overview-card"><div class="overview-head"><h2>State overview · 48 reference states</h2><button class="close" id="overview-close">CLOSE ✕</button></div><p class="settings-sub">Select a state to open its electrical circuit and synchronized waveforms. The HVDC joint windows follow the live commutation parameters.</p><div id="overview-body"></div></div>
+</div>
+<div id="zoom-overlay" class="zoom-overlay" role="dialog" aria-modal="true" aria-label="Large circuit viewer" aria-hidden="true">
+ <div class="zoom-sheet"><div class="panel-head"><strong id="zoom-title">CIRCUIT</strong><button class="close" id="zoom-close">CLOSE ✕</button></div><div class="diagram-area" id="zoom-content"></div></div><span id="close-zoom-layer" style="position:fixed;right:13px;bottom:12px;color:#d9f6ff;cursor:pointer;font-size:12px">Esc to close</span>
+</div>
+<div id="help-overlay" class="help-overlay" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts" aria-hidden="true">
+ <div class="help-card"><div class="overview-head"><h2>Presentation shortcuts</h2><button class="close" id="help-close">CLOSE ✕</button></div><p class="settings-sub">All controls work offline; the electrical-angle timeline is interactive.</p><table class="help-table"><tbody>
+ <tr><td>→ / Space</td><td>Next slide</td></tr><tr><td>←</td><td>Previous slide</td></tr><tr><td>Home / End</td><td>Beginning / end of deck</td></tr><tr><td>O</td><td>Overview of the 48 states</td></tr><tr><td>F</td><td>Full screen</td></tr><tr><td>P</td><td>Play / pause angle animation</td></tr><tr><td>Esc</td><td>Close panels</td></tr></tbody></table></div>
+</div>
+<script id="presentation-data" type="application/json"><!--INLINE_DATA--></script>
+<script>
+<!--INLINE_WAVEFORMS-->
+</script>
+<script>
+<!--INLINE_CHARTS-->
+</script>
+<script>
+<!--INLINE_PRESENTATION-->
+</script>
+</body></html>

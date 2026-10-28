@@ -1,0 +1,33 @@
+name: Build offline LCC presentation
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'presentation/**'
+      - 'rectifier_*.py'
+      - 'hvdc_link*.py'
+      - 'output_lcc/**'
+      - 'output_hvdc/**'
+      - '.github/workflows/build-lcc-presentation.yml'
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Create offline HTML
+        run: python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html
+      - name: Run presentation checks
+        run: |
+          python -m pip install pytest
+          python -m pytest -q presentation/tests
+      - name: Attach downloadable presentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: lcc-hvdc-interactive-offline
+          path: dist/lcc_hvdc_interactive.html
+          retention-days: 30
