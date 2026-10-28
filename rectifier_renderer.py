@@ -83,12 +83,10 @@ class StyleManager:
                 coord = (coord[2], coord[3], coord[0], coord[1])
             self.arrow(parent, *coord)
             return
-        elif name == 'CARGA_POS_L':
-            coord = (x['load'], 251, x['load'], 279)
-        elif name == 'CARGA_L_R':
-            coord = (x['load'], 391, x['load'], 422)
-        elif name == 'CARGA_R_NEG':
-            coord = (x['load'], 586, x['load'], 615)
+        elif name in ('CARGA_POS_L', 'CARGA_L_R', 'CARGA_R_NEG'):
+            # Avoid current-direction markers overlapping DC load/source symbols.
+            # Direction arrows on bridge wires and SCR branches remain visible.
+            return
         if coord is not None:
             if orientation < 0:
                 coord = (coord[2], coord[3], coord[0], coord[1])
