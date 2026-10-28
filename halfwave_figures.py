@@ -10,6 +10,7 @@ import math
 import xml.etree.ElementTree as ET
 
 import rectifier_art as art
+import schemdraw_symbols as native
 from halfwave_model import HalfWaveSettings, HalfWaveModel
 
 S = art.S
@@ -43,44 +44,27 @@ def circuit_svg(load: str = 'RL', conducting: bool = True) -> ET.ElementTree:
         art.line(wire,x1,y1,x2,y2,color,width)
     if load=='RL':
         art.line(wire,845,287,845,310,color,width)
-    # AC source, physically in series with the closed return path.
-    src=art.group(root,'source-ac')
-    art.element(src,'circle',cx=194,cy=280,r=45,fill='#FFFFFF',stroke=color,stroke_width=width)
-    art.path(src,'M 164,280 C 174,259 184,259 194,280 C 204,301 214,301 224,280',color,2.7)
+    # The source geometry comes from schemdraw.elements.SourceSin.
+    native.draw_ac_source(root,(194,235),(194,325),color,width,
+                          group_id='source-ac')
     art.math_label(root,116,271,'v',subscript='s',size=22,color=INK)
-    # Reuse the library's exact SCR diode and gate shapes, horizontally oriented.
-    scr=art.group(root,'scr-T1')
-    scr.set('data-symbol','schemdraw.elements.SCR')
+    # Native SCR with the original electrical terminal positions.
+    scr=native.draw_scr(root,(465,145),(515.75,145),color,width,
+                        fill='#FBE7E9' if conducting else 'white',
+                        group_id='scr-T1')
     scr.set('data-state','on' if conducting else 'off')
-    scale_x,scale_y=145,96
-    def pt(v):return (465+v[0]*scale_x,145-v[1]*scale_y)
-    for typ,vertices in art.SCR_PRIMITIVES:
-        if typ=='polygon':
-            art.element(scr,'polygon',points=' '.join(f'{x:.2f},{y:.2f}' for x,y in map(pt,vertices)),
-                        fill='#FBE7E9' if conducting else '#FFFFFF',stroke=color,stroke_width=width)
-        else:
-            vals=[]
-            for vertex in list(vertices)+[(math.nan,math.nan)]:
-                if not math.isfinite(vertex[0]):
-                    if len(vals)>1:
-                        art.path(scr,'M '+' L '.join(f'{x:.2f},{y:.2f}' for x,y in vals),color,width)
-                    vals=[]
-                else:vals.append(pt(vertex))
-    art.math_label(root,550,119,'T',subscript='1',size=24,color=RED if conducting else INK)
+    art.math_label(root,607,113,'T',subscript='1',size=24,
+                   color=RED if conducting else INK)
     art.txt(root,470,206,'GATE',size=11,color=MUTED)
-    # Inductor and American-style resistor.
     if load=='RL':
-        coil=art.group(root,'load-inductor')
-        art.path(coil,'M 845,217 C 822,221 822,235 845,237 C 868,242 868,253 845,257 C 822,261 822,275 845,287',color,width)
+        native.draw_inductor(root,(845,217),(845,287),color,width,
+                             transverse_scale=120,group_id='load-inductor')
+        ry1=310
         art.math_label(root,900,257,'L',size=26,color=INK)
-        ry1,ry2=310,366
-    else:ry1,ry2=273,366
-    res=art.group(root,'load-resistor')
-    x=845
-    n=7
-    pts=[(x,ry1)]+[(x+(-15 if j%2 else 15),ry1+(ry2-ry1)*j/(n+1))
-                      for j in range(1,n+1)]+[(x,ry2)]
-    art.path(res,'M '+' L '.join(f'{px:.2f},{py:.2f}' for px,py in pts),color,width)
+    else:
+        ry1=273
+    native.draw_resistor(root,(845,ry1),(845,366),color,width,
+                         transverse_scale=65,group_id='load-resistor')
     art.math_label(root,900,344,'R',size=26,color=INK)
     art.math_label(root,685,122,'i',subscript='T',size=20,color=RED if conducting else MUTED)
     art.math_label(root,918,173,'v',subscript='o',size=20,color=INK)
@@ -96,7 +80,7 @@ def circuit_svg(load: str = 'RL', conducting: bool = True) -> ET.ElementTree:
         art.txt(root,516,218,'SCR BLOCKING',size=14,bold=True,color=MUTED)
     art.txt(root,51,501,'RED = CONDUCTION PATH' if conducting else 'NO CURRENT · SCR BLOCKING',
             size=14,bold=True,color=RED if conducting else MUTED)
-    art.txt(root,49,524,'Schemdraw SCR geometry · source and DC load are in one closed loop',size=12,color=MUTED)
+    art.txt(root,49,524,'Schemdraw SCR / SourceSin / '+('Inductor / ' if load=='RL' else '')+'ResistorIEEE · one closed loop',size=12,color=MUTED)
     return ET.ElementTree(root)
 
 
