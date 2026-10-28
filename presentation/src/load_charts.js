@@ -69,7 +69,7 @@ const LoadCharts = (() => {
      rows.push(['SCR anode-to-cathode voltages (pu)',filtered(voltages),{symmetric:true}],['SCR current / DC current (pu)',filtered(currents),{positive:true}]);
    }else if(mode==='dc'){rows.push(['DC-side voltage (pu)',[dc[0]],{symmetric:true}],['DC load current (pu)',[dc[1]],{positive:true}]);}
    else {rows.push(['Phase voltages (pu)',phase,{symmetric:true}],['DC quantities (pu)',dc,{symmetric:true}]);}
-   rows.push(['SCR currents (pu)',filtered(currents),{positive:true}]);
+   if(!['scr','scrv'].includes(mode))rows.push(['SCR currents (pu)',filtered(currents),{positive:true}]);
    const gap=6,pad=3,hh=(h-pad*2-gap*(rows.length-1))/rows.length;
    rows.forEach(([title,draw,opt],i)=>panel(g,{x:0,y:pad+i*(hh+gap),w,h:hh},title,draw,theta,series.windows,opt));
    canvas.dataset.plotLeft='45';canvas.dataset.plotRight=String(w-12);

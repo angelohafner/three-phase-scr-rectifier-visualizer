@@ -63,3 +63,7 @@ body{background:#eaf1f3;color:#14394f;font-family:"Segoe UI",Arial,sans-serif}
 @media(max-height:720px){.technical{gap:6px}.tech-note{min-height:53px}.tech-head{min-height:46px}.panel-head{height:33px}}
 
 .scr-note{position:absolute;bottom:8px;left:10px;right:10px;font-size:10px;padding:6px 8px;color:#785127;background:#fff8e7df;border:1px solid #ddcba1;border-radius:3px;pointer-events:none}
+
+/* Keep footer navigation legible on the light technical document theme. */
+.footer .mini-controls button{background:#fff;border:1px solid #a8c9d2;color:#14556c!important;font-weight:700;box-shadow:0 1px 2px #163a500d}
+.footer .mini-controls button:disabled{opacity:.52}

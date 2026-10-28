@@ -191,8 +191,8 @@
    const details=compare?'R current follows positive voltage; RL current stores magnetic energy.':descriptions[which];
    const note=loadChartMode==='scrv'?' Blocking voltages are signed; gaps indicate unresolved floating DC poles.':'';
    const value=state.scrVoltage.T1;
-   $('load-explanation').innerHTML=details+note+' '+transfer+' '+TechnicalMath.html('v_{AK,1}')+' = '+
-     (Number.isFinite(value)?value.toFixed(2)+' pu':'undefined');
+   $('load-explanation').innerHTML='<span class="explain-body">'+details+note+' '+transfer+' '+TechnicalMath.html('v_{AK,1}')+' = '+
+     (Number.isFinite(value)?value.toFixed(2)+' pu':'undefined')+'</span>';
    const choice=$('load-choice');if(choice&&choice.value!==params.loadMode)choice.value=params.loadMode;
    LoadCharts.render($('load-plots'),compare?'compare':which,params,theta,loadChartMode,params.scrFocus);
  }
