@@ -234,7 +234,7 @@
     <text x="125" y="629" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="14" font-weight="400">Y/Y  ·  isolated windings  ·  teaching model</text>
     <line x1="334" y1="705.0" x2="334" y2="905.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
     <line x1="405" y1="705.0" x2="405" y2="905.0" stroke="#21334A" stroke-width="3.4" stroke-linecap="round" />
-    <line x1="405" y1="705.0" x2="805.0" y2="#D52940" stroke="5.1" stroke-width="3.5" stroke-linecap="round" />
+    <line x1="405" y1="705.0" x2="405" y2="805.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
     <circle cx="405" cy="705.0" r="4.8" fill="#E12E3F" />
     <circle cx="405" cy="805.0" r="4.8" fill="#E12E3F" />
     <circle cx="405" cy="905.0" r="4.8" fill="#203246" />
@@ -308,7 +308,7 @@
     <text x="2962" y="629" fill="#76889C" font-family="DejaVu Sans, Arial, sans-serif" font-size="14" font-weight="400">Y/Y  ·  isolated windings  ·  teaching model</text>
     <line x1="3192" y1="705.0" x2="3192" y2="905.0" stroke="#21334A" stroke-width="3.3" stroke-linecap="round" />
     <line x1="3125" y1="705.0" x2="3125" y2="905.0" stroke="#21334A" stroke-width="3.4" stroke-linecap="round" />
-    <line x1="3125" y1="705.0" x2="805.0" y2="#D52940" stroke="5.1" stroke-width="3.5" stroke-linecap="round" />
+    <line x1="3125" y1="705.0" x2="3125" y2="805.0" stroke="#D52940" stroke-width="5.1" stroke-linecap="round" />
     <circle cx="3125" cy="705.0" r="4.8" fill="#E12E3F" />
     <circle cx="3125" cy="805.0" r="4.8" fill="#E12E3F" />
     <circle cx="3125" cy="905.0" r="4.8" fill="#203246" />
