@@ -236,9 +236,12 @@
    const floating=which==='R'||which==='RL'||which==='LE'||which==='RLE';
    const uncertainty=$('floating-note');if(uncertainty)uncertainty.hidden=!(state.pair<0&&floating&&!compare&&!compareAll&&['vak','valvePair'].includes($('load-chart-mode')?.value));
    const choice=$('load-choice');if(choice&&choice.value!==params.loadMode)choice.value=params.loadMode;
+   applyInductorAvailability();
    LoadCharts.render($('load-plots'),compare?'compare':compareAll?'compareAll':which,params,theta,$('load-chart-mode')?.value||'overview',selectedSCR);
  }
  function renderLoadSlide(s){
+   if(['r_intro','r_case'].includes(s.lesson))params.loadMode='R';
+   else if(['rl_intro','le_intro','rle_intro'].includes(s.lesson))params.loadMode=({rl_intro:'RL',le_intro:'LE',rle_intro:'RLE'})[s.lesson];
    const isCompare=s.lesson==='r_compare',isAll=s.lesson==='advanced_compare';
    const which=({r_intro:'R',r_case:'R',rl_intro:'RL',le_intro:'LE',rle_intro:'RLE'}[s.lesson]||'R');
    const title=isAll?'RECTIFIER · R / RL / LE / RLE comparison':isCompare?'RECTIFIER · Comparing R and RL loads':
@@ -295,6 +298,31 @@
     case 'commutation':return `Here the SCR stops when its current reaches zero at ${MathUI.v('β')}. In a three-phase LCC, the next valve turns on and current transfers between phases during ${MathUI.v('μ')}; these are different phenomena.`;
    }
  }
+ function inductorAvailability(){
+   const active=current();
+   const fundamentals=active.type==='fundamentals';
+   const loadStudy=active.type==='load';
+   // A comparison contains an RL branch even if an R load is currently shown.
+   const halfHasInductor=fundamentals && !['scr_intro','r_circuit','r_delay'].includes(active.lesson);
+   const dcHasInductor=loadStudy && (['r_compare','advanced_compare'].includes(active.lesson) ||
+      ['RL','LE','RLE'].includes(params.loadMode));
+   return {halfwave:halfHasInductor,dc:dcHasInductor};
+ }
+ function applyInductorAvailability(){
+   const present=inductorAvailability();
+   function apply(id,enabled,explanation){
+     const input=$(id);if(!input)return;
+     input.disabled=!enabled;
+     input.setAttribute('aria-disabled',String(!enabled));
+     input.title=enabled?'Adjust physical inductance in this circuit':explanation;
+     const row=input.closest('.fund-tuner, .slider-row');
+     if(row){row.classList.toggle('inductor-disabled',!enabled);
+       row.setAttribute('data-has-inductor',String(enabled));}
+   }
+   apply('hL-fund',present.halfwave,'This single-phase circuit has no inductor');
+   apply('hL-range',present.halfwave,'Half-wave L applies only to RL and comparisons');
+   apply('loadL-range',present.dc,'The selected DC load model has no inductor');
+ }
  function renderFundamentalsDetails(){
    const s=current();if(s.type!=='fundamentals'||!$('fund-circuit-host'))return;
    const rl=HalfWave.get(params,'RL'),r=HalfWave.get(params,'R');
@@ -324,6 +352,7 @@
      if(out)out.textContent=params[name].toFixed(name==='hL'?1:1)+({hAlpha:'°',hR:' Ω',hL:' mH',hV:' V'}[name]);
      if(el&&document.activeElement!==el)el.value=params[name];
    }
+   applyInductorAvailability();
    HalfWave.render($('fund-waveforms'),params,theta,s.lesson,$('fund-mode').value);
  }
  function renderFundamentalsSlide(s){
@@ -340,7 +369,7 @@
    cachedKey='';
    $('fund-mode').onchange=renderFundamentalsDetails;
    for(const name of ['hAlpha','hR','hL','hV']){
-      $(name+'-fund').oninput=e=>{params[name]=+e.currentTarget.value;renderFundamentalsDetails();};
+      $(name+'-fund').oninput=e=>{if(e.currentTarget.disabled)return;params[name]=+e.currentTarget.value;renderFundamentalsDetails();};
    }
    $('fund-angle').oninput=e=>{pause(false);setTheta(+e.currentTarget.value);renderFundamentalsDetails();};
    $('fund-step-180').onclick=()=>{pause(false);setTheta(180);renderFundamentalsDetails();};
@@ -380,6 +409,7 @@
    $('footer-prev').disabled=slideIndex===0;$('footer-next').disabled=slideIndex===deck.length-1;
    $('current-chapter').textContent=s.side==='fundamentals'?'CH 00 · THYRISTOR FUNDAMENTALS':s.side==='rectifier'?'CH 01 · RECTIFIER':s.side==='inverter'?'CH 02 · INVERTER':s.side==='hvdc'?'CH 03 · HVDC LINK':'HVDC LCC LEARNING LAB';
    $('settings-gamma').textContent=(180-params.alphaI-params.muI).toFixed(1)+'°';
+   applyInductorAvailability();
  }
  function render(){
    updateSchedule();const s=current();
@@ -406,11 +436,13 @@
      $(key+'-value').textContent=Number(params[key]).toFixed(2)+(key.startsWith('alpha')||key.startsWith('mu')||key==='hAlpha'?'°':key==='loadL'||key==='hL'?' mH':key==='loadR'||key==='hR'?' Ω':key==='hV'?' V':key==='speed'?' °/s':' p.u.');
    }
    updateSchedule();if(current().type==='state'){syncSlideFromAngle();}cachedKey='';if(current().type==='fundamentals')renderFundamentalsDetails();else render();
+   applyInductorAvailability();
  }
  function setupSettings(){
    const names=[['hAlpha',0,175,.1,'Half-wave firing angle '+MathUI.v('α')],['hR',2,45,.1,'Half-wave resistance '+MathUI.v('R')],['hL',.5,140,.1,'Half-wave inductance '+MathUI.v('L')],['hV',40,260,.5,'Half-wave source peak '+MathUI.v('V')],['alphaR',0,80,.1,'Rectifier firing delay '+MathUI.v('α','r')],['alphaI',105,169,.1,'Inverter firing delay '+MathUI.v('α','i')],['muR',1,50,.1,'Rectifier commutation overlap '+MathUI.v('μ','r')],['muI',1,50,.1,'Inverter commutation overlap '+MathUI.v('μ','i')],['alphaLoad',0,119,.1,'Introductory firing angle '+MathUI.v('α')],['loadR',.3,3,.1,'DC resistance '+MathUI.v('R')+' ('+MathUI.unit('Ω')+')'],['loadL',.1,25,.1,'Smoothing inductance '+MathUI.v('L')+' ('+MathUI.unit('mH')+')'],['loadE',0,1.8,.01,'Opposing source '+MathUI.v('E')+' ('+MathUI.unit('p.u.')+')'],['loadI0',0,2,.01,'Initial current '+MathUI.v('i','dc')+'('+MathUI.num('0')+')'],['idc',.2,2,.01,'Illustrative pole current '+MathUI.v('I','dc')],['vPeak',.2,2,.01,'AC peak voltage '+MathUI.v('V')],['speed',2,180,.1,'Animation speed']];
    $('settings-sliders').innerHTML=names.map(([n,lo,hi,step,label])=>`<div class="slider-row"><label for="${n}-range">${label}</label><output id="${n}-value"></output><input id="${n}-range" type="range" min="${lo}" max="${hi}" step="${step}" value="${params[n]}"></div>`).join('');
-   let queued=false,lastInput=null;for(const [name] of names){$(name+'-range').addEventListener('input',e=>{lastInput=[name,e.target.value];if(!queued){queued=true;requestAnimationFrame(()=>{queued=false;if(lastInput)updateParam(lastInput[0],lastInput[1]);});}});}
+   let queued=false,lastInput=null;for(const [name] of names){$(name+'-range').addEventListener('input',e=>{if(e.currentTarget.disabled)return;lastInput=[name,e.target.value];if(!queued){queued=true;requestAnimationFrame(()=>{queued=false;if(lastInput)updateParam(lastInput[0],lastInput[1]);});}});}
+   applyInductorAvailability();
    $('reset-btn').onclick=()=>{Object.assign(params,initial);updateParam('alphaR',initial.alphaR);};
    $('explain-btn').onclick=()=>{showExplanation=!showExplanation;$('explain-btn').textContent=showExplanation?'Hide explanations':'Show explanations';render();};
  }
