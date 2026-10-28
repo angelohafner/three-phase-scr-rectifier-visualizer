@@ -15,6 +15,7 @@ import xml.etree.ElementTree as ET
 import numpy as np
 
 import rectifier_art as art
+from schemdraw_symbols import draw_dc_source
 from rectifier_loads import (
     LoadParameters, LoadWaveforms, ResistiveCircuitRenderer, ResistiveInductiveLoad,
     ResistiveLoad, assemble, fired_pair, pair_voltage, phase_voltages,
@@ -180,10 +181,8 @@ def render_voltage_source_circuit(p: AdvancedLoadParameters, angle: float,
         width = 4.8 if highlighted else 3.4
         art.line(group,1240,373,1240,385,color,width)
         art.line(group,1240,429,1240,443,color,width)
-        art.element(group,'circle',cx=1240,cy=407,r=22,fill='white',stroke=color,stroke_width=width)
-        art.line(group,1232,400,1248,400,color,2.5)
-        art.line(group,1240,392,1240,408,color,2.5)
-        art.line(group,1232,416,1248,416,color,2.5)
+        draw_dc_source(group,(1240,429),(1240,385),color,width,
+                       group_id='source-edc-'+('active' if highlighted else 'base'))
         if mode == 'LE':
             art.line(group,1240,443,1240,535,color,width)
     art.math_label(base,1280,405,'E',size=20)
