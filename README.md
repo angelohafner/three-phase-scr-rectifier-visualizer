@@ -293,3 +293,11 @@ Siemens PTI-inspired independent technical-document layout. See
 [Advanced loads and SCR voltages](docs/ADVANCED_LOADS_SCR_VOLTAGES.md).
 The HTML can be built using `python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html`.
 No PowerPoint file is produced in this release.
+
+## New: Current-source LCC teaching section
+
+The presentation now includes **nine additional slides** on the DC current-source representation of LCC converters, with a dedicated three-panel **Commutation with Constant DC Current** slide and continuously draggable 0–360° cursor. The two transfer-current waveforms and relevant phase voltages are synchronized with a graph-validated circuit. Select manually imposed or physically calculated overlap; invalid commutation conditions are reported, not fabricated.
+
+The comparison covers RLE load response, ideal DC current constraints and an averaged, bounded PI current controller. The inverter comparison converts the local inverter DC voltage drop to a common signed pole-voltage convention before calculating power. Current-source figures are under `output_lcc/current_source/`. See [Current-source technical guide](docs/CURRENT_SOURCE_TEACHING.md).
+
+Regenerate all new SVG/PNG figures with `python current_source_figures.py`; build the offline lecture with `python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html`. Only HTML is generated for the presentation—no PPTX is generated.

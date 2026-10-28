@@ -1,4 +1,4 @@
-name: Build advanced LCC presentation (HTML only)
+name: Build advanced offline LCC presentation (HTML only)
 on:
   workflow_dispatch:
   push:
@@ -6,6 +6,7 @@ on:
       - 'presentation/**'
       - 'rectifier_*.py'
       - 'schemdraw_symbols.py'
+      - 'current_source*.py'
       - 'lcc_converter.py'
       - 'halfwave_*.py'
       - 'lcc_advanced_*.py'
@@ -30,31 +31,33 @@ jobs:
         run: |
           python -m pip install -r requirements-waveforms.txt pytest pillow playwright "schemdraw>=0.22,<0.24"
           python -m playwright install --with-deps chromium
-      - name: Verify native Schemdraw components
+      - name: Verify native Schemdraw elements
         run: |
-          python -c "import schemdraw.elements as elm; assert all(hasattr(elm, name) for name in ('SCR','ResistorIEEE','Inductor','SourceSin','SourceV'))"
-      - name: Regenerate rectifier and inverter SVGs
+          python -c "import schemdraw.elements as elm; assert all(hasattr(elm, name) for name in ('SCR','ResistorIEEE','Inductor','SourceSin','SourceV','SourceI'))"
+      - name: Regenerate six-pulse rectifier and inverter SVG galleries
         run: python lcc_converter.py --side both --alpha 145 --mu 15 --output-dir output_lcc
-      - name: Regenerate full HVDC SVGs and PNGs
+      - name: Regenerate full HVDC circuit SVG and PNG galleries
         run: python hvdc_link.py --config config_hvdc.json --all --output-dir output_hvdc --png
-      - name: Regenerate advanced LE/RLE circuits
+      - name: Build editable LE and RLE circuit diagrams and waveforms
         run: python lcc_advanced_figures.py --output-dir output_lcc/rectifier/advanced_loads
-      - name: Generate half-wave R/RL diagrams
+      - name: Generate half-wave R/RL teaching figures
         run: python halfwave_figures.py --output-dir output_lcc/fundamentals
-      - name: Build the standalone offline HTML
+      - name: Build ideal current-source teaching diagrams and waveforms
+        run: python current_source_figures.py --out output_lcc/current_source
+      - name: Build standalone offline HTML
         run: python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html
-      - name: Validate JavaScript syntax
+      - name: Syntax validation
         run: |
           for source in presentation/src/*.js; do node --check "$source"; done
-      - name: Run model, SVG and presentation tests
+      - name: Test physical models and presentation
         run: REQUIRE_NATIVE_SCHEMDRAW=1 python -m pytest -q tests presentation/tests
-      - name: Test interactive HTML in offline Chromium
+      - name: Verify interactive HTML in offline Chromium
         run: |
           python presentation/tests/browser_smoke.py
           python presentation/tests/browser_fundamentals.py
           python presentation/tests/browser_inductor_controls.py
-          python presentation/tests/browser_no_inductor_voltage.py
-      - name: Upload native Schemdraw SVG figures
+          python presentation/tests/browser_current_source.py
+      - name: Upload native Schemdraw SVG gallery
         uses: actions/upload-artifact@v4
         with:
           name: lcc-native-schemdraw-svg-gallery
@@ -63,8 +66,11 @@ jobs:
             output_lcc/rectifier/*.svg
             output_lcc/inverter/*.svg
             output_hvdc/*.svg
+            output_lcc/current_source/rectifier/circuits/*.svg
+            output_lcc/current_source/inverter/circuits/*.svg
+            output_lcc/current_source/rectifier/waveforms/*.svg
           retention-days: 90
-      - name: Upload standalone HTML presentation
+      - name: Upload HTML-only deliverable
         uses: actions/upload-artifact@v4
         with:
           name: lcc-hvdc-thyristor-fundamentals-html

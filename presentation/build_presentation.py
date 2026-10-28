@@ -118,6 +118,25 @@ def build(source: Path, out: Path, src: Path) -> dict:
             image = ET.fromstring(clean)
             image.set('viewBox', '55 174 1420 550')
             load_figures[f'{mode}:{idx}'] = ET.tostring(image, encoding='unicode')
+    # Source-constrained bridge figures share existing graph-validated SCR paths.
+    # They replace only the DC branch; each phase source remains a voltage source.
+    from current_source_figures import generate as generate_current_source
+    source_dir = source/'output_lcc'/'current_source'
+    if not (source_dir/'rectifier'/'circuits'/'estado_01.svg').exists():
+        generate_current_source(source,source_dir,preview=False)
+    current_source_figures={'rectifier':{},'inverter':{}}
+    for side in ('rectifier','inverter'):
+        for j in range(1,13):
+            path=source_dir/side/'circuits'/f'estado_{j:02d}.svg'
+            fig=ET.fromstring(svg_xml(path.read_text(encoding='utf-8')))
+            # The original 12-state legend shows fixed reference mu=15 degrees.
+            # Omit it so the live slider can never contradict stale SVG annotations.
+            for parent in fig.iter():
+                for child in list(parent):
+                    if child.attrib.get('id') in ('legend','headings'):
+                        parent.remove(child)
+            fig.set('viewBox','120 181 1290 510')
+            current_source_figures[side][str(j)]=ET.tostring(fig,encoding='unicode')
     from halfwave_figures import circuit_svg
     halfwave_figures={}
     for load in ('R','RL'):
@@ -127,6 +146,7 @@ def build(source: Path, out: Path, src: Path) -> dict:
             halfwave_figures[key]=svg_xml(xml)
     data = {
         'halfwave_figures': halfwave_figures,
+        'current_source_figures':current_source_figures,
         'load_figures': load_figures,
         'format': 'LCC interactive engineering teaching deck v2 · R RL LE RLE · SCR vAK',
         'source': 'angelohafner/three-phase-scr-rectifier-visualizer',
@@ -144,6 +164,8 @@ def build(source: Path, out: Path, src: Path) -> dict:
         '<!--INLINE_LOAD_MODELS-->': (src / 'load_models.js').read_text(encoding='utf-8'),
         '<!--INLINE_LOAD_CHARTS-->': (src / 'load_charts.js').read_text(encoding='utf-8'),
         '<!--INLINE_HALFWAVE-->': (src / 'halfwave.js').read_text(encoding='utf-8'),
+        '<!--INLINE_CURRENT_SOURCE_MODEL-->': (src / 'current_source.js').read_text(encoding='utf-8'),
+        '<!--INLINE_CURRENT_SOURCE_CHARTS-->': (src / 'current_source_charts.js').read_text(encoding='utf-8'),
         '<!--INLINE_PRESENTATION-->': (src / 'presentation.js').read_text(encoding='utf-8'),
         '<!--INLINE_DATA-->': json.dumps(data, ensure_ascii=False, separators=(',', ':'))
             .replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026'),
@@ -161,7 +183,7 @@ def build(source: Path, out: Path, src: Path) -> dict:
         'individual_circuits': len(figures['rectifier']) + len(figures['inverter']),
         'hvdc_topology_pairs': len(figures['hvdc']),
         'reference_waveforms': sum(map(len, refs.values())),
-        'slides': 73,
+        'slides': 82,
         'offline': True,
     }
 

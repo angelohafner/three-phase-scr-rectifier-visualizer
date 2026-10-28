@@ -4,6 +4,7 @@
  const DATA=JSON.parse(document.getElementById('presentation-data').textContent);
  const $=id=>document.getElementById(id);
  const params={alphaR:15,alphaI:145,muR:12,muI:15,idc:1,vPeak:1,speed:30,alphaLoad:75,loadR:1,loadL:8,loadE:.2,loadI0:.5,loadMode:'R',hAlpha:50,hR:12,hL:70,hV:120,hFrequency:60};
+ params.csLc=0.20;params.csKp=28;params.csKi=150;params.csOverlapMode='manual';
  const initial={...params};
  let theta=65,slideIndex=0,playing=false,raf=0,lastTick=0,mode='overview',selectedSCR='all',showReference=false,showExplanation=true;
  let cachedSVG='',cachedKey='',runtimeSchedule=[],deck=[];
@@ -22,6 +23,9 @@
  deck.push({side:'rectifier',type:'load',lesson:'rle_intro',alpha:75});
  deck.push({side:'rectifier',type:'load',lesson:'advanced_compare',alpha:75});
  for(let i=1;i<=12;i++)deck.push(slide('rectifier','state',i));
+ for(const lesson of ['intro','constant','valves','commutation','overlap','comparison','controller','polarity','transition']){
+   deck.push({side:'rectifier',type:'current_source',lesson});
+ }
  deck.push(slide('inverter','chapter'));
  for(let i=1;i<=12;i++)deck.push(slide('inverter','state',i));
  deck.push(slide('hvdc','chapter'));
@@ -56,6 +60,9 @@
      params.loadMode=({rl_intro:'RL',le_intro:'LE',rle_intro:'RLE'}[current().lesson]||'R');
      const a=current().alpha;
      setTheta((a>60&&current().lesson!=='rl_intro')?120+(a-60)/2:a+Math.min(25,(120-a)/2));
+   }
+   if(current().type==='current_source'&&!opts.keepAngle){
+     const entry=current().lesson;setTheta(['commutation','overlap'].includes(entry)?60+Math.max(2,params.muR/2):90);
    }
    if(current().type==='state'&&!opts.keepAngle){
      const wins=liveWindow();if(wins.length)setTheta(startOfWindow(wins[0]));
@@ -138,6 +145,203 @@
    }else scr=LCC.stateInfo(a.id).scrs.join(' / ');
    return `<div class="fact"><small>Conducting SCRs</small><strong style="font-size:13px">${scr}</strong></div><div class="fact"><small>Commutation / extinction</small><strong>μ=${s.side==='rectifier'?params.muR:params.muI}° · γ=${gamma}</strong></div>`;
  }
+ // Nine slides use the same analytically validated current-source model.
+ const currentSourceLessons={
+   intro:['Voltage-Driven versus Current-Driven DC Circuits',
+     'Two useful models: RLE determines current dynamically; the ideal DC current source imposes a specified conducting current.',
+     'Compare source-constrained current with a voltage-driven RLE branch. A current source is an idealization, not an EMT replacement.'],
+   constant:['LCC Rectifier with Constant DC Current',
+     'A DC current sink constrains the bridge current when the SCR conducting path exists.',
+     'Between commutations, one upper and one lower SCR carry the same pole current. Three-phase AC voltage sources remain necessary for natural line commutation.'],
+   valves:['Thyristor Currents with Constant DC Current',
+     'Two active SCRs carry the pole current; the active pair changes every 60°.',
+     'An SCR conducts for 120° in the ideal six-pulse cycle. Phase currents are signed differences between upper and lower valve currents.'],
+   commutation:['Commutation with Constant DC Current',
+     'ONE CURSOR · CIRCUIT · TWO TRANSFERRING SCR CURRENTS · AC COMMUTATING VOLTAGES',
+     'During overlap, the outgoing current falls as the incoming current rises. Both sum to the imposed DC current, while the stationary valve carries the full pole current.'],
+   overlap:['Effect of DC Current on Commutation Overlap',
+     'Current and commutation inductance affect the physically calculated overlap angle.',
+     'Switch between a manually imposed teaching interval and the calculated equal-commutation-inductance relation. An impossible 60° transfer is explicitly rejected.'],
+   comparison:['RLE versus Constant Current Source',
+     'One current is determined by L · di/dt + R i = v_dc − E; the other is imposed as I_ref.',
+     'The RLE trajectory has transient and damping dynamics. The ideal current source remains flat only while the bridge has a valid conduction path.'],
+   controller:['Current-Controlled LCC Rectifier',
+     'CURRENT REFERENCE → PI CONTROLLER → FIRING ANGLE → RECTIFIER → DC CURRENT',
+     'A bounded averaged PI regulator adjusts firing angle to follow a current reference through an RLE link. This is different from an ideal current source.'],
+   polarity:['Current Direction in Rectifier and Inverter Operation',
+     'The same DC current-direction convention can describe both power-flow directions.',
+     'A classic LCC reverses power by reversing converter DC voltage, not normal pole-current direction. Rectifier and inverter DC power signs must share an explicit convention.'],
+   transition:['From Current Source to the Complete HVDC Link',
+     'Smoothing reactors and current control explain why the HVDC pole current may remain nearly constant.',
+     'A real HVDC link includes DC inductance, resistance, commutation reactors, inverter extinction-angle control and a finite response to disturbances.']
+ };
+ let currentSourceTopology='source',currentSourceSide='rectifier',currentSourceChart='auto';
+ const csEquation=()=>`${MathUI.v('i','dc')} = ${MathUI.v('I','ref')}`;
+ function csChartsFor(lesson){
+   const layouts={intro:['rle','dc'],constant:['scr','dc'],valves:['scr','phase'],
+     commutation:['transfer','phase'],overlap:['transfer','phase'],comparison:['rle','dc'],
+     controller:['control','alphaControl'],polarity:['scr','power'],transition:['dc','power']};
+   return layouts[lesson]||['scr','phase'];
+ }
+ function renderCurrentSourceSlide(s){
+   const definition=currentSourceLessons[s.lesson];
+   const key='cs'+s.lesson;
+   const blocks=Object.entries({
+     'idc':['I','ref',.2,2,.01,'p.u.'],alphaR:['α','r',0,80,.1,'°'],
+     muR:['μ','r',0,48,.1,'°'],csLc:['L','c',.05,.8,.01,'mH'],
+     loadR:['R','dc',.2,3,.05,'Ω'],loadL:['L','dc',1,30,.5,'mH'],loadE:['E','',0,1.8,.01,'p.u.']
+   }).map(([id,[symbol,sub,min,max,step,unit]])=>
+     `<label class="cs-slider" for="cs-${id}"><span>${MathUI.v(symbol,sub)} <output id="cs-${id}-value"></output></span>`+
+     `<input id="cs-${id}" type="range" min="${min}" max="${max}" step="${step}" value="${params[id]}" aria-label="${id}"></label>`).join('');
+   const inner=`<div class="tech-head"><div class="tech-index">01 · CURRENT SOURCE</div>`+
+     `<div class="tech-title"><h1>${definition[0]}</h1><p>${definition[1]}</p></div>`+
+     `<div class="mode-badge ${s.lesson==='commutation'?'overlap':''}" id="cs-badge">CONCEPTUAL MODEL</div></div>`+
+     `<div class="cs-options"><label>DC model <select class="soft-btn" id="cs-topology"><option value="source">Ideal DC current source</option><option value="RLE">Dynamic RLE branch</option></select></label>`+
+     `<label>Overlap <select class="soft-btn" id="cs-overlap-mode"><option value="manual">Imposed μ (teaching)</option><option value="calculated">Calculated μ (two equal AC reactors)</option></select></label>`+
+     `<label>Station <select class="soft-btn" id="cs-side"><option value="rectifier">Rectifier</option><option value="inverter">Inverter</option></select></label>`+
+     `<label>Graph <select class="soft-btn" id="cs-chart"><option value="auto">Teaching focus</option><option value="scr">All SCR currents</option><option value="phase">Phase voltages</option><option value="dc">DC voltage / current</option><option value="rle">RLE versus source</option></select></label>`+
+     `<div class="cs-equation" id="cs-equation">${csEquation()}</div></div>`+
+     `<div class="workspace cs-workspace ${s.lesson==='commutation'?'cs-main-lesson':''}">`+
+     `<section class="panel"><div class="panel-head"><strong>01 / CONDUCTION CIRCUIT</strong><span id="cs-bridge-note" class="cs-small">6-pulse SCR</span></div><div class="diagram-area cs-diagram" id="cs-circuit"></div></section>`+
+     `<section class="panel"><div class="panel-head"><strong id="cs-left-title">02 / SCR CURRENTS</strong></div><div class="plot-wrapper"><canvas id="cs-left" aria-label="Current-source thyristor-current waveform"></canvas></div></section>`+
+     `<section class="panel"><div class="panel-head"><strong id="cs-right-title">03 / PHASE VOLTAGES</strong></div><div class="plot-wrapper"><canvas id="cs-right" aria-label="Current-source commutating phase voltages"></canvas></div></section></div>`+
+     `<div class="cs-controlbar">${blocks}</div>`+
+     `<div class="tech-note cs-info"><div class="explainer" id="cs-description">${definition[2]}</div>`+
+     `<div class="fact-grid"><div class="fact"><small>Valves / transfer</small><strong id="cs-active">—</strong></div>`+
+     `<div class="fact"><small>Overlap / model</small><strong id="cs-mu-status">—</strong></div></div></div>`+
+     `<div class="timeline cs-timeline"><div class="timeline-top"><span id="cs-status">`+
+     `${MathUI.angle('θ',theta)} · ${MathUI.v('I','dc')} = ${params.idc.toFixed(2)} ${MathUI.unit('p.u.')}</span>`+
+     `<div class="timeline-actions"><button id="cs-prev">◀ STATE</button>`+
+     `<button class="primary" id="cs-play">▶ PLAY</button><button id="cs-next">STATE ▶</button></div></div>`+
+     `<input class="angle-range" id="cs-angle" type="range" min="0" max="359.99" step="0.01" value="${theta}" aria-label="Electrical angle continuous slider">`+
+     `<div class="ticks"><span>0°</span><span>60°</span><span>120°</span><span>180°</span><span>240°</span><span>300°</span><span>360°</span></div></div>`;
+   $('slide').className='slide technical cs-slide';$('slide').innerHTML=inner;
+   // All continuous controls are created once per slide and NEVER replaced on input.
+   const modelSelector=$('cs-topology');
+   if(!['intro','comparison'].includes(s.lesson))currentSourceTopology='source';
+   if(s.lesson==='controller')currentSourceTopology='RLE';
+   modelSelector.value=currentSourceTopology;
+   modelSelector.disabled=!['intro','comparison'].includes(s.lesson);
+   currentSourceSide=s.lesson==='polarity'?currentSourceSide:'rectifier';
+   $('cs-side').value=currentSourceSide;
+   $('cs-side').disabled=s.lesson!=='polarity';
+   $('cs-overlap-mode').value=params.csOverlapMode;
+   $('cs-chart').value=currentSourceChart;
+   modelSelector.onchange=e=>{currentSourceTopology=e.target.value;renderCurrentSourceDetails();};
+   $('cs-side').onchange=e=>{currentSourceSide=e.target.value;cachedKey='';renderCurrentSourceDetails();};
+   $('cs-chart').onchange=e=>{currentSourceChart=e.target.value;renderCurrentSourceDetails();};
+   $('cs-overlap-mode').onchange=e=>{params.csOverlapMode=e.target.value;cachedKey='';renderCurrentSourceDetails();};
+   const numeric=['idc','alphaR','muR','csLc','loadR','loadL','loadE'];
+   let queued=false;
+   for(const key of numeric){
+     const ctrl=$('cs-'+key);
+     ctrl.addEventListener('input',e=>{
+       if(ctrl.disabled)return;
+       params[key]=Number(e.currentTarget.value);
+       if(!queued){queued=true;requestAnimationFrame(()=>{queued=false;renderCurrentSourceDetails();});}
+     });
+   }
+   $('cs-angle').oninput=e=>{pause(false);setTheta(+e.currentTarget.value);scheduleCurrentSourceRefresh();};
+   $('cs-play').onclick=()=>togglePlay();
+   $('cs-prev').onclick=()=>stepCurrentSource(-1);
+   $('cs-next').onclick=()=>stepCurrentSource(1);
+   const clickCanvas=e=>{
+     if(e.currentTarget.dataset.plotMode==='control'||e.currentTarget.dataset.plotMode==='alphaControl')return;
+     const bounds=e.currentTarget.getBoundingClientRect(),local=e.clientX-bounds.left;
+     const x=.5*Math.max(0,Math.min(720,(local-46)/(bounds.width-58)*720));
+     pause(false);setTheta(Math.min(359.99,x));scheduleCurrentSourceRefresh();
+   };
+   $('cs-left').onclick=clickCanvas;$('cs-right').onclick=clickCanvas;
+   cachedKey='';renderCurrentSourceDetails();
+ }
+ let csFrame=0;
+ function scheduleCurrentSourceRefresh(){
+   if(csFrame)return;
+   csFrame=requestAnimationFrame(()=>{
+     csFrame=0;if(current().type==='current_source')renderCurrentSourceDetails();
+   });
+ }
+ function stepCurrentSource(direction){
+   pause(false);
+   const o=CurrentSourceModel.overlap(params);
+   const mu=o.valid?o.mu:params.muR;
+   const sector=Math.floor(theta/60),local=theta-sector*60;
+   if(direction>0){
+     setTheta(local<mu ? sector*60+mu+Math.min(2,(60-mu)/4): (sector+1)*60+Math.min(1,mu/2));
+   }else{
+     setTheta(local>=mu ? sector*60+Math.min(1,mu/2):(sector+5)*60+mu+Math.min(2,(60-mu)/4));
+   }
+   renderCurrentSourceDetails();
+ }
+ function renderCurrentSourceDetails(){
+   const s=current();if(s.type!=='current_source'||!$('cs-circuit'))return;
+   const ready=CurrentSourceModel.cycle(params);
+   const state=ready.valid?CurrentSourceModel.sample(theta,params,{valid:true,mu:ready.mu,mode:ready.mode}):null;
+   const hasRLE=['comparison','controller','intro'].includes(s.lesson)&&currentSourceTopology==='RLE';
+   const useRLE=hasRLE||s.lesson==='controller';
+   const side=s.lesson==='polarity'?currentSourceSide:'rectifier';
+   const label=ready.valid?(state.overlap?'COMMUTATION OVERLAP':'NORMAL CONDUCTION'):'UNSUPPORTED OPERATING POINT';
+   const key=ready.valid?(useRLE?`RLE:${LoadModel.at(LoadCharts.model('RLE',{...params,alphaLoad:params.alphaR}),theta).pair}`:
+      `current:${side}:${state.state}`):'invalid';
+   if(key!==cachedKey){
+     if(!ready.valid)$('cs-circuit').innerHTML='<p class="cs-invalid">Current transfer cannot complete within a 60° sector at the selected I, L and V.</p>';
+     else if(useRLE){
+       const pair=LoadModel.at(LoadCharts.model('RLE',{...params,alphaLoad:params.alphaR}),theta).pair;
+       $('cs-circuit').innerHTML=DATA.load_figures[`RLE:${pair}`]||'<p>RLE circuit unavailable</p>';
+     }else $('cs-circuit').innerHTML=DATA.current_source_figures[side][String(state.state)];
+     cachedKey=key;
+   }
+   const rleConduction=useRLE?LoadModel.at(LoadCharts.model('RLE',{...params,alphaLoad:params.alphaR}),theta):null;
+   const active=useRLE?(rleConduction.scrs.join(' + ')||'ALL SCRs OFF'):
+       ready.valid?(state.overlap?`${state.outgoing} → ${state.incoming} · ${Math.round(state.transfer*100)}%`:
+       Object.entries(state.scr).filter(([,i])=>i>1e-8).map(([n])=>n).join(' + ')):'INVALID';
+   const currentLine=ready.valid?(MathUI.angle('θ',theta)+' · '+MathUI.v('I','ref')+' = '+MathUI.num(params.idc.toFixed(2))+' '+MathUI.unit('p.u.')):
+       'Physical operating-range limit reached';
+   $('cs-status').innerHTML=currentLine;
+   $('cs-active').textContent=active;
+   $('cs-badge').textContent=useRLE?'DYNAMIC RLE':label;
+   $('cs-badge').classList.toggle('overlap',!useRLE&&!!state?.overlap);
+   $('cs-mu-status').innerHTML=useRLE?'RLE branch · current determined by circuit':
+       ready.valid?MathUI.angle('μ',ready.mu)+` · ${ready.mode}`:'No valid μ';
+   $('cs-angle').value=theta;
+   $('cs-bridge-note').textContent=side.toUpperCase()+' · '+(useRLE?'RLE BRANCH':'DC CURRENT CONSTRAINT');
+   $('cs-equation').innerHTML=useRLE?MathUI.formula('RLE'):(csEquation()+' · '+MathUI.v('i','out')+' + '+MathUI.v('i','in')+' = '+MathUI.v('I','ref'));
+   const focus=s.lesson==='commutation';
+   let d=currentSourceLessons[s.lesson][2];
+   if(focus&&state?.overlap)d=`${state.outgoing} is releasing current to ${state.incoming}; ${state.stationary} remains at ${MathUI.num(params.idc.toFixed(2))} ${MathUI.unit('p.u.')}. Their currents sum to ${MathUI.v('I','ref')}.`;
+   if(s.lesson==='overlap')d+=ready.valid?` Computed or assumed ${MathUI.angle('μ',ready.mu)}.`:' '+ready.error;
+   if(s.lesson==='comparison'){
+     const trace=LoadCharts.model('RLE',{...params,alphaLoad:params.alphaR});
+     const mean=trace.current.reduce((a,b)=>a+b,0)/trace.current.length;
+     d+=` RLE cycle mean: ${MathUI.num(mean.toFixed(2))} ${MathUI.unit('p.u.')}; source reference: ${MathUI.num(params.idc.toFixed(2))} ${MathUI.unit('p.u.')}. These values are not forced to agree.`;
+   }
+   if(s.lesson==='polarity'){
+     const p=CurrentSourceModel.inverterPower(params);
+     d+=` Signed average DC powers (illustrative): rectifier ${MathUI.num(p.rectifier.toFixed(2))}, inverter ${MathUI.num(p.inverter.toFixed(2))} ${MathUI.unit('p.u.')}.`;
+   }
+   if(s.lesson==='controller')d+=' The controller uses an averaged six-pulse voltage equation and a finite smoothing reactor, not instantaneous SCR gate-current simulation. The electrical-angle cursor changes the schematic; the controller response uses time on its horizontal axis.';
+   $('cs-description').innerHTML=d;
+   const layouts=csChartsFor(s.lesson);
+   const left=currentSourceChart!=='auto'?currentSourceChart:layouts[0],right=layouts[1];
+   $('cs-left-title').textContent='02 / '+(left==='transfer'?'SCR CURRENT TRANSFER':left==='control'?'CLOSED-LOOP CURRENT':left==='rle'?'RLE / IDEAL CURRENT':'CURRENT WAVEFORMS');
+   $('cs-right-title').textContent='03 / '+(right==='phase'?'AC PHASE / COMMUTATION VOLTAGES':right==='alphaControl'?'FIRING-ANGLE CONTROLLER':'ELECTRICAL WAVEFORMS');
+   CurrentSourceCharts.draw($('cs-left'),params,theta,left,s);
+   CurrentSourceCharts.draw($('cs-right'),params,theta,right,s);
+   const units={idc:' p.u.',alphaR:'°',muR:'°',csLc:' mH',loadR:' Ω',loadL:' mH',loadE:' p.u.'};
+   const hasDCReactor=useRLE||s.lesson==='comparison';
+   const useACReactor=s.lesson!=='controller';
+   for(const key of ['idc','alphaR','muR','csLc','loadR','loadL','loadE']){
+     const el=$('cs-'+key);
+     el.disabled=(['loadR','loadL','loadE'].includes(key)&&!hasDCReactor)||
+       (key==='csLc'&&!useACReactor)||(key==='muR'&&params.csOverlapMode==='calculated')||
+       (key==='alphaR'&&s.lesson==='controller');
+     el.closest('.cs-slider').classList.toggle('cs-disabled',el.disabled);
+     $('cs-'+key+'-value').textContent=Number(params[key]).toFixed(key==='csLc'?2:1)+units[key];
+     if(document.activeElement!==el)el.value=String(params[key]);
+   }
+   $('cs-play').textContent=playing?'❚❚ PAUSE':'▶ PLAY';
+ }
+
  function stateDetails(s){
    const a=liveActive(s);const w=liveWindow(s);
    const type=(s.side==='hvdc')?(a.rOverlap&&a.iOverlap?'Both stations in overlap':a.rOverlap?'Rectifier overlap':a.iOverlap?'Inverter overlap':'Normal at both stations'):(s.id%2===0?'Commutation overlap':s.side==='rectifier'?'Normal conduction with RL load':'Normal conduction');
@@ -302,7 +506,7 @@
    const active=current();
    const fundamentals=active.type==='fundamentals';
    const loadStudy=active.type==='load';
-   // A comparison contains an RL branch even if an R load is currently shown.
+   // The comparison contains the RL branch even when the left R branch is selected.
    const halfHasInductor=fundamentals && !['scr_intro','r_circuit','r_delay'].includes(active.lesson);
    const dcHasInductor=loadStudy && (['r_compare','advanced_compare'].includes(active.lesson) ||
       ['RL','LE','RLE'].includes(params.loadMode));
@@ -314,14 +518,13 @@
      const input=$(id);if(!input)return;
      input.disabled=!enabled;
      input.setAttribute('aria-disabled',String(!enabled));
-     input.title=enabled?'Adjust physical inductance in this circuit':explanation;
+     input.title=enabled?'Adjust the physical inductance in this circuit':explanation;
      const row=input.closest('.fund-tuner, .slider-row');
-     if(row){row.classList.toggle('inductor-disabled',!enabled);
-       row.setAttribute('data-has-inductor',String(enabled));}
+     if(row){row.classList.toggle('inductor-disabled',!enabled);row.setAttribute('data-has-inductor',String(enabled));}
    }
    apply('hL-fund',present.halfwave,'This single-phase circuit has no inductor');
-   apply('hL-range',present.halfwave,'Half-wave L applies only to RL and comparisons');
-   apply('loadL-range',present.dc,'The selected DC load model has no inductor');
+   apply('hL-range',present.halfwave,'Half-wave L applies only in the RL and comparison slides');
+   apply('loadL-range',present.dc,'This load model has no DC series inductor');
  }
  function renderFundamentalsDetails(){
    const s=current();if(s.type!=='fundamentals'||!$('fund-circuit-host'))return;
@@ -342,7 +545,7 @@
    $('fund-state').textContent=s.lesson==='compare'?`R: ${r.at(theta).on?'ON':'OFF'} · RL: ${rl.at(theta).on?'ON':'OFF'}`:on?'T1 conducting':'T1 blocking';
    $('fund-i').innerHTML=MathUI.angle('θ',theta)+' · '+MathUI.num(point.i.toFixed(2))+MathUI.unit(' A');
    $('fund-description').innerHTML=fundamentalsMessage(s,rl,r,point);
-   // Show extinction for the circuit actually selected on this slide.
+   // Report extinction for the displayed circuit, not the unrelated RL model.
    $('fund-angle-status').innerHTML=MathUI.angle('θ',theta)+' · '+MathUI.angle('α',params.hAlpha)+' · '+MathUI.angle('β',m.beta);
    const marker=$('fund-marker-status');if(marker)marker.innerHTML=(s.lesson==='after180'||s.lesson==='extinction')?
      `${MathUI.num('180')}${MathUI.unit('°')} fixed source zero · ${MathUI.v('β')} = ${MathUI.num(betaTxt)}${MathUI.unit('°')} (RL turn-off)`:
@@ -354,13 +557,13 @@
      if(el&&document.activeElement!==el)el.value=params[name];
    }
    applyInductorAvailability();
-   // Prevent inductor-only graph modes from appearing on pure-R lessons.
+   // A circuit without L must not offer stored-magnetic-energy plots.
    const graphMenu=$('fund-mode');
    const energyOption=graphMenu.querySelector('option[value="energy"]');
    const hasInductor=load!=='R';
    if(energyOption){
      energyOption.disabled=!hasInductor;
-     energyOption.title=hasInductor?'Stored magnetic energy':'No inductor in this circuit';
+     energyOption.title=hasInductor?'Inductor stored magnetic energy':'No inductor in this circuit';
    }
    if(!hasInductor&&graphMenu.value==='energy')graphMenu.value='overview';
    HalfWave.render($('fund-waveforms'),params,theta,s.lesson,graphMenu.value);
@@ -385,8 +588,8 @@
    $('fund-step-180').onclick=()=>{pause(false);setTheta(180);renderFundamentalsDetails();};
    $('fund-step-beta').onclick=()=>{
      pause(false);
-     const pureR=['scr_intro','r_circuit','r_delay'].includes(current().lesson);
-     setTheta(Math.max(0,HalfWave.get(params,pureR?'R':'RL').beta-5));
+     const isR=['scr_intro','r_circuit','r_delay'].includes(current().lesson);
+     setTheta(Math.max(0,HalfWave.get(params,isR?'R':'RL').beta-5));
      renderFundamentalsDetails();
    };
    $('play-btn').onclick=()=>togglePlay();
@@ -428,15 +631,15 @@
  }
  function render(){
    updateSchedule();const s=current();
-   if(s.type==='state')renderState(s);else if(s.type==='load')renderLoadSlide(s);else if(s.type==='fundamentals')renderFundamentalsSlide(s);else renderHero(s);
+   if(s.type==='state')renderState(s);else if(s.type==='load')renderLoadSlide(s);else if(s.type==='fundamentals')renderFundamentalsSlide(s);else if(s.type==='current_source')renderCurrentSourceSlide(s);else renderHero(s);
    updateSlideChrome();
  }
  function togglePlay(){if(playing){pause();return;}
-   if(!['state','load','fundamentals'].includes(current().type)){goto(iMap[activeStage()]??deck.findIndex(s=>s.type==='fundamentals'));}
+   if(!['state','load','fundamentals','current_source'].includes(current().type)){goto(iMap[activeStage()]??deck.findIndex(s=>s.type==='fundamentals'));}
    playing=true;lastTick=0;render();raf=requestAnimationFrame(tick);
  }
  function pause(redraw=true){playing=false;if(raf)cancelAnimationFrame(raf);raf=0;lastTick=0;if(redraw&&current().type==='state'&&$('play-btn'))$('play-btn').textContent='▶ PLAY';}
- function tick(t){if(!playing)return;if(lastTick){const old=slideIndex;setTheta(theta+(t-lastTick)*params.speed/1000);if(current().type==='fundamentals'){renderFundamentalsDetails();}else if(current().type==='load'){const slider=$('angle-range');if(slider)slider.value=String(theta);renderLoadDetails();}else{syncSlideFromAngle();if(old!==slideIndex){render();}else{const slider=$('angle-range');if(slider)slider.value=String(theta);applyTransfer();renderPlots();}}}lastTick=t;raf=requestAnimationFrame(tick);}
+ function tick(t){if(!playing)return;if(lastTick){const old=slideIndex;setTheta(theta+(t-lastTick)*params.speed/1000);if(current().type==='fundamentals'){renderFundamentalsDetails();}else if(current().type==='current_source'){renderCurrentSourceDetails();}else if(current().type==='load'){const slider=$('angle-range');if(slider)slider.value=String(theta);renderLoadDetails();}else{syncSlideFromAngle();if(old!==slideIndex){render();}else{const slider=$('angle-range');if(slider)slider.value=String(theta);applyTransfer();renderPlots();}}}lastTick=t;raf=requestAnimationFrame(tick);}
  function updateParam(name,value){
    params[name]=+value;
    if(name==='alphaLoad')params.alphaLoad=Math.max(0,Math.min(119,params.alphaLoad));
@@ -450,7 +653,7 @@
      $(key+'-range').value=params[key];
      $(key+'-value').textContent=Number(params[key]).toFixed(2)+(key.startsWith('alpha')||key.startsWith('mu')||key==='hAlpha'?'°':key==='loadL'||key==='hL'?' mH':key==='loadR'||key==='hR'?' Ω':key==='hV'?' V':key==='speed'?' °/s':' p.u.');
    }
-   updateSchedule();if(current().type==='state'){syncSlideFromAngle();}cachedKey='';if(current().type==='fundamentals')renderFundamentalsDetails();else render();
+   updateSchedule();if(current().type==='state'){syncSlideFromAngle();}cachedKey='';if(current().type==='fundamentals')renderFundamentalsDetails();else if(current().type==='current_source')renderCurrentSourceDetails();else render();
    applyInductorAvailability();
  }
  function setupSettings(){
@@ -466,11 +669,12 @@
    $('zoom-content').innerHTML=svg.outerHTML;$('zoom-title').textContent=shortName(current().side)+' · STATE '+current().id;switchOverlay('zoom-overlay',true);
  }
  function overview(){pause();   const fundIntro='<div class="overview-section">00 · THYRISTOR FUNDAMENTALS</div><div class="overview-grid">'+deck.map((item,ix)=>item.type==='fundamentals'?'<button data-slide="'+ix+'">'+fundamentalsDetails(item)[0]+'</button>':'').join('')+'</div>';const intro='<div class="overview-section">RECTIFIER INTRODUCTION · R, RL, LE AND RLE</div><div class="overview-grid">'+deck.map((item,ix)=>(item.type==='load'?'<button data-slide="'+ix+'">'+(item.lesson==='r_case'?'R · '+item.alpha+'°':item.lesson==='r_intro'?'PURE R':item.lesson==='r_compare'?'R vs RL':item.lesson==='advanced_compare'?'ALL FOUR':item.lesson==='le_intro'?'LE LOAD':item.lesson==='rle_intro'?'RLE LOAD':'RL LOAD')+'</button>':'')).join('')+'</div>';
+   const currentSourceIndex='<div class="overview-section">CURRENT SOURCE · CONDUCTION AND CONTROL</div><div class="overview-grid">'+deck.map((item,ix)=>item.type==='current_source'?'<button data-slide="'+ix+'">'+currentSourceLessons[item.lesson][0]+'</button>':'').join('')+'</div>';
    const grids=stages.map(stage=>{
    const n=stage==='hvdc'?24:12;
    return `<div class="overview-section">${shortName(stage)} · ${n} states</div><div class="overview-grid">${Array.from({length:n},(_,k)=>{const ix=iMap[stage]+k,active=ix===slideIndex?'active':'';return `<button data-slide="${ix}" class="${active}">STATE ${String(k+1).padStart(2,'0')}<small>${stage==='hvdc'?'JOINT':(k%2?'OVERLAP':'NORMAL')}</small></button>`;}).join('')}</div>`;
  }).join('');
-   $('overview-body').innerHTML=fundIntro+intro+grids;$('overview-body').querySelectorAll('[data-slide]').forEach(b=>b.addEventListener('click',()=>{switchOverlay('overview-overlay',false);goto(+b.dataset.slide); }));switchOverlay('overview-overlay',true);
+   $('overview-body').innerHTML=fundIntro+intro+currentSourceIndex+grids;$('overview-body').querySelectorAll('[data-slide]').forEach(b=>b.addEventListener('click',()=>{switchOverlay('overview-overlay',false);goto(+b.dataset.slide); }));switchOverlay('overview-overlay',true);
  }
  function setup(){
    $('footer-prev').onclick=()=>navDelta(-1);$('footer-next').onclick=()=>navDelta(1);
@@ -488,9 +692,9 @@
      if(document.querySelector('.settings-overlay.open,.overview-overlay.open,.zoom-overlay.open,.help-overlay.open'))return;
      if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();navDelta(1);}else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();navDelta(-1);}else if(e.key==='Home'){goto(0);}else if(e.key==='End'){goto(deck.length-1);}else if(e.key.toLowerCase()==='o'){overview();}else if(e.key.toLowerCase()==='f'){$('fullscreen-btn').click();}else if(e.key.toLowerCase()==='p'){togglePlay();}
    });
-   window.addEventListener('resize',()=>{if(current().type==='state'&&!showReference)renderPlots();if(current().type==='load')renderLoadDetails();if(current().type==='fundamentals')renderFundamentalsDetails();});
+   window.addEventListener('resize',()=>{if(current().type==='state'&&!showReference)renderPlots();if(current().type==='current_source')renderCurrentSourceDetails();if(current().type==='load')renderLoadDetails();if(current().type==='fundamentals')renderFundamentalsDetails();});
    setupSettings();updateParam('alphaR',params.alphaR);goto(0);
-   window.LCCPresentationTest={params,deck,getSlide:()=>current(),getIndex:()=>slideIndex,setSlide:i=>goto(i),setTheta:a=>{setTheta(a);syncSlideFromAngle();render();},at:LCC.at,sample:LCC.sample,halfWave:HalfWave.get,loadSample:LoadModel.sample,loadAt:LoadModel.at,schedule:()=>runtimeSchedule,reset:()=>Object.assign(params,initial)};
+   window.LCCPresentationTest={params,deck,getSlide:()=>current(),getIndex:()=>slideIndex,setSlide:i=>goto(i),setTheta:a=>{setTheta(a);syncSlideFromAngle();render();},at:LCC.at,sample:LCC.sample,halfWave:HalfWave.get,loadSample:LoadModel.sample,loadAt:LoadModel.at,schedule:()=>runtimeSchedule,currentSource:CurrentSourceModel,reset:()=>Object.assign(params,initial)};
  }
  setup();
 })();
