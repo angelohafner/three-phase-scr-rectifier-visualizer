@@ -7,9 +7,18 @@ const CurrentSourceModel = (() => {
   const mod=LCC.mod;
   const phase=(a,p)=>PHASES.map((_,k)=>p.vPeak*Math.cos(radians(a+p.alphaR)-k*2*Math.PI/3));
   function overlap(p){
+    // The inverter uses a separately assumed overlap and an extinction-angle constraint.
+    if(p._csSide==='inverter'){
+      const gamma=180-p.alphaI-p.muI;
+      return gamma>=10&&p.muI>=0&&p.muI<60?
+        {valid:true,mu:p.muI,mode:'assumed inverter'}:
+        {valid:false,mu:NaN,error:'Inverter extinction margin must be at least 10°.'};
+    }
     if(p.csOverlapMode!=='calculated')return {valid:true,mu:p.muR,mode:'illustrative'};
     const a=radians(p.alphaR),omega=2*Math.PI*60,L=p.csLc/1000;
-    const rhs=Math.cos(a)-2*omega*L*p.idc/(Math.sqrt(3)*p.vPeak);
+    // Explicit illustrative bases: 1 kV phase peak and 1 kA DC, Z_base = 1 ohm.
+    const phasePeakVolts=1000*p.vPeak,dcAmperes=1000*p.idc;
+    const rhs=Math.cos(a)-2*omega*L*dcAmperes/(Math.sqrt(3)*phasePeakVolts);
     if(rhs < -1 || rhs > 1)return {valid:false,mu:NaN,error:'Insufficient commutation voltage: no complete current transfer.'};
     const mu=(Math.acos(rhs)-a)*180/Math.PI;
     if(mu<0 || mu>=60-1e-9)return {valid:false,mu,error:'The current cannot transfer within 60° using this simplified commutation model.'};
@@ -18,6 +27,17 @@ const CurrentSourceModel = (() => {
   function sample(angle,p,precomputed=null){
     const data=precomputed||overlap(p);
     if(!data.valid)return {valid:false,error:data.error,mu:data.mu};
+    if(p._csSide==='inverter'){
+      // The inverter reference already carries the correct reversed valve orientation.
+      const ref=LCC.sample('inverter',angle,p,LCC.OFFSET),sel=ref.selected;
+      const info=LCC.stateInfo(sel.id);
+      const stationary=sel.overlap?info.scrs.find(x=>x!==info.outgoing&&x!==info.incoming):null;
+      return {valid:true,theta:mod(angle,360),sector:sel.sector,mu:data.mu,
+        state:sel.id,overlap:sel.overlap,transfer:sel.transfer,idc:p.idc,
+        scr:ref.scr,ac:ref.ac,phase:ref.phase,line:ref.line,
+        dc:-ref.dc, // Rectifier-oriented DC voltage reference for power comparison.
+        outgoing:info.outgoing,incoming:info.incoming,stationary};
+    }
     const a=mod(angle,360),sector=Math.floor(a/60),local=a-sector*60;
     const old=(sector+5)%6,now=sector,mu=data.mu;
     const active=mu>1e-10&&local<mu-1e-10;
@@ -49,7 +69,7 @@ const CurrentSourceModel = (() => {
   }
   const cache=new Map();
   function cycle(p){
-    const key=JSON.stringify([p.csOverlapMode,p.alphaR,p.muR,p.idc,p.vPeak,p.csLc]);
+    const key=JSON.stringify([p._csSide||'rectifier',p.csOverlapMode,p.alphaR,p.alphaI,p.muR,p.muI,p.idc,p.vPeak,p.csLc]);
     if(cache.has(key))return cache.get(key);
     const info=overlap(p);
     if(!info.valid)return {valid:false,error:info.error,mu:info.mu};
@@ -59,12 +79,14 @@ const CurrentSourceModel = (() => {
     cache.set(key,value);if(cache.size>12)cache.delete(cache.keys().next().value);
     return value;
   }
-  function window(p,theta,mu){
-    const s=Math.floor(mod(theta,360)/60)*60;
-    const lo=mod(theta,360)-s<mu?s:s+mu;
-    const hi=mod(theta,360)-s<mu?s+mu:s+60;
-    return [lo,hi];
+  function windows(p,theta,mu){
+    const offset=p._csSide==='inverter'?LCC.OFFSET:0;
+    const rel=mod(theta-offset,360),sector=Math.floor(rel/60),t=rel-sector*60;
+    const base=offset+sector*60;
+    const lo=t<mu?base:base+mu,hi=t<mu?base+mu:base+60;
+    return LCC.splitWindow(lo,hi);
   }
+  function window(p,theta,mu){return windows(p,theta,mu)[0];}
   function controller(p){
     const key='ctl'+JSON.stringify([p.idc,p.loadR,p.loadL,p.loadE,p.vPeak,p.csKp,p.csKi]);
     if(cache.has(key))return cache.get(key);
@@ -98,5 +120,5 @@ const CurrentSourceModel = (() => {
     }
     return {rectifier:r/360*p.idc,inverter:i/360*p.idc};
   }
-  return {sample,overlap,cycle,window,controller,inverterPower,PAIRS,SCRS,PHASES};
+  return {sample,overlap,cycle,window,windows,controller,inverterPower,PAIRS,SCRS,PHASES};
 })();

@@ -16,7 +16,7 @@ with sync_playwright() as p:
     page.route('https://**/*',lambda route:route.abort())
     page.set_content(HTML.read_text(encoding='utf-8'),wait_until='domcontentloaded',timeout=120000)
     page.wait_for_function('!!window.LCCPresentationTest',timeout=45000)
-    assert page.evaluate('window.LCCPresentationTest.deck.length')==73
+    assert page.evaluate('window.LCCPresentationTest.deck.length')==82
     for index in range(3,11):
         page.evaluate('(i)=>window.LCCPresentationTest.setSlide(i)',index)
         assert page.locator('#fund-circuit-host svg').count()==(2 if index==9 else 1)
@@ -53,4 +53,4 @@ with sync_playwright() as p:
         assert page.locator('#plot-canvas').evaluate('(c)=>c.width>100')
     assert not errors,errors
     browser.close()
-print('PASS: Chapter 00, 73 slides, dynamic extinction beta, full mouse drag, retained three-phase chapters.')
+print('PASS: Chapter 00, 82 slides, dynamic extinction beta, full mouse drag, retained three-phase chapters.')

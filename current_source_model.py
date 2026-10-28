@@ -5,7 +5,7 @@ Current source is a DC-side load constraint, not a replacement for the
 balanced sinusoidal AC voltages that drive natural line commutation.
 
 With equal AC phase inductances, 2 L_c di_in/dt = v_in - v_out.
-For the source voltage base V_phase,peak=1 V and I_base=1 A, the overlap
+For illustrative physical bases V_phase,peak=1 kV and I_base=1 kA, the overlap
 relation is I_dc = sqrt(3)*V_phase,peak/(2*omega*L_c)
                     * (cos(alpha) - cos(alpha+mu)).
 """
@@ -59,8 +59,11 @@ def overlap_degrees(settings: CurrentSourceSettings) -> float:
     alpha = math.radians(settings.alpha_deg)
     omega = 2 * math.pi * settings.frequency_hz
     l = settings.commutation_inductance_mH * 1e-3
-    cos_endpoint = math.cos(alpha) - (2 * omega * l * settings.idc_pu / (
-        math.sqrt(3) * settings.voltage_phase_peak_pu))
+    # Illustrative physical bases: 1 kV phase peak and 1 kA DC, Z_base = 1 ohm.
+    phase_peak_v = settings.voltage_phase_peak_pu * 1000.0
+    dc_a = settings.idc_pu * 1000.0
+    cos_endpoint = math.cos(alpha) - (2 * omega * l * dc_a / (
+        math.sqrt(3) * phase_peak_v))
     if not -1 <= cos_endpoint <= 1:
         raise ValueError('No possible complete commutation with these conditions')
     mu = math.degrees(math.acos(cos_endpoint) - alpha)

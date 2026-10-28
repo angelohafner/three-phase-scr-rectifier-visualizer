@@ -87,9 +87,11 @@ const CurrentSourceCharts = (() => {
     g.fillStyle=base.navy;g.font='600 10px "Segoe UI",Arial';g.fillText(title,9,14);
     g.font='9px "Segoe UI",Arial';
     if(hiShade){
-      const win=CurrentSourceModel.window(p,theta,result.mu);
+      const windows=CurrentSourceModel.windows(p,theta,result.mu);
       g.fillStyle=transfer.overlap?'rgba(192,92,57,.18)':'rgba(0,147,160,.105)';
-      g.fillRect(xFor(win[0]),y0,xFor(win[1])-xFor(win[0]),y1-y0);
+      for(const win of windows){
+        g.fillRect(xFor(win[0]),y0,xFor(win[1])-xFor(win[0]),y1-y0);
+      }
     }else{
       g.fillStyle='rgba(0,145,159,.11)';g.fillRect(xFor(.08),y0,x1-xFor(.08),y1-y0);
     }
@@ -123,6 +125,7 @@ const CurrentSourceCharts = (() => {
       g.lineWidth=l.width;g.beginPath();g.moveTo(lx,29);g.lineTo(lx+15,29);g.stroke();g.restore();
       MathUI.paint(g,l.label,lx+18,32,{size:9,color:base.navy});lx+=required;
     }
+    canvas.dataset.station=p._csSide||'rectifier';
     canvas.dataset.plotMode=chart;
     canvas.dataset.lines=JSON.stringify(vals.map(x=>x.label));
     canvas.dataset.outgoing=transfer.outgoing||'';

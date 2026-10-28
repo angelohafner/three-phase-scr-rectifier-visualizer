@@ -143,7 +143,10 @@
      const r=LCC.stateInfo(a.r),i=LCC.stateInfo(a.i);
      scr=`R: ${r.scrs.join(' / ')} | I: ${i.scrs.join(' / ')}`;
    }else scr=LCC.stateInfo(a.id).scrs.join(' / ');
-   return `<div class="fact"><small>Conducting SCRs</small><strong style="font-size:13px">${scr}</strong></div><div class="fact"><small>Commutation / extinction</small><strong>μ=${s.side==='rectifier'?params.muR:params.muI}° · γ=${gamma}</strong></div>`;
+   const angles=s.side==='rectifier'?MathUI.angle('μ',params.muR)+' (assumed)':
+     s.side==='inverter'?MathUI.angle('μ',params.muI)+' (assumed) · '+MathUI.angle('γ',180-params.alphaI-params.muI):
+     MathUI.angle('μ',params.muR)+' / '+MathUI.angle('μ',params.muI)+' (assumed)';
+   return `<div class="fact"><small>Conducting SCRs</small><strong style="font-size:13px">${scr}</strong></div><div class="fact"><small>Timing model</small><strong>${angles}</strong></div>`;
  }
  // Nine slides use the same analytically validated current-source model.
  const currentSourceLessons={
@@ -154,14 +157,14 @@
      'A DC current sink constrains the bridge current when the SCR conducting path exists.',
      'Between commutations, one upper and one lower SCR carry the same pole current. Three-phase AC voltage sources remain necessary for natural line commutation.'],
    valves:['Thyristor Currents with Constant DC Current',
-     'Two active SCRs carry the pole current; the active pair changes every 60°.',
+     'Ideal current pulses with zero commutation overlap; active pairs change every 60°.',
      'An SCR conducts for 120° in the ideal six-pulse cycle. Phase currents are signed differences between upper and lower valve currents.'],
    commutation:['Commutation with Constant DC Current',
      'ONE CURSOR · CIRCUIT · TWO TRANSFERRING SCR CURRENTS · AC COMMUTATING VOLTAGES',
-     'During overlap, the outgoing current falls as the incoming current rises. Both sum to the imposed DC current, while the stationary valve carries the full pole current.'],
-   overlap:['Effect of DC Current on Commutation Overlap',
-     'Current and commutation inductance affect the physically calculated overlap angle.',
-     'Switch between a manually imposed teaching interval and the calculated equal-commutation-inductance relation. An impossible 60° transfer is explicitly rejected.'],
+     'DC current stays fixed. Change AC-side commutation inductance to see the physically calculated overlap angle and the current transfer. During overlap, the outgoing and incoming SCR currents sum to the pole current.'],
+   overlap:['Effect of Commutation Inductance on Overlap',
+     'Keep DC current and AC voltage fixed. Change AC commutation inductance to observe the resulting overlap.',
+     'Only the phase commutation inductance changes here. Overlap is calculated from the integrated commutating line voltage; DC pole current remains fixed at 1.0 p.u. If transfer cannot finish in 60°, the model reports an invalid operating point.'],
    comparison:['RLE versus Constant Current Source',
      'One current is determined by L · di/dt + R i = v_dc − E; the other is imposed as I_ref.',
      'The RLE trajectory has transient and damping dynamics. The ideal current source remains flat only while the bridge has a valid conduction path.'],
@@ -177,6 +180,12 @@
  };
  let currentSourceTopology='source',currentSourceSide='rectifier',currentSourceChart='auto';
  const csEquation=()=>`${MathUI.v('i','dc')} = ${MathUI.v('I','ref')}`;
+ function csOperatingPoint(s){return CurrentSourcePolicy.effective(s.lesson,params,s.lesson==='polarity'?currentSourceSide:'rectifier');}
+ function csModelLabel(s){
+   const spec=CurrentSourcePolicy.forLesson(s.lesson);
+   return spec.overlap==='calculated'?'CALCULATED COMMUTATION':
+     spec.overlap==='none'?'IDEAL · NO AC OVERLAP':'ASSUMED OVERLAP';
+ }
  function csChartsFor(lesson){
    const layouts={intro:['rle','dc'],constant:['scr','dc'],valves:['scr','phase'],
      commutation:['transfer','phase'],overlap:['transfer','phase'],comparison:['rle','dc'],
@@ -185,13 +194,13 @@
  }
  function renderCurrentSourceSlide(s){
    const definition=currentSourceLessons[s.lesson];
-   const key='cs'+s.lesson;
+   const spec=CurrentSourcePolicy.forLesson(s.lesson);
    const blocks=Object.entries({
-     'idc':['I','ref',.2,2,.01,'p.u.'],alphaR:['α','r',0,80,.1,'°'],
-     muR:['μ','r',0,48,.1,'°'],csLc:['L','c',.05,.8,.01,'mH'],
+     'idc':['I','ref',.2,2,.01,'p.u.'],alphaR:['α','r',0,169,.1,'°'],
+     muR:['μ','r',0,59.9,.1,'°'],csLc:['L','c',.05,.8,.01,'mH'],
      loadR:['R','dc',.2,3,.05,'Ω'],loadL:['L','dc',1,30,.5,'mH'],loadE:['E','',0,1.8,.01,'p.u.']
    }).map(([id,[symbol,sub,min,max,step,unit]])=>
-     `<label class="cs-slider" for="cs-${id}"><span>${MathUI.v(symbol,sub)} <output id="cs-${id}-value"></output></span>`+
+     `<label class="cs-slider" for="cs-${id}"><span><span id="cs-${id}-symbol">${MathUI.v(symbol,sub)}</span> <output id="cs-${id}-value"></output></span>`+
      `<input id="cs-${id}" type="range" min="${min}" max="${max}" step="${step}" value="${params[id]}" aria-label="${id}"></label>`).join('');
    const inner=`<div class="tech-head"><div class="tech-index">01 · CURRENT SOURCE</div>`+
      `<div class="tech-title"><h1>${definition[0]}</h1><p>${definition[1]}</p></div>`+
@@ -199,7 +208,7 @@
      `<div class="cs-options"><label>DC model <select class="soft-btn" id="cs-topology"><option value="source">Ideal DC current source</option><option value="RLE">Dynamic RLE branch</option></select></label>`+
      `<label>Overlap <select class="soft-btn" id="cs-overlap-mode"><option value="manual">Imposed μ (teaching)</option><option value="calculated">Calculated μ (two equal AC reactors)</option></select></label>`+
      `<label>Station <select class="soft-btn" id="cs-side"><option value="rectifier">Rectifier</option><option value="inverter">Inverter</option></select></label>`+
-     `<label>Graph <select class="soft-btn" id="cs-chart"><option value="auto">Teaching focus</option><option value="scr">All SCR currents</option><option value="phase">Phase voltages</option><option value="dc">DC voltage / current</option><option value="rle">RLE versus source</option></select></label>`+
+     `<label>Graph <select class="soft-btn" id="cs-chart"><option value="auto">Teaching focus</option><option value="scr">All SCR currents</option><option value="phase">Phase voltages</option><option value="dc">DC voltage / current</option><option value="rle">RLE versus source</option><option value="transfer">SCR current transfer</option><option value="power">Rectifier / inverter DC voltages</option><option value="control">Closed-loop current</option><option value="alphaControl">Controller firing angle</option></select></label>`+
      `<div class="cs-equation" id="cs-equation">${csEquation()}</div></div>`+
      `<div class="workspace cs-workspace ${s.lesson==='commutation'?'cs-main-lesson':''}">`+
      `<section class="panel"><div class="panel-head"><strong>01 / CONDUCTION CIRCUIT</strong><span id="cs-bridge-note" class="cs-small">6-pulse SCR</span></div><div class="diagram-area cs-diagram" id="cs-circuit"></div></section>`+
@@ -218,26 +227,35 @@
    $('slide').className='slide technical cs-slide';$('slide').innerHTML=inner;
    // All continuous controls are created once per slide and NEVER replaced on input.
    const modelSelector=$('cs-topology');
-   if(!['intro','comparison'].includes(s.lesson))currentSourceTopology='source';
-   if(s.lesson==='controller')currentSourceTopology='RLE';
+   if(!spec.model)currentSourceTopology=s.lesson==='controller'?'RLE':'source';
    modelSelector.value=currentSourceTopology;
-   modelSelector.disabled=!['intro','comparison'].includes(s.lesson);
+   modelSelector.disabled=!spec.model;
+   modelSelector.parentElement.hidden=!spec.model;
    currentSourceSide=s.lesson==='polarity'?currentSourceSide:'rectifier';
    $('cs-side').value=currentSourceSide;
-   $('cs-side').disabled=s.lesson!=='polarity';
-   $('cs-overlap-mode').value=params.csOverlapMode;
+   $('cs-side').disabled=!spec.station;
+   $('cs-side').parentElement.hidden=!spec.station;
+   $('cs-overlap-mode').value=spec.overlap==='calculated'?'calculated':'manual';
+   $('cs-overlap-mode').disabled=true;
+   $('cs-overlap-mode').parentElement.hidden=spec.overlap==='none';
+   // The current-source chapter makes explicit whether mu is calculated or assumed.
+   $('cs-overlap-mode').title=csModelLabel(s);
+   currentSourceChart=CurrentSourcePolicy.normalizeChart(s.lesson,currentSourceChart);
    $('cs-chart').value=currentSourceChart;
+   for(const opt of $('cs-chart').options)opt.disabled=!spec.charts.includes(opt.value);
    modelSelector.onchange=e=>{currentSourceTopology=e.target.value;renderCurrentSourceDetails();};
-   $('cs-side').onchange=e=>{currentSourceSide=e.target.value;cachedKey='';renderCurrentSourceDetails();};
-   $('cs-chart').onchange=e=>{currentSourceChart=e.target.value;renderCurrentSourceDetails();};
-   $('cs-overlap-mode').onchange=e=>{params.csOverlapMode=e.target.value;cachedKey='';renderCurrentSourceDetails();};
+   $('cs-side').onchange=e=>{currentSourceSide=e.target.value;cachedKey='';renderCurrentSourceDetails();updateSettingsRelevance();};
+   $('cs-chart').onchange=e=>{currentSourceChart=CurrentSourcePolicy.normalizeChart(s.lesson,e.target.value);renderCurrentSourceDetails();};
+   $('cs-overlap-mode').onchange=()=>{}; // Calculated/assumed overlap is determined by the slide's physical objective.
    const numeric=['idc','alphaR','muR','csLc','loadR','loadL','loadE'];
    let queued=false;
    for(const key of numeric){
      const ctrl=$('cs-'+key);
      ctrl.addEventListener('input',e=>{
        if(ctrl.disabled)return;
-       params[key]=Number(e.currentTarget.value);
+       if(key==='alphaR'&&s.lesson==='polarity'&&currentSourceSide==='inverter'){
+         params.alphaI=Number(e.currentTarget.value);
+       }else params[key]=Number(e.currentTarget.value);
        if(!queued){queued=true;requestAnimationFrame(()=>{queued=false;renderCurrentSourceDetails();});}
      });
    }
@@ -263,8 +281,9 @@
  }
  function stepCurrentSource(direction){
    pause(false);
-   const o=CurrentSourceModel.overlap(params);
-   const mu=o.valid?o.mu:params.muR;
+   const op=csOperatingPoint(current());
+   const o=CurrentSourceModel.overlap(op);
+   const mu=o.valid?o.mu:op.muR;
    const sector=Math.floor(theta/60),local=theta-sector*60;
    if(direction>0){
      setTheta(local<mu ? sector*60+mu+Math.min(2,(60-mu)/4): (sector+1)*60+Math.min(1,mu/2));
@@ -275,76 +294,103 @@
  }
  function renderCurrentSourceDetails(){
    const s=current();if(s.type!=='current_source'||!$('cs-circuit'))return;
-   const ready=CurrentSourceModel.cycle(params);
-   const state=ready.valid?CurrentSourceModel.sample(theta,params,{valid:true,mu:ready.mu,mode:ready.mode}):null;
+   const spec=CurrentSourcePolicy.forLesson(s.lesson);
+   const side=s.lesson==='polarity'?currentSourceSide:'rectifier';
+   const operating=csOperatingPoint(s);
+   const ready=CurrentSourceModel.cycle(operating);
+   const state=ready.valid?CurrentSourceModel.sample(theta,operating,{valid:true,mu:ready.mu,mode:ready.mode}):null;
    const hasRLE=['comparison','controller','intro'].includes(s.lesson)&&currentSourceTopology==='RLE';
    const useRLE=hasRLE||s.lesson==='controller';
-   const side=s.lesson==='polarity'?currentSourceSide:'rectifier';
    const label=ready.valid?(state.overlap?'COMMUTATION OVERLAP':'NORMAL CONDUCTION'):'UNSUPPORTED OPERATING POINT';
-   const key=ready.valid?(useRLE?`RLE:${LoadModel.at(LoadCharts.model('RLE',{...params,alphaLoad:params.alphaR}),theta).pair}`:
+   const key=ready.valid?(useRLE?`RLE:${LoadModel.at(LoadCharts.model('RLE',{...operating,alphaLoad:operating.alphaR}),theta).pair}`:
       `current:${side}:${state.state}`):'invalid';
    if(key!==cachedKey){
      if(!ready.valid)$('cs-circuit').innerHTML='<p class="cs-invalid">Current transfer cannot complete within a 60° sector at the selected I, L and V.</p>';
      else if(useRLE){
-       const pair=LoadModel.at(LoadCharts.model('RLE',{...params,alphaLoad:params.alphaR}),theta).pair;
+       const pair=LoadModel.at(LoadCharts.model('RLE',{...operating,alphaLoad:operating.alphaR}),theta).pair;
        $('cs-circuit').innerHTML=DATA.load_figures[`RLE:${pair}`]||'<p>RLE circuit unavailable</p>';
      }else $('cs-circuit').innerHTML=DATA.current_source_figures[side][String(state.state)];
      cachedKey=key;
    }
-   const rleConduction=useRLE?LoadModel.at(LoadCharts.model('RLE',{...params,alphaLoad:params.alphaR}),theta):null;
+   const rleConduction=useRLE?LoadModel.at(LoadCharts.model('RLE',{...operating,alphaLoad:operating.alphaR}),theta):null;
    const active=useRLE?(rleConduction.scrs.join(' + ')||'ALL SCRs OFF'):
        ready.valid?(state.overlap?`${state.outgoing} → ${state.incoming} · ${Math.round(state.transfer*100)}%`:
        Object.entries(state.scr).filter(([,i])=>i>1e-8).map(([n])=>n).join(' + ')):'INVALID';
-   const currentLine=ready.valid?(MathUI.angle('θ',theta)+' · '+MathUI.v('I','ref')+' = '+MathUI.num(params.idc.toFixed(2))+' '+MathUI.unit('p.u.')):
+   const currentLine=ready.valid?(MathUI.angle('θ',theta)+' · '+MathUI.v('I','ref')+' = '+MathUI.num(operating.idc.toFixed(2))+' '+MathUI.unit('p.u.')):
        'Physical operating-range limit reached';
    $('cs-status').innerHTML=currentLine;
    $('cs-active').textContent=active;
    $('cs-badge').textContent=useRLE?'DYNAMIC RLE':label;
    $('cs-badge').classList.toggle('overlap',!useRLE&&!!state?.overlap);
    $('cs-mu-status').innerHTML=useRLE?'RLE branch · current determined by circuit':
-       ready.valid?MathUI.angle('μ',ready.mu)+` · ${ready.mode}`:'No valid μ';
+       ready.valid?MathUI.angle('μ',ready.mu)+` · ${csModelLabel(s).toLowerCase()}`:'No valid μ';
    $('cs-angle').value=theta;
    $('cs-bridge-note').textContent=side.toUpperCase()+' · '+(useRLE?'RLE BRANCH':'DC CURRENT CONSTRAINT');
    $('cs-equation').innerHTML=useRLE?MathUI.formula('RLE'):(csEquation()+' · '+MathUI.v('i','out')+' + '+MathUI.v('i','in')+' = '+MathUI.v('I','ref'));
    const focus=s.lesson==='commutation';
    let d=currentSourceLessons[s.lesson][2];
-   if(focus&&state?.overlap)d=`${state.outgoing} is releasing current to ${state.incoming}; ${state.stationary} remains at ${MathUI.num(params.idc.toFixed(2))} ${MathUI.unit('p.u.')}. Their currents sum to ${MathUI.v('I','ref')}.`;
+   if(focus&&state?.overlap)d=`${state.outgoing} is releasing current to ${state.incoming}; ${state.stationary} remains at ${MathUI.num(operating.idc.toFixed(2))} ${MathUI.unit('p.u.')}. Their currents sum to ${MathUI.v('I','ref')}.`;
    if(s.lesson==='overlap')d+=ready.valid?` Computed or assumed ${MathUI.angle('μ',ready.mu)}.`:' '+ready.error;
    if(s.lesson==='comparison'){
-     const trace=LoadCharts.model('RLE',{...params,alphaLoad:params.alphaR});
+     const trace=LoadCharts.model('RLE',{...operating,alphaLoad:operating.alphaR});
      const mean=trace.current.reduce((a,b)=>a+b,0)/trace.current.length;
-     d+=` RLE cycle mean: ${MathUI.num(mean.toFixed(2))} ${MathUI.unit('p.u.')}; source reference: ${MathUI.num(params.idc.toFixed(2))} ${MathUI.unit('p.u.')}. These values are not forced to agree.`;
+     d+=` RLE cycle mean: ${MathUI.num(mean.toFixed(2))} ${MathUI.unit('p.u.')}; source reference: ${MathUI.num(operating.idc.toFixed(2))} ${MathUI.unit('p.u.')}. These values are not forced to agree.`;
    }
    if(s.lesson==='polarity'){
-     const p=CurrentSourceModel.inverterPower(params);
+     const p=CurrentSourceModel.inverterPower(operating);
      d+=` Signed average DC powers (illustrative): rectifier ${MathUI.num(p.rectifier.toFixed(2))}, inverter ${MathUI.num(p.inverter.toFixed(2))} ${MathUI.unit('p.u.')}.`;
    }
-   if(s.lesson==='controller')d+=' The controller uses an averaged six-pulse voltage equation and a finite smoothing reactor, not instantaneous SCR gate-current simulation. The electrical-angle cursor changes the schematic; the controller response uses time on its horizontal axis.';
+   if(s.lesson==='controller')d+=' The controller uses an averaged six-pulse voltage equation and a finite smoothing reactor, not instantaneous SCR gate-current simulation. The controller response uses seconds, so the electrical-angle cursor is disabled on this slide.';
    $('cs-description').innerHTML=d;
    const layouts=csChartsFor(s.lesson);
+   currentSourceChart=CurrentSourcePolicy.normalizeChart(s.lesson,currentSourceChart);
+   $('cs-chart').value=currentSourceChart;
    const left=currentSourceChart!=='auto'?currentSourceChart:layouts[0],right=layouts[1];
    $('cs-left-title').textContent='02 / '+(left==='transfer'?'SCR CURRENT TRANSFER':left==='control'?'CLOSED-LOOP CURRENT':left==='rle'?'RLE / IDEAL CURRENT':'CURRENT WAVEFORMS');
-   $('cs-right-title').textContent='03 / '+(right==='phase'?'AC PHASE / COMMUTATION VOLTAGES':right==='alphaControl'?'FIRING-ANGLE CONTROLLER':'ELECTRICAL WAVEFORMS');
-   CurrentSourceCharts.draw($('cs-left'),params,theta,left,s);
-   CurrentSourceCharts.draw($('cs-right'),params,theta,right,s);
+   $('cs-right-title').textContent=useRLE&&right==='dc'?
+     '03 / IDEAL CURRENT-SOURCE REFERENCE (COMPARISON)':
+     '03 / '+(right==='phase'?'AC PHASE / COMMUTATION VOLTAGES':right==='alphaControl'?'FIRING-ANGLE CONTROLLER':'ELECTRICAL WAVEFORMS');
+   CurrentSourceCharts.draw($('cs-left'),operating,theta,left,s);
+   CurrentSourceCharts.draw($('cs-right'),operating,theta,right,s);
    const units={idc:' p.u.',alphaR:'°',muR:'°',csLc:' mH',loadR:' Ω',loadL:' mH',loadE:' p.u.'};
-   const hasDCReactor=useRLE||s.lesson==='comparison';
-   const useACReactor=s.lesson!=='controller';
-   for(const key of ['idc','alphaR','muR','csLc','loadR','loadL','loadE']){
+   const alphaIShown=s.lesson==='polarity'&&side==='inverter';
+   const alphaControl=$('cs-alphaR');
+   if(alphaIShown){
+     alphaControl.min='105';alphaControl.max='169';
+   }else{alphaControl.min='0';alphaControl.max='80';}
+   $('cs-alphaR-symbol').innerHTML=MathUI.v('α',alphaIShown?'i':'r');
+   for(const key of CurrentSourcePolicy.all){
      const el=$('cs-'+key);
-     el.disabled=(['loadR','loadL','loadE'].includes(key)&&!hasDCReactor)||
-       (key==='csLc'&&!useACReactor)||(key==='muR'&&params.csOverlapMode==='calculated')||
-       (key==='alphaR'&&s.lesson==='controller');
+     const enabled=key==='alphaR'&&alphaIShown?
+       CurrentSourcePolicy.enabled(s.lesson,'alphaI',side):
+       CurrentSourcePolicy.enabled(s.lesson,key,side);
+     el.disabled=!enabled;
+     el.setAttribute('aria-disabled',String(!enabled));
      el.closest('.cs-slider').classList.toggle('cs-disabled',el.disabled);
-     $('cs-'+key+'-value').textContent=Number(params[key]).toFixed(key==='csLc'?2:1)+units[key];
-     if(document.activeElement!==el)el.value=String(params[key]);
+     let shown=key==='alphaR'&&alphaIShown?operating.alphaI:operating[key];
+     if(key==='muR'&&spec.overlap==='calculated')shown=ready.valid?ready.mu:NaN;
+     const rendered=Number.isFinite(shown)?Number(shown).toFixed(key==='csLc'?2:1):'N/A';
+     $('cs-'+key+'-value').textContent=rendered+units[key];
+     if(Number.isFinite(shown)&&document.activeElement!==el)el.value=String(shown);
+     el.title=enabled?'This parameter changes the displayed physical model':
+       (key==='muR'&&spec.overlap==='calculated'?'Calculated from the AC commutation inductance':
+         'Fixed or not used by this teaching model');
    }
+   $('cs-circuit').dataset.model=useRLE?'RLE':'current';
+   $('cs-circuit').dataset.station=side;
+   $('cs-circuit').dataset.current=operating.idc.toFixed(4);
+   $('cs-circuit').dataset.mu=ready.valid?ready.mu.toFixed(4):'invalid';
+   const activeAngle=$('cs-angle');
+   activeAngle.disabled=s.lesson==='controller';
+   activeAngle.title=activeAngle.disabled?'The controller response uses time, not electrical angle':'Choose an electrical instant';
+   $('cs-prev').disabled=s.lesson==='controller';$('cs-next').disabled=s.lesson==='controller';
+   $('cs-play').disabled=s.lesson==='controller';
    $('cs-play').textContent=playing?'❚❚ PAUSE':'▶ PLAY';
  }
 
  function stateDetails(s){
    const a=liveActive(s);const w=liveWindow(s);
-   const type=(s.side==='hvdc')?(a.rOverlap&&a.iOverlap?'Both stations in overlap':a.rOverlap?'Rectifier overlap':a.iOverlap?'Inverter overlap':'Normal at both stations'):(s.id%2===0?'Commutation overlap':s.side==='rectifier'?'Normal conduction with RL load':'Normal conduction');
+   const type=(s.side==='hvdc')?(a.rOverlap&&a.iOverlap?'Both stations in overlap':a.rOverlap?'Rectifier overlap':a.iOverlap?'Inverter overlap':'Normal at both stations'):(s.id%2===0?'Assumed commutation overlap':'Normal conduction with approximately constant DC current');
    const overlap=type.toLowerCase().includes('overlap');
    const desc=s.side==='hvdc'?LCC.jointDescription(a):LCC.describe(s.side,s.id);
    const sub=s.side==='hvdc'?`Rectifier ${String(a.r).padStart(2,'0')} · Inverter ${String(a.i).padStart(2,'0')} · ${w.map(([lo,hi])=>`${lo.toFixed(1)}–${hi.toFixed(1)}°`).join(', ')}`
@@ -425,6 +471,9 @@
      cachedKey=key;
    }
    const show=s.lesson==='r_case'?'R load · alpha '+s.alpha+'°':s.lesson==='r_intro'?'Pure R introductory circuit':compare?'R versus RL':compareAll?'R/RL/LE/RLE comparison':which+' load';
+   if(!compare&&!compareAll&&!['r_intro','r_case'].includes(s.lesson)){
+     $('slide').querySelector('.tech-title h1').textContent='RECTIFIER · '+which+' load and DC current dynamics';
+   }
    const conduction=state.pair<0?'ALL SCRs OFF':state.scrs.join(' + ');
    const label=compare?'R: '+(a.scrs.join('+')||'OFF')+' | RL: '+(b.scrs.join('+')||'OFF'):compareAll?'R, RL, LE, RLE · same firing angle':conduction;
    $('angle-status').innerHTML=MathUI.angle('θ',theta)+' · '+label;
@@ -464,7 +513,13 @@
    <div class="floating-note" id="floating-note" hidden>Individual SCR voltage is undefined while both DC bus potentials float; no fictitious blocking-voltage trace is generated.</div>
    <div class="timeline"><div class="timeline-top"><span class="timeline-status" id="angle-status">${MathUI.angle('θ',theta)}</span><div class="timeline-actions"><button id="load-settings">⚙ PARAMETERS</button><button class="primary" id="play-btn">${playing?'❚❚ PAUSE':'▶ PLAY'}</button></div></div><input class="angle-range" id="angle-range" type="range" min="0" max="359.99" step="0.01" value="${theta}" aria-label="Electrical angle in degrees"><div class="ticks"><span>0°</span><span>60°</span><span>120°</span><span>180°</span><span>240°</span><span>300°</span><span>360°</span></div></div>`;
    $('slide').className='slide technical';$('slide').innerHTML=content;cachedKey='';
-   if(!isCompare&&!isAll){$('load-choice').value=params.loadMode;$('load-choice').onchange=e=>{params.loadMode=e.target.value;cachedKey='';renderLoadDetails();};}
+   if(!isCompare&&!isAll){
+     const selector=$('load-choice');
+     selector.value=params.loadMode;
+     selector.disabled=['r_intro','r_case'].includes(s.lesson);
+     selector.title=selector.disabled?'This slide isolates the pure resistive load':'Switch to another physical DC load';
+     selector.onchange=e=>{params.loadMode=e.target.value;cachedKey='';renderLoadDetails();updateSettingsRelevance();};
+   }
    $('load-chart-mode').onchange=()=>renderLoadDetails();
    $('scr-filter').value=selectedSCR;$('scr-filter').onchange=e=>{selectedSCR=e.target.value;renderLoadDetails();};
    $('load-settings').onclick=()=>switchOverlay('settings-overlay',true);
@@ -525,6 +580,43 @@
    apply('hL-fund',present.halfwave,'This single-phase circuit has no inductor');
    apply('hL-range',present.halfwave,'Half-wave L applies only in the RL and comparison slides');
    apply('loadL-range',present.dc,'This load model has no DC series inductor');
+ }
+ function updateSettingsRelevance(){
+   const slide=current();let allowed=new Set(['speed']);
+   if(slide.type==='fundamentals'){
+     allowed=new Set(['hAlpha','hR','hV','speed']);
+     if(inductorAvailability().halfwave)allowed.add('hL');
+   }else if(slide.type==='load'){
+     const mode=['r_compare','advanced_compare'].includes(slide.lesson)?
+       (slide.lesson==='advanced_compare'?'RLE':'RL'):params.loadMode;
+     allowed=new Set(['alphaLoad','vPeak','speed']);
+     if(mode!=='LE')allowed.add('loadR');
+     if(['RL','LE','RLE'].includes(mode))allowed.add('loadL');
+     if(['LE','RLE'].includes(mode))allowed.add('loadE');
+     if(mode==='LE')allowed.add('loadI0');
+   }else if(slide.type==='state'){
+     allowed=new Set(['idc','vPeak','speed']);
+     if(slide.side==='rectifier'){allowed.add('alphaR');allowed.add('muR');}
+     if(slide.side==='inverter'){allowed.add('alphaI');allowed.add('muI');}
+     if(slide.side==='hvdc')for(const name of ['alphaR','muR','alphaI','muI'])allowed.add(name);
+   }else if(slide.type==='current_source'){
+     allowed=new Set(['speed']);
+     const activeSide=slide.lesson==='polarity'?currentSourceSide:'rectifier';
+     for(const name of ['idc','alphaR','alphaI','loadR','loadL','loadE']){
+       if(CurrentSourcePolicy.enabled(slide.lesson,name,activeSide))allowed.add(name);
+     }
+   }
+   for(const input of $('settings-sliders').querySelectorAll('input[type="range"]')){
+     const key=input.id.replace(/-range$/,'');
+     const yes=allowed.has(key);
+     input.disabled=!yes;
+     input.setAttribute('aria-disabled',String(!yes));
+     const row=input.closest('.slider-row');
+     row.classList.toggle('inductor-disabled',!yes);
+     row.classList.toggle('audit-irrelevant',!yes);
+     input.title=yes?'Relevant to the physical model shown in the current slide':
+       'Not used or deliberately fixed in the current teaching slide';
+   }
  }
  function renderFundamentalsDetails(){
    const s=current();if(s.type!=='fundamentals'||!$('fund-circuit-host'))return;
@@ -628,6 +720,7 @@
    $('current-chapter').textContent=s.side==='fundamentals'?'CH 00 · THYRISTOR FUNDAMENTALS':s.side==='rectifier'?'CH 01 · RECTIFIER':s.side==='inverter'?'CH 02 · INVERTER':s.side==='hvdc'?'CH 03 · HVDC LINK':'HVDC LCC LEARNING LAB';
    $('settings-gamma').textContent=(180-params.alphaI-params.muI).toFixed(1)+'°';
    applyInductorAvailability();
+   updateSettingsRelevance();
  }
  function render(){
    updateSchedule();const s=current();
@@ -635,6 +728,7 @@
    updateSlideChrome();
  }
  function togglePlay(){if(playing){pause();return;}
+   if(current().type==='current_source'&&current().lesson==='controller')return;
    if(!['state','load','fundamentals','current_source'].includes(current().type)){goto(iMap[activeStage()]??deck.findIndex(s=>s.type==='fundamentals'));}
    playing=true;lastTick=0;render();raf=requestAnimationFrame(tick);
  }

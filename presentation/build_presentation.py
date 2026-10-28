@@ -165,6 +165,7 @@ def build(source: Path, out: Path, src: Path) -> dict:
         '<!--INLINE_LOAD_CHARTS-->': (src / 'load_charts.js').read_text(encoding='utf-8'),
         '<!--INLINE_HALFWAVE-->': (src / 'halfwave.js').read_text(encoding='utf-8'),
         '<!--INLINE_CURRENT_SOURCE_MODEL-->': (src / 'current_source.js').read_text(encoding='utf-8'),
+        '<!--INLINE_CURRENT_SOURCE_POLICY-->': (src / 'current_source_policy.js').read_text(encoding='utf-8'),
         '<!--INLINE_CURRENT_SOURCE_CHARTS-->': (src / 'current_source_charts.js').read_text(encoding='utf-8'),
         '<!--INLINE_PRESENTATION-->': (src / 'presentation.js').read_text(encoding='utf-8'),
         '<!--INLINE_DATA-->': json.dumps(data, ensure_ascii=False, separators=(',', ':'))

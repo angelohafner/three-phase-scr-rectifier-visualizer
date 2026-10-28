@@ -177,3 +177,12 @@ body{font-family:"Segoe UI",Arial,sans-serif;font-style:normal;font-variant-nume
  .cs-controlbar{grid-template-columns:repeat(3,minmax(0,1fr));min-height:66px}
  .cs-controlbar .cs-slider:nth-child(n+4){display:none}
 }
+
+/* Audited per-slide controls: irrelevant parameters are omitted, not implied active. */
+.cs-controlbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:flex-start;min-height:60px}
+.cs-controlbar .cs-slider{flex:0 1 230px;max-width:260px}
+.cs-controlbar .cs-slider.cs-disabled{display:none}
+.cs-options label[hidden]{display:none!important}
+.settings-card .slider-row.audit-irrelevant{display:none}
+@media(max-width:1000px){.cs-controlbar{flex-wrap:nowrap;overflow-x:auto;min-height:66px}.cs-controlbar .cs-slider{flex:0 0 190px}.cs-controlbar .cs-slider:nth-child(n){display:flex}.cs-controlbar .cs-slider.cs-disabled:nth-child(n){display:none}}
+@media(max-width:620px){.cs-controlbar .cs-slider{flex:0 0 170px}.cs-controlbar .cs-slider:nth-child(n){display:flex}.cs-controlbar .cs-slider.cs-disabled:nth-child(n){display:none}}

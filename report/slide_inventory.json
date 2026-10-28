@@ -1,0 +1,1978 @@
+[
+  {
+    "number": 1,
+    "index": 0,
+    "kind": "title",
+    "stage": "intro",
+    "lesson": "",
+    "state": 0,
+    "title": "HVDC LCCCurrent paths & commutation",
+    "enabled_controls": [],
+    "disabled_controls": [],
+    "global_enabled": [
+      "speed-range"
+    ],
+    "circuit": false,
+    "graphs": false,
+    "horizontal_overflow_px": 77
+  },
+  {
+    "number": 2,
+    "index": 1,
+    "kind": "roadmap",
+    "stage": "intro",
+    "lesson": "",
+    "state": 0,
+    "title": "One conceptat a time.",
+    "enabled_controls": [],
+    "disabled_controls": [],
+    "global_enabled": [
+      "speed-range"
+    ],
+    "circuit": false,
+    "graphs": false,
+    "horizontal_overflow_px": 77
+  },
+  {
+    "number": 3,
+    "index": 2,
+    "kind": "chapter",
+    "stage": "fundamentals",
+    "lesson": "",
+    "state": 0,
+    "title": "How does an SCR turn off?",
+    "enabled_controls": [],
+    "disabled_controls": [],
+    "global_enabled": [
+      "speed-range"
+    ],
+    "circuit": false,
+    "graphs": false,
+    "horizontal_overflow_px": 77
+  },
+  {
+    "number": 4,
+    "index": 3,
+    "kind": "fundamentals",
+    "stage": "fundamentals",
+    "lesson": "scr_intro",
+    "state": "",
+    "title": "What Is a Thyristor?",
+    "enabled_controls": [
+      "hAlpha-fund",
+      "hR-fund",
+      "hV-fund",
+      "fund-angle"
+    ],
+    "disabled_controls": [
+      "hL-fund"
+    ],
+    "global_enabled": [
+      "hAlpha-range",
+      "hR-range",
+      "hV-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 5,
+    "index": 4,
+    "kind": "fundamentals",
+    "stage": "fundamentals",
+    "lesson": "r_circuit",
+    "state": "",
+    "title": "Half-Wave Rectifier with R Load",
+    "enabled_controls": [
+      "hAlpha-fund",
+      "hR-fund",
+      "hV-fund",
+      "fund-angle"
+    ],
+    "disabled_controls": [
+      "hL-fund"
+    ],
+    "global_enabled": [
+      "hAlpha-range",
+      "hR-range",
+      "hV-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 6,
+    "index": 5,
+    "kind": "fundamentals",
+    "stage": "fundamentals",
+    "lesson": "r_delay",
+    "state": "",
+    "title": "R Load \u00b7 Effect of Firing Angle",
+    "enabled_controls": [
+      "hAlpha-fund",
+      "hR-fund",
+      "hV-fund",
+      "fund-angle"
+    ],
+    "disabled_controls": [
+      "hL-fund"
+    ],
+    "global_enabled": [
+      "hAlpha-range",
+      "hR-range",
+      "hV-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 7,
+    "index": 6,
+    "kind": "fundamentals",
+    "stage": "fundamentals",
+    "lesson": "rl_circuit",
+    "state": "",
+    "title": "Half-Wave Rectifier with RL Load",
+    "enabled_controls": [
+      "hAlpha-fund",
+      "hR-fund",
+      "hL-fund",
+      "hV-fund",
+      "fund-angle"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "hAlpha-range",
+      "hR-range",
+      "hL-range",
+      "hV-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 8,
+    "index": 7,
+    "kind": "fundamentals",
+    "stage": "fundamentals",
+    "lesson": "after180",
+    "state": "",
+    "title": "Why Does the SCR Remain ON After 180\u00b0?",
+    "enabled_controls": [
+      "hAlpha-fund",
+      "hR-fund",
+      "hL-fund",
+      "hV-fund",
+      "fund-angle"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "hAlpha-range",
+      "hR-range",
+      "hL-range",
+      "hV-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 9,
+    "index": 8,
+    "kind": "fundamentals",
+    "stage": "fundamentals",
+    "lesson": "extinction",
+    "state": "",
+    "title": "Natural Current Extinction",
+    "enabled_controls": [
+      "hAlpha-fund",
+      "hR-fund",
+      "hL-fund",
+      "hV-fund",
+      "fund-angle"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "hAlpha-range",
+      "hR-range",
+      "hL-range",
+      "hV-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 10,
+    "index": 9,
+    "kind": "fundamentals",
+    "stage": "fundamentals",
+    "lesson": "compare",
+    "state": "",
+    "title": "R versus RL \u00b7 Same Source, Different Current",
+    "enabled_controls": [
+      "hAlpha-fund",
+      "hR-fund",
+      "hL-fund",
+      "hV-fund",
+      "fund-angle"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "hAlpha-range",
+      "hR-range",
+      "hL-range",
+      "hV-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 11,
+    "index": 10,
+    "kind": "fundamentals",
+    "stage": "fundamentals",
+    "lesson": "commutation",
+    "state": "",
+    "title": "Natural Extinction versus Line Commutation",
+    "enabled_controls": [
+      "hAlpha-fund",
+      "hR-fund",
+      "hL-fund",
+      "hV-fund",
+      "fund-angle"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "hAlpha-range",
+      "hR-range",
+      "hL-range",
+      "hV-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 12,
+    "index": 11,
+    "kind": "chapter",
+    "stage": "rectifier",
+    "lesson": "",
+    "state": 0,
+    "title": "AC to DC",
+    "enabled_controls": [],
+    "disabled_controls": [],
+    "global_enabled": [
+      "speed-range"
+    ],
+    "circuit": false,
+    "graphs": false,
+    "horizontal_overflow_px": 77
+  },
+  {
+    "number": 13,
+    "index": 12,
+    "kind": "load",
+    "stage": "rectifier",
+    "lesson": "r_intro",
+    "state": "",
+    "title": "RECTIFIER \u00b7 R load and DC current dynamics",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaLoad-range",
+      "loadR-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 14,
+    "index": 13,
+    "kind": "load",
+    "stage": "rectifier",
+    "lesson": "r_case",
+    "state": "",
+    "title": "RECTIFIER \u00b7 R load \u00b7 firing angle 0\u00b0",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaLoad-range",
+      "loadR-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 15,
+    "index": 14,
+    "kind": "load",
+    "stage": "rectifier",
+    "lesson": "r_case",
+    "state": "",
+    "title": "RECTIFIER \u00b7 R load \u00b7 firing angle 30\u00b0",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaLoad-range",
+      "loadR-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 16,
+    "index": 15,
+    "kind": "load",
+    "stage": "rectifier",
+    "lesson": "r_case",
+    "state": "",
+    "title": "RECTIFIER \u00b7 R load \u00b7 firing angle 75\u00b0",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaLoad-range",
+      "loadR-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 17,
+    "index": 16,
+    "kind": "load",
+    "stage": "rectifier",
+    "lesson": "r_case",
+    "state": "",
+    "title": "RECTIFIER \u00b7 R load \u00b7 firing angle 90\u00b0",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaLoad-range",
+      "loadR-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 18,
+    "index": 17,
+    "kind": "load",
+    "stage": "rectifier",
+    "lesson": "r_compare",
+    "state": "",
+    "title": "RECTIFIER \u00b7 Comparing R and RL loads",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaLoad-range",
+      "loadR-range",
+      "loadL-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 19,
+    "index": 18,
+    "kind": "load",
+    "stage": "rectifier",
+    "lesson": "rl_intro",
+    "state": "",
+    "title": "RECTIFIER \u00b7 RL load and DC current dynamics",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaLoad-range",
+      "loadR-range",
+      "loadL-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 20,
+    "index": 19,
+    "kind": "load",
+    "stage": "rectifier",
+    "lesson": "le_intro",
+    "state": "",
+    "title": "RECTIFIER \u00b7 LE load and DC current dynamics",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaLoad-range",
+      "loadL-range",
+      "loadE-range",
+      "loadI0-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 21,
+    "index": 20,
+    "kind": "load",
+    "stage": "rectifier",
+    "lesson": "rle_intro",
+    "state": "",
+    "title": "RECTIFIER \u00b7 RLE load and DC current dynamics",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaLoad-range",
+      "loadR-range",
+      "loadL-range",
+      "loadE-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 22,
+    "index": 21,
+    "kind": "load",
+    "stage": "rectifier",
+    "lesson": "advanced_compare",
+    "state": "",
+    "title": "RECTIFIER \u00b7 R / RL / LE / RLE comparison",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaLoad-range",
+      "loadR-range",
+      "loadL-range",
+      "loadE-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 23,
+    "index": 22,
+    "kind": "state",
+    "stage": "rectifier",
+    "lesson": "",
+    "state": 1,
+    "title": "RECTIFIER \u00b7 Normal conduction with approximately constant DC current",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "muR-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 24,
+    "index": 23,
+    "kind": "state",
+    "stage": "rectifier",
+    "lesson": "",
+    "state": 2,
+    "title": "RECTIFIER \u00b7 Assumed commutation overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "muR-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 25,
+    "index": 24,
+    "kind": "state",
+    "stage": "rectifier",
+    "lesson": "",
+    "state": 3,
+    "title": "RECTIFIER \u00b7 Normal conduction with approximately constant DC current",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "muR-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 26,
+    "index": 25,
+    "kind": "state",
+    "stage": "rectifier",
+    "lesson": "",
+    "state": 4,
+    "title": "RECTIFIER \u00b7 Assumed commutation overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "muR-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 27,
+    "index": 26,
+    "kind": "state",
+    "stage": "rectifier",
+    "lesson": "",
+    "state": 5,
+    "title": "RECTIFIER \u00b7 Normal conduction with approximately constant DC current",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "muR-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 28,
+    "index": 27,
+    "kind": "state",
+    "stage": "rectifier",
+    "lesson": "",
+    "state": 6,
+    "title": "RECTIFIER \u00b7 Assumed commutation overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "muR-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 29,
+    "index": 28,
+    "kind": "state",
+    "stage": "rectifier",
+    "lesson": "",
+    "state": 7,
+    "title": "RECTIFIER \u00b7 Normal conduction with approximately constant DC current",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "muR-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 30,
+    "index": 29,
+    "kind": "state",
+    "stage": "rectifier",
+    "lesson": "",
+    "state": 8,
+    "title": "RECTIFIER \u00b7 Assumed commutation overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "muR-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 31,
+    "index": 30,
+    "kind": "state",
+    "stage": "rectifier",
+    "lesson": "",
+    "state": 9,
+    "title": "RECTIFIER \u00b7 Normal conduction with approximately constant DC current",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "muR-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 32,
+    "index": 31,
+    "kind": "state",
+    "stage": "rectifier",
+    "lesson": "",
+    "state": 10,
+    "title": "RECTIFIER \u00b7 Assumed commutation overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "muR-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 33,
+    "index": 32,
+    "kind": "state",
+    "stage": "rectifier",
+    "lesson": "",
+    "state": 11,
+    "title": "RECTIFIER \u00b7 Normal conduction with approximately constant DC current",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "muR-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 34,
+    "index": 33,
+    "kind": "state",
+    "stage": "rectifier",
+    "lesson": "",
+    "state": 12,
+    "title": "RECTIFIER \u00b7 Assumed commutation overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "muR-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 35,
+    "index": 34,
+    "kind": "current_source",
+    "stage": "rectifier",
+    "lesson": "intro",
+    "state": "",
+    "title": "Voltage-Driven versus Current-Driven DC Circuits",
+    "enabled_controls": [
+      "cs-idc",
+      "cs-alphaR",
+      "cs-loadR",
+      "cs-loadL",
+      "cs-loadE",
+      "cs-angle"
+    ],
+    "disabled_controls": [
+      "cs-muR",
+      "cs-csLc"
+    ],
+    "global_enabled": [
+      "alphaR-range",
+      "loadR-range",
+      "loadL-range",
+      "loadE-range",
+      "idc-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 36,
+    "index": 35,
+    "kind": "current_source",
+    "stage": "rectifier",
+    "lesson": "constant",
+    "state": "",
+    "title": "LCC Rectifier with Constant DC Current",
+    "enabled_controls": [
+      "cs-idc",
+      "cs-alphaR",
+      "cs-angle"
+    ],
+    "disabled_controls": [
+      "cs-muR",
+      "cs-csLc",
+      "cs-loadR",
+      "cs-loadL",
+      "cs-loadE"
+    ],
+    "global_enabled": [
+      "alphaR-range",
+      "idc-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 37,
+    "index": 36,
+    "kind": "current_source",
+    "stage": "rectifier",
+    "lesson": "valves",
+    "state": "",
+    "title": "Thyristor Currents with Constant DC Current",
+    "enabled_controls": [
+      "cs-alphaR",
+      "cs-angle"
+    ],
+    "disabled_controls": [
+      "cs-idc",
+      "cs-muR",
+      "cs-csLc",
+      "cs-loadR",
+      "cs-loadL",
+      "cs-loadE"
+    ],
+    "global_enabled": [
+      "alphaR-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 38,
+    "index": 37,
+    "kind": "current_source",
+    "stage": "rectifier",
+    "lesson": "commutation",
+    "state": "",
+    "title": "Commutation with Constant DC Current",
+    "enabled_controls": [
+      "cs-csLc",
+      "cs-angle"
+    ],
+    "disabled_controls": [
+      "cs-idc",
+      "cs-alphaR",
+      "cs-muR",
+      "cs-loadR",
+      "cs-loadL",
+      "cs-loadE"
+    ],
+    "global_enabled": [
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 39,
+    "index": 38,
+    "kind": "current_source",
+    "stage": "rectifier",
+    "lesson": "overlap",
+    "state": "",
+    "title": "Effect of Commutation Inductance on Overlap",
+    "enabled_controls": [
+      "cs-csLc",
+      "cs-angle"
+    ],
+    "disabled_controls": [
+      "cs-idc",
+      "cs-alphaR",
+      "cs-muR",
+      "cs-loadR",
+      "cs-loadL",
+      "cs-loadE"
+    ],
+    "global_enabled": [
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 40,
+    "index": 39,
+    "kind": "current_source",
+    "stage": "rectifier",
+    "lesson": "comparison",
+    "state": "",
+    "title": "RLE versus Constant Current Source",
+    "enabled_controls": [
+      "cs-idc",
+      "cs-alphaR",
+      "cs-loadR",
+      "cs-loadL",
+      "cs-loadE",
+      "cs-angle"
+    ],
+    "disabled_controls": [
+      "cs-muR",
+      "cs-csLc"
+    ],
+    "global_enabled": [
+      "alphaR-range",
+      "loadR-range",
+      "loadL-range",
+      "loadE-range",
+      "idc-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 41,
+    "index": 40,
+    "kind": "current_source",
+    "stage": "rectifier",
+    "lesson": "controller",
+    "state": "",
+    "title": "Current-Controlled LCC Rectifier",
+    "enabled_controls": [
+      "cs-idc",
+      "cs-loadR",
+      "cs-loadL",
+      "cs-loadE"
+    ],
+    "disabled_controls": [
+      "cs-alphaR",
+      "cs-muR",
+      "cs-csLc",
+      "cs-angle"
+    ],
+    "global_enabled": [
+      "loadR-range",
+      "loadL-range",
+      "loadE-range",
+      "idc-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 42,
+    "index": 41,
+    "kind": "current_source",
+    "stage": "rectifier",
+    "lesson": "polarity",
+    "state": "",
+    "title": "Current Direction in Rectifier and Inverter Operation",
+    "enabled_controls": [
+      "cs-alphaR",
+      "cs-angle"
+    ],
+    "disabled_controls": [
+      "cs-idc",
+      "cs-muR",
+      "cs-csLc",
+      "cs-loadR",
+      "cs-loadL",
+      "cs-loadE"
+    ],
+    "global_enabled": [
+      "alphaR-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 43,
+    "index": 42,
+    "kind": "current_source",
+    "stage": "rectifier",
+    "lesson": "transition",
+    "state": "",
+    "title": "From Current Source to the Complete HVDC Link",
+    "enabled_controls": [
+      "cs-angle"
+    ],
+    "disabled_controls": [
+      "cs-idc",
+      "cs-alphaR",
+      "cs-muR",
+      "cs-csLc",
+      "cs-loadR",
+      "cs-loadL",
+      "cs-loadE"
+    ],
+    "global_enabled": [
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 0
+  },
+  {
+    "number": 44,
+    "index": 43,
+    "kind": "chapter",
+    "stage": "inverter",
+    "lesson": "",
+    "state": 0,
+    "title": "DC to AC",
+    "enabled_controls": [],
+    "disabled_controls": [],
+    "global_enabled": [
+      "speed-range"
+    ],
+    "circuit": false,
+    "graphs": false,
+    "horizontal_overflow_px": 77
+  },
+  {
+    "number": 45,
+    "index": 44,
+    "kind": "state",
+    "stage": "inverter",
+    "lesson": "",
+    "state": 1,
+    "title": "INVERTER \u00b7 Normal conduction with approximately constant DC current",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaI-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 49
+  },
+  {
+    "number": 46,
+    "index": 45,
+    "kind": "state",
+    "stage": "inverter",
+    "lesson": "",
+    "state": 2,
+    "title": "INVERTER \u00b7 Assumed commutation overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaI-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 49
+  },
+  {
+    "number": 47,
+    "index": 46,
+    "kind": "state",
+    "stage": "inverter",
+    "lesson": "",
+    "state": 3,
+    "title": "INVERTER \u00b7 Normal conduction with approximately constant DC current",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaI-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 49
+  },
+  {
+    "number": 48,
+    "index": 47,
+    "kind": "state",
+    "stage": "inverter",
+    "lesson": "",
+    "state": 4,
+    "title": "INVERTER \u00b7 Assumed commutation overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaI-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 49
+  },
+  {
+    "number": 49,
+    "index": 48,
+    "kind": "state",
+    "stage": "inverter",
+    "lesson": "",
+    "state": 5,
+    "title": "INVERTER \u00b7 Normal conduction with approximately constant DC current",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaI-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 49
+  },
+  {
+    "number": 50,
+    "index": 49,
+    "kind": "state",
+    "stage": "inverter",
+    "lesson": "",
+    "state": 6,
+    "title": "INVERTER \u00b7 Assumed commutation overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaI-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 49
+  },
+  {
+    "number": 51,
+    "index": 50,
+    "kind": "state",
+    "stage": "inverter",
+    "lesson": "",
+    "state": 7,
+    "title": "INVERTER \u00b7 Normal conduction with approximately constant DC current",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaI-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 49
+  },
+  {
+    "number": 52,
+    "index": 51,
+    "kind": "state",
+    "stage": "inverter",
+    "lesson": "",
+    "state": 8,
+    "title": "INVERTER \u00b7 Assumed commutation overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaI-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 49
+  },
+  {
+    "number": 53,
+    "index": 52,
+    "kind": "state",
+    "stage": "inverter",
+    "lesson": "",
+    "state": 9,
+    "title": "INVERTER \u00b7 Normal conduction with approximately constant DC current",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaI-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 49
+  },
+  {
+    "number": 54,
+    "index": 53,
+    "kind": "state",
+    "stage": "inverter",
+    "lesson": "",
+    "state": 10,
+    "title": "INVERTER \u00b7 Assumed commutation overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaI-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 49
+  },
+  {
+    "number": 55,
+    "index": 54,
+    "kind": "state",
+    "stage": "inverter",
+    "lesson": "",
+    "state": 11,
+    "title": "INVERTER \u00b7 Normal conduction with approximately constant DC current",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaI-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 49
+  },
+  {
+    "number": 56,
+    "index": 55,
+    "kind": "state",
+    "stage": "inverter",
+    "lesson": "",
+    "state": 12,
+    "title": "INVERTER \u00b7 Assumed commutation overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaI-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 49
+  },
+  {
+    "number": 57,
+    "index": 56,
+    "kind": "chapter",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 0,
+    "title": "Connect the two stations",
+    "enabled_controls": [],
+    "disabled_controls": [],
+    "global_enabled": [
+      "speed-range"
+    ],
+    "circuit": false,
+    "graphs": false,
+    "horizontal_overflow_px": 77
+  },
+  {
+    "number": 58,
+    "index": 57,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 1,
+    "title": "HVDC LINK \u00b7 Rectifier overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 59,
+    "index": 58,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 2,
+    "title": "HVDC LINK \u00b7 Normal at both stations",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 60,
+    "index": 59,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 3,
+    "title": "HVDC LINK \u00b7 Inverter overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 61,
+    "index": 60,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 4,
+    "title": "HVDC LINK \u00b7 Normal at both stations",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 62,
+    "index": 61,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 5,
+    "title": "HVDC LINK \u00b7 Rectifier overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 63,
+    "index": 62,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 6,
+    "title": "HVDC LINK \u00b7 Normal at both stations",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 64,
+    "index": 63,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 7,
+    "title": "HVDC LINK \u00b7 Inverter overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 65,
+    "index": 64,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 8,
+    "title": "HVDC LINK \u00b7 Normal at both stations",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 66,
+    "index": 65,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 9,
+    "title": "HVDC LINK \u00b7 Rectifier overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 67,
+    "index": 66,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 10,
+    "title": "HVDC LINK \u00b7 Normal at both stations",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 68,
+    "index": 67,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 11,
+    "title": "HVDC LINK \u00b7 Inverter overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 69,
+    "index": 68,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 12,
+    "title": "HVDC LINK \u00b7 Normal at both stations",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 70,
+    "index": 69,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 13,
+    "title": "HVDC LINK \u00b7 Rectifier overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 71,
+    "index": 70,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 14,
+    "title": "HVDC LINK \u00b7 Normal at both stations",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 72,
+    "index": 71,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 15,
+    "title": "HVDC LINK \u00b7 Inverter overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 73,
+    "index": 72,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 16,
+    "title": "HVDC LINK \u00b7 Normal at both stations",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 74,
+    "index": 73,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 17,
+    "title": "HVDC LINK \u00b7 Rectifier overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 75,
+    "index": 74,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 18,
+    "title": "HVDC LINK \u00b7 Normal at both stations",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 76,
+    "index": 75,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 19,
+    "title": "HVDC LINK \u00b7 Inverter overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 77,
+    "index": 76,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 20,
+    "title": "HVDC LINK \u00b7 Normal at both stations",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 78,
+    "index": 77,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 21,
+    "title": "HVDC LINK \u00b7 Rectifier overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 79,
+    "index": 78,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 22,
+    "title": "HVDC LINK \u00b7 Normal at both stations",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 80,
+    "index": 79,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 23,
+    "title": "HVDC LINK \u00b7 Inverter overlap",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 81,
+    "index": 80,
+    "kind": "state",
+    "stage": "hvdc",
+    "lesson": "",
+    "state": 24,
+    "title": "HVDC LINK \u00b7 Normal at both stations",
+    "enabled_controls": [
+      "angle-range"
+    ],
+    "disabled_controls": [],
+    "global_enabled": [
+      "alphaR-range",
+      "alphaI-range",
+      "muR-range",
+      "muI-range",
+      "idc-range",
+      "vPeak-range",
+      "speed-range"
+    ],
+    "circuit": true,
+    "graphs": true,
+    "horizontal_overflow_px": 51
+  },
+  {
+    "number": 82,
+    "index": 81,
+    "kind": "end",
+    "stage": "end",
+    "lesson": "",
+    "state": 0,
+    "title": "Explore further.",
+    "enabled_controls": [],
+    "disabled_controls": [],
+    "global_enabled": [
+      "speed-range"
+    ],
+    "circuit": false,
+    "graphs": false,
+    "horizontal_overflow_px": 77
+  }
+]
