@@ -55,6 +55,7 @@
  function updateSchedule(){runtimeSchedule=LCC.jointSchedule(params.muR,params.muI,LCC.OFFSET);}
  function syncSlideFromAngle(){
    const s=current();if(s.type!=='state')return;
+   const previous=slideIndex;
    if(s.side==='hvdc'){
      const i=runtimeSchedule.find(x=>x.window.some(w=>theta>=w[0]&&theta<w[1]));
      if(i)slideIndex=iMap.hvdc+i.id-1;
@@ -62,7 +63,8 @@
      const state=LCC.at(theta,s.side==='rectifier'?params.muR:params.muI,0);
      slideIndex=iMap[s.side]+state.id-1;
    }
-   cachedKey='';
+   // Preserve the SVG while the cursor remains in the same electrical state.
+   if(slideIndex!==previous)cachedKey='';
  }
  function navDelta(v){pause();goto(slideIndex+v);}
  function stepState(v){pause();const s=current();if(s.type!=='state'){goto(iMap[activeStage()]);return;}
@@ -126,13 +128,47 @@
    }else scr=LCC.stateInfo(a.id).scrs.join(' / ');
    return `<div class="fact"><small>Conducting SCRs</small><strong style="font-size:13px">${scr}</strong></div><div class="fact"><small>Commutation / extinction</small><strong>μ=${s.side==='rectifier'?params.muR:params.muI}° · γ=${gamma}</strong></div>`;
  }
- function renderState(s){
+ function stateDetails(s){
    const a=liveActive(s);const w=liveWindow(s);
    const type=(s.side==='hvdc')?(a.rOverlap&&a.iOverlap?'Both stations in overlap':a.rOverlap?'Rectifier overlap':a.iOverlap?'Inverter overlap':'Normal at both stations'):(s.id%2===0?'Commutation overlap':s.side==='rectifier'?'Normal conduction with RL load':'Normal conduction');
    const overlap=type.toLowerCase().includes('overlap');
    const desc=s.side==='hvdc'?LCC.jointDescription(a):LCC.describe(s.side,s.id);
    const sub=s.side==='hvdc'?`Rectifier ${String(a.r).padStart(2,'0')} · Inverter ${String(a.i).padStart(2,'0')} · ${w.map(([lo,hi])=>`${lo.toFixed(1)}–${hi.toFixed(1)}°`).join(', ')}`
     :`Valves ${LCC.stateInfo(s.id).scrs.join(' + ')} · ${w.map(([lo,hi])=>`${lo.toFixed(1)}–${hi.toFixed(1)}°`).join(', ')}`;
+   return {a,type,overlap,desc,sub};
+ }
+ function refreshStateInPlace(){
+   const s=current();
+   if(s.type!=='state'||!$('angle-range'))return;
+   const {a,type,overlap,desc,sub}=stateDetails(s);
+   const root=$('slide');
+   root.querySelector('.tech-index').textContent=(s.side==='rectifier'?'01':s.side==='inverter'?'02':'03')+' · '+String(s.id).padStart(2,'0');
+   root.querySelector('.tech-title h1').textContent=shortName(s.side)+' · '+type;
+   root.querySelector('.tech-title p').textContent=sub;
+   const badge=root.querySelector('.mode-badge');
+   badge.className='mode-badge '+(overlap?'overlap':s.side==='hvdc'?'joint':'');
+   badge.textContent=overlap?'OVERLAP':'NORMAL';
+   root.querySelector('.explainer').innerHTML=desc;
+   $('facts').innerHTML=facts(s,a);
+   // Keep the same range input and its native pointer capture across state changes.
+   $('angle-range').value=String(theta);
+   renderCircuit(s,a);
+   applyTransfer();
+   renderPlots();
+   updateSlideChrome();
+ }
+ let stateAngleFrame=0;
+ function scheduleStateAngleRefresh(){
+   if(stateAngleFrame)return;
+   stateAngleFrame=requestAnimationFrame(()=>{
+     stateAngleFrame=0;
+     if(current().type!=='state')return;
+     syncSlideFromAngle();
+     refreshStateInPlace();
+   });
+ }
+ function renderState(s){
+   const {a,type,overlap,desc,sub}=stateDetails(s);
    const inner=`<div class="tech-head"><div class="tech-index">${s.side==='rectifier'?'01':s.side==='inverter'?'02':'03'} · ${String(s.id).padStart(2,'0')}</div><div class="tech-title"><h1>${shortName(s.side)} · ${type}</h1><p>${sub}</p></div><div class="mode-badge ${overlap?'overlap':s.side==='hvdc'?'joint':''}">${overlap?'OVERLAP':'NORMAL'}</div></div>
      <div class="workspace"><section class="panel"><div class="panel-head"><strong>01 / CIRCUIT & CONDUCTION PATH</strong><div class="panel-actions"><button class="soft-btn" id="zoom-btn" aria-label="Enlarge diagram">⤢ ENLARGE</button></div></div><div class="diagram-area" id="circuit-host"><span class="empty-msg">Loading vector circuit…</span><span class="diagram-tip">SVG · editable source in GitHub</span></div></section>
      <section class="panel"><div class="panel-head"><strong>02 / CONCEPTUAL WAVEFORMS</strong><div class="panel-actions"><select class="soft-btn" id="chart-mode" aria-label="Choose signals"><option value="overview">Overview</option><option value="phase">Phase voltages</option><option value="line">Line voltages</option><option value="scr">SCR currents</option><option value="vak">SCR voltages</option><option value="valvePair">SCR voltage &amp; current</option><option value="dc">DC quantities</option></select><label class="mini-select" title="Select SCR for current and voltage">SCR <select class="soft-btn" id="scr-filter">${['all',...LCC.SCRS].map(t=>`<option value="${t}">${t==='all'?'All SCRs':t}</option>`).join('')}</select></label><button class="soft-btn ${showReference?'active':''}" id="ref-btn">${showReference?'LIVE MODEL':'SOURCE SVG'}</button></div></div><div class="plot-wrapper" id="plot-wrapper"><canvas id="plot-canvas" aria-label="Interactive LCC voltage and current plots"></canvas><div class="reference" id="reference-view" hidden></div><span class="reference-banner" id="reference-banner" hidden>Reference SVG: nominal parameters, not updated by sliders</span></div></section></div>
@@ -146,12 +182,12 @@
    $('ref-btn').onclick=()=>{showReference=!showReference;const b=$('ref-btn');b.textContent=showReference?'LIVE MODEL':'SOURCE SVG';b.classList.toggle('active',showReference);renderPlots();};
    $('step-prev').onclick=()=>stepState(-1);$('step-next').onclick=()=>stepState(1);
    $('play-btn').onclick=()=>togglePlay();
-   $('angle-range').oninput=e=>{pause(false);setTheta(+e.target.value);syncSlideFromAngle();render();};
+   $('angle-range').oninput=e=>{pause();setTheta(+e.currentTarget.value);scheduleStateAngleRefresh();};
    $('zoom-btn').onclick=()=>openZoom();
    $('plot-canvas').addEventListener('click',ev=>{
       const rect=ev.currentTarget.getBoundingClientRect(),left=38,right=rect.width-15;
       const local=ev.clientX-rect.left;const pos=(local-left)/(right-left);
-      if(pos>=0&&pos<=1){pause(false);setTheta(Math.min(359.75,360*pos));syncSlideFromAngle();render();}
+      if(pos>=0&&pos<=1){pause();setTheta(Math.min(359.75,360*pos));$('angle-range').value=String(theta);scheduleStateAngleRefresh();}
    });
    renderCircuit(s,a);
    applyTransfer();
@@ -241,15 +277,18 @@
    let blocks=stats.map(([n,label])=>`<div class="hero-stat"><strong>${n}</strong><span>${label}</span></div>`).join('');
    $('slide').className='slide';$('slide').innerHTML=`<section class="presentation-hero ${s.type==='chapter'?'chapter-hero':''}">${s.type==='chapter'?'<span class="chapter-index">'+(s.side==='rectifier'?'01':s.side==='inverter'?'02':'03')+'</span>':''}<div class="hero-kicker">${kicker}</div><h1 class="hero-title">${title}</h1><p class="hero-sub">${subtitle}</p><div class="hero-bottom">${blocks}</div><div class="hero-cta">Use <span class="keycap">←</span><span class="keycap">→</span> to navigate · <span class="keycap">O</span> for slide overview · <span class="keycap">F</span> for full screen</div></section>`;
  }
- function render(){
-   updateSchedule();const s=current();
-   if(s.type==='state')renderState(s);else if(s.type==='load')renderLoadSlide(s);else renderHero(s);
+ function updateSlideChrome(){
+   const s=current();
    $('page-counter').textContent=`${slideIndex+1} / ${deck.length}`;
    $('progress-fill').style.width=`${((slideIndex+1)/deck.length*100).toFixed(2)}%`;
    $('nav-rect').classList.toggle('active',s.side==='rectifier');$('nav-inv').classList.toggle('active',s.side==='inverter');$('nav-hvdc').classList.toggle('active',s.side==='hvdc');
    $('footer-prev').disabled=slideIndex===0;$('footer-next').disabled=slideIndex===deck.length-1;
    $('current-chapter').textContent=s.side==='rectifier'?'CH 01 · RECTIFIER':s.side==='inverter'?'CH 02 · INVERTER':s.side==='hvdc'?'CH 03 · HVDC LINK':'HVDC LCC LEARNING LAB';
-   $('settings-gamma').textContent=(180-params.alphaI-params.muI).toFixed(1)+'°';
+   $('settings-gamma').textContent=(180-params.alphaI-params.muI).toFixed(1)+'°'; }
+ function render(){
+   updateSchedule();const s=current();
+   if(s.type==='state')renderState(s);else if(s.type==='load')renderLoadSlide(s);else renderHero(s);
+   updateSlideChrome();
  }
  function togglePlay(){if(playing){pause();return;}
    if(current().type!=='state'&&current().type!=='load'){goto(iMap[activeStage()]);}
