@@ -1,0 +1,119 @@
+{
+  "model": "ideal R and dynamic RL, zero AC commutation inductance",
+  "examples": [
+    {
+      "name": "rectifier_R_alpha_000_conducting",
+      "alpha_deg": 0,
+      "kind": "conducting",
+      "theta_deg": 22.5,
+      "active_scrs": [
+        "T1",
+        "T6"
+      ],
+      "blocked_fraction": 0.0
+    },
+    {
+      "name": "rectifier_R_alpha_030_conducting",
+      "alpha_deg": 30,
+      "kind": "conducting",
+      "theta_deg": 52.5,
+      "active_scrs": [
+        "T1",
+        "T6"
+      ],
+      "blocked_fraction": 0.0
+    },
+    {
+      "name": "rectifier_R_alpha_075_conducting",
+      "alpha_deg": 75,
+      "kind": "conducting",
+      "theta_deg": 97.5,
+      "active_scrs": [
+        "T1",
+        "T6"
+      ],
+      "blocked_fraction": 0.2504164353137146
+    },
+    {
+      "name": "rectifier_R_alpha_075_blocked",
+      "alpha_deg": 75,
+      "kind": "blocked",
+      "theta_deg": 127.5,
+      "active_scrs": [],
+      "blocked_fraction": 0.2504164353137146
+    },
+    {
+      "name": "rectifier_R_alpha_090_conducting",
+      "alpha_deg": 90,
+      "kind": "conducting",
+      "theta_deg": 105.0,
+      "active_scrs": [
+        "T1",
+        "T6"
+      ],
+      "blocked_fraction": 0.5002776235424764
+    },
+    {
+      "name": "rectifier_R_alpha_090_blocked",
+      "alpha_deg": 90,
+      "kind": "blocked",
+      "theta_deg": 135.0,
+      "active_scrs": [],
+      "blocked_fraction": 0.5002776235424764
+    },
+    {
+      "name": "rectifier_R_pair_01",
+      "theta_deg": 55,
+      "alpha_deg": 30,
+      "active_scrs": [
+        "T1",
+        "T6"
+      ]
+    },
+    {
+      "name": "rectifier_R_pair_02",
+      "theta_deg": 115,
+      "alpha_deg": 30,
+      "active_scrs": [
+        "T3",
+        "T6"
+      ]
+    },
+    {
+      "name": "rectifier_R_pair_03",
+      "theta_deg": 175,
+      "alpha_deg": 30,
+      "active_scrs": [
+        "T3",
+        "T2"
+      ]
+    },
+    {
+      "name": "rectifier_R_pair_04",
+      "theta_deg": 235,
+      "alpha_deg": 30,
+      "active_scrs": [
+        "T5",
+        "T2"
+      ]
+    },
+    {
+      "name": "rectifier_R_pair_05",
+      "theta_deg": 295,
+      "alpha_deg": 30,
+      "active_scrs": [
+        "T5",
+        "T4"
+      ]
+    },
+    {
+      "name": "rectifier_R_pair_06",
+      "theta_deg": 355,
+      "alpha_deg": 30,
+      "active_scrs": [
+        "T1",
+        "T4"
+      ]
+    }
+  ]
+}
