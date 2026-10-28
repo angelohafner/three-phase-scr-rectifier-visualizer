@@ -269,7 +269,7 @@ python -m pytest -q tests
 - `output_lcc/inverter/waveforms/` and `output_lcc/inverter/sheets/`
 - `output_hvdc/waveforms/` and `output_hvdc/sheets/`
 
-The current transfer is an illustrative linear interpolation during overlap and the DC voltage is a simplified equal-reactance arithmetic average, **not an EMT solution**. The inverter voltage chart uses a positive pole-to-return convention; the negative signed converter voltage is the opposite quantity. The full-link phase offset remains illustrative, not physically solved.
+The current transfer is an illustrative linear interpolation during overlap and the DC voltage is a simplified equal-reactance arithmetic average, **not an EMT solution**. Legacy static waveform figures use a local pole-to-return convention. The updated interactive HTML uses one common signed converter-voltage reference, with positive DC current directed from rectifier to inverter: the inverter's converter-voltage and power contributions are negative in normal inversion. See [the second-audit corrections](docs/SECOND_AUDIT_CORRECTIONS.md). The full-link phase offset remains illustrative, not physically solved.
 
 [Detailed model, limitations and notation](docs/LCC_DIDACTIC_WAVEFORMS.md)
 
@@ -283,7 +283,7 @@ The teaching sequence now starts with a purely resistive load (ideal AC sources 
 - [Electrical assumptions and the six-pulse gating sequence](docs/RECTIFIER_R_RL_TEACHING.md)
 - [Interactive HTML and clickable PowerPoint build](presentation/README.md)
 
-Run `python rectifier_loads.py` to regenerate the vector figures; run `python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html` to produce the offline lecture. The GitHub Actions workflow publishes the HTML and PPTX as downloadable artifacts.
+Run `python rectifier_loads.py` to regenerate the vector figures; run `python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html` to produce the offline lecture. The current GitHub Actions workflow builds and publishes only the offline HTML; previously created PowerPoint materials are not regenerated.
 
 ## Advanced HTML teaching presentation: R / RL / LE / RLE
 
