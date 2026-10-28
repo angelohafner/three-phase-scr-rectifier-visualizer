@@ -327,82 +327,65 @@ def scr_geometry(parent: ET.Element, name: str, color: str, on: bool,
 
 def winding(parent: ET.Element, phase: str,
             color: str, highlighted: bool) -> None:
-    """Draw the phase reactor in series with its independent AC source."""
+    """Draw an actual Schemdraw Inductor in series with each AC source."""
+    from schemdraw_symbols import draw_inductor
     yp = Y[phase]
     g = group(parent, f'{"selected" if highlighted else "base"}-l{phase}')
     width = 4.8 if highlighted else 3.4
-    xstart = X['coil_start']
-    commands = [f'M {xstart},{yp}']
-    for i in range(4):
-        x0 = xstart + 20 * i
-        commands.append(
-            f'C {x0 + 2},{yp - 17} {x0 + 18},{yp - 17} {x0 + 20},{yp}'
-        )
-    path(g, ' '.join(commands), color, width)
-    line(g, xstart + 80, yp, X['feed_start'], yp, color, width)
-    math_label(g, xstart + 39, yp - 21, 'L', subscript=phase,
+    draw_inductor(g, (X['coil_start'], yp), (X['coil_start']+80, yp), color,
+                  width, transverse_scale=120,
+                  group_id=f'symbol-{"selected" if highlighted else "base"}-l{phase}')
+    line(g, X['coil_start']+80, yp, X['feed_start'], yp, color, width)
+    math_label(g, X['coil_start']+39, yp-21, 'L', subscript=phase,
                size=18, color=color, anchor='middle')
+
 
 def ac_voltage_source(parent: ET.Element, phase: str,
                       color: str, highlighted: bool) -> None:
-    """Draw an AC voltage source as a sine-wave circle, in series with L."""
+    """Render Schemdraw SourceSin using exact original conductor endpoints."""
+    from schemdraw_symbols import draw_ac_source
     g = group(parent, f'{"selected" if highlighted else "base"}-v{phase}')
     yp = Y[phase]
     xc, r = X['source'], SOURCE_RADIUS
     width = 4.8 if highlighted else 3.4
-    line(g, X['star'], yp, xc - r, yp, color, width)
-    line(g, xc + r, yp, X['coil_start'], yp, color, width)
-    element(g, 'circle', cx=xc, cy=yp, r=r, fill=C['paper'],
-            stroke=color, stroke_width=width)
-    # The waveform is a drawing inside the source circle, not a conductive wire.
-    wav = f'M {xc-14},{yp} C {xc-10},{yp-13} {xc-4},{yp-13} {xc},{yp}'
-    wav += f' C {xc+4},{yp+13} {xc+10},{yp+13} {xc+14},{yp}'
-    path(g, wav, color, 2.5 if highlighted else 2.0)
-    math_label(g, xc + r + 10, yp - 12, 'v', subscript=phase,
-               color=color, size=16)
+    line(g, X['star'], yp, xc-r, yp, color, width)
+    line(g, xc+r, yp, X['coil_start'], yp, color, width)
+    draw_ac_source(g,(xc-r,yp),(xc+r,yp),color,width,
+                   group_id=f'symbol-{"selected" if highlighted else "base"}-v{phase}')
+    math_label(g,xc+r+10,yp-12,'v',subscript=phase,color=color,size=16)
+
 
 def dc_inductor(parent: ET.Element, color: str,
                 highlighted: bool) -> None:
+    """Native Schemdraw smoothing reactor in the DC branch."""
+    from schemdraw_symbols import draw_inductor
     g = group(parent, f'{"selected" if highlighted else "base"}-ldc')
-    data = 'M 1240,293'
-    for k in range(4):
-        y0 = 293 + 20 * k
-        data += f' C 1261,{y0 + 2} 1261,{y0 + 18} 1240,{y0 + 20}'
-    path(g, data, color, 4.8 if highlighted else 3.4)
+    draw_inductor(g,(1240,293),(1240,373),color,
+                  4.8 if highlighted else 3.4,transverse_scale=150,
+                  group_id=f'symbol-{"selected" if highlighted else "base"}-ldc')
+
 
 def us_resistor(parent: ET.Element, color: str,
                 highlighted: bool) -> None:
-    """Draw a vertical ANSI/IEEE zigzag resistor, not a European box."""
+    """Native Schemdraw ResistorIEEE (American zigzag)."""
+    from schemdraw_symbols import draw_resistor
     g = group(parent, f'{"selected" if highlighted else "base"}-r')
-    points = [
-        (1240, 443), (1240, 450),
-        (1223, 460), (1257, 472), (1223, 484),
-        (1257, 496), (1223, 508), (1257, 520),
-        (1240, 530), (1240, 535),
-    ]
-    d = f'M {points[0][0]},{points[0][1]}'
-    for px, py in points[1:]:
-        d += f' L {px},{py}'
-    e = path(g, d, color, 4.7 if highlighted else 3.4)
-    e.set('stroke-linejoin', 'miter')
+    draw_resistor(g,(1240,443),(1240,535),color,
+                  4.7 if highlighted else 3.4,transverse_scale=68,
+                  group_id=f'symbol-{"selected" if highlighted else "base"}-r')
+
 
 def dc_voltage_supply(parent: ET.Element, color: str,
                       highlighted: bool) -> None:
-    """Draw an external ideal DC supply delivering power to the inverter.
-
-    Current in the external source flows from its negative terminal toward
-    its positive terminal, whereas bridge DC current enters at its DC+ bus.
-    """
+    """Native Schemdraw SourceV with original inverter source polarity."""
+    from schemdraw_symbols import draw_dc_source
     g = group(parent, f'{"selected" if highlighted else "base"}-edc')
-    w = 4.8 if highlighted else 3.4
-    x, y, r = X['load'], 489, 29
-    line(g, x, 443, x, y-r, color, w)
-    line(g, x, y+r, x, 535, color, w)
-    element(g, 'circle', cx=x, cy=y, r=r, fill=C['paper'],
-            stroke=color, stroke_width=w)
-    line(g, x-9, y-11, x+9, y-11, color, 2.5)
-    line(g, x, y-19, x, y-3, color, 2.5)
-    line(g, x-9, y+13, x+9, y+13, color, 2.5)
+    width = 4.8 if highlighted else 3.4
+    x,y,r = X['load'],489,29
+    line(g,x,443,x,y-r,color,width)
+    line(g,x,y+r,x,535,color,width)
+    draw_dc_source(g,(x,y+r),(x,y-r),color,width,
+                   group_id=f'symbol-{"selected" if highlighted else "base"}-edc')
 
 
 def arc_feeder(y: float, x_end: float) -> str:
