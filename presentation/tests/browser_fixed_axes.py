@@ -70,7 +70,13 @@ with sync_playwright() as pw:
     bounds=snapshot()[0]['limits']
     assert len(bounds)==4,bounds
     assert bounds[0]['right']==bounds[1]['right']==bounds[3]['right'],bounds
-    assert bounds[2]['right'][1]>bounds[3]['right'][1],bounds
+    # Focus keeps the current scale comparable across all four load models.
+    assert bounds[2]['right']==bounds[3]['right'],bounds
+    page.evaluate("window.LCCPresentationTest.setAxisPreset('full')")
+    full_bounds=snapshot()[0]['limits']
+    # Full spans LE's physically large one-cycle envelope independently.
+    assert full_bounds[2]['right'][1]>full_bounds[3]['right'][1],full_bounds
+    page.evaluate("window.LCCPresentationTest.setAxisPreset('focus')")
     # The screenshot regression: RLE versus ideal DC current must use a readable 0–3 p.u.
     defaults={'idc':1,'vPeak':1,'loadR':1,'loadL':8,'loadE':.2,'loadI0':.5,
               'hV':120,'hR':12,'hL':70,'muR':12,'muI':15,'alphaI':145}
