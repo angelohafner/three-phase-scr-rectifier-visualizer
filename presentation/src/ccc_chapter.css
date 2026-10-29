@@ -61,3 +61,22 @@
 #zoom-content svg[data-native-symbols="true"] text{
   font-family:"Segoe UI",Arial,sans-serif!important;
 }
+
+/* Four labs expose only relevant parameters and matching physical readouts. */
+.ch4-controls{grid-template-columns:repeat(var(--ch4-active-cols,5),minmax(0,1fr));
+  max-height:none;overflow:visible}
+.ch4-metrics{grid-template-columns:repeat(var(--ch4-metric-cols,5),minmax(0,1fr))}
+.ch4-compare-circuits{display:flex;gap:7px;width:100%;height:100%;padding:4px}
+.ch4-compare-item{min-width:0;flex:1;display:flex;flex-direction:column;align-items:center;
+  gap:2px;overflow:hidden;background:#fbfdff;border:1px solid #e1ebf0;border-radius:6px}
+.ch4-compare-item>span{font:700 10px "Segoe UI",Arial,sans-serif;color:#2e6077;padding-top:3px}
+.ch4-compare-item svg{width:100%;height:calc(100% - 18px);min-height:0}
+#zoom-content .ch4-compare-circuits{width:100%;height:100%}
+#zoom-content .ch4-compare-item svg{height:calc(100% - 24px)}
+@media(max-width:1270px){.ch4-controls{grid-template-columns:repeat(3,minmax(0,1fr));max-height:none}
+.ch4-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:850px){.ch4-controls{grid-template-columns:repeat(2,minmax(0,1fr))}
+.ch4-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+.ch4-space .panel:has(.ch4-compare-circuits){height:390px;flex-basis:390px}
+.ch4-compare-circuits{flex-direction:column}
+#zoom-content .ch4-compare-circuits{flex-direction:column}}

@@ -1,26 +1,16 @@
 /* Chapter 04 interactive engineering lab; uses validated six-pulse bridge waveforms. */
 'use strict';
 const CCCChapter=(()=>{
+ // Four parameter-driven laboratories with one physical operating point each.
  const lessons=[
-  ['origin','Why Does an LCC Converter Absorb Reactive Power?','The AC fundamental current is displaced from its terminal voltage. Harmonics must not be confused with displacement reactive power.','phasor','ac'],
-  ['firing','Firing Angle and Fundamental Displacement','Vary α while maintaining the imposed DC current. Watch the current fundamental, Q and the bridge mean DC voltage.','phasor','dc'],
-  ['overlap','Commutation Reactance and Current Overlap','The transformer leakage reactor limits current transfer. The overlap is calculated by the differential equation, not independently imposed.','drive','transfer'],
-  ['phasors','Reading Converter Voltage and Current Phasors','The fundamental-frequency Q is calculated from the complex voltage and current phasors at the AC terminals.','phasor','ac'],
-  ['stations','Rectifier versus Inverter Reactive Power','Rectifier waveforms are numerically solved here; inverter reactive-demand concepts are qualitative. The model does NOT simulate inverter-side SCR operation or an AC/DC power reversal.','phasor','dc'],
-  ['shunt','What Does Shunt Compensation Actually Change?','A shunt capacitor supplies local capacitive vars; it does not change the idealized converter valve currents at a fixed AC bus voltage.','power','ac'],
-  ['filters','Shunt Capacitors and Harmonic AC Filters','Fundamental-frequency reactive support and harmonic filtering are distinct functions. This laboratory solves the shunt fundamental Q, not filter resonances.','power','ac'],
-  ['series','Where Do CCC Series Capacitors Belong?','Three series capacitors sit between transformer leakage paths and the valve bridge, not in parallel at the AC bus.','capacitors','ac'],
-  ['states','The Series-Capacitor Voltage Is a Dynamic State','Each capacitor voltage follows dvc/dt = i/C and stores energy. Its waveform changes with valve conduction.','capacitors','dc'],
-  ['central','How Series Capacitors Assist Thyristor Commutation','CORE LAB — the circuit, available commutating voltage and outgoing/incoming SCR currents share one numerical switching solution.','drive','transfer'],
-  ['current','Follow Both SCR Currents During Commutation','A constant DC current imposes the sum of conducting valve currents, but the transfer waveform and μ are dynamically calculated.','drive','transfer'],
-  ['ccc','Capacitor-Commutated Converter: Six-Pulse Laboratory','Six firing events per fundamental cycle, phase-capacitor states, switching-dependent reactor currents and periodic shooting.','capacitors','valves'],
-  ['compare','Conventional LCC versus CCC, Same Conditions','Both switching models use the SAME AC/DC, firing, leakage and resistance parameters. The metrics report independent μ, Q₁ and initial commutating drive for each topology.','compare','transfer'],
-  ['grid','AC Voltage Sensitivity and Grid Strength','Explore imposed bus-voltage variations. The surrounding Thevenin grid and commutation-failure recovery are NOT solved by this stiff-source model.','power','drive'],
-  ['limits','Operating Limits, Validation and Conclusions','Invalid firing, uncompleted commutation or failed periodic shooting must be reported, never replaced by invented current waveforms.','power','capacitors']
+  ['lcc','01 · Reactive Power in LCC','Vary α, I_dc, AC voltage or L_c. Observe current displacement, Q and the calculated commutation overlap.','phasor','ac'],
+  ['shunt','02 · Shunt Capacitor Compensation','Change the shunt capacitor bank. Compare converter Q, capacitive injection and the reactive power actually drawn from the grid.','power','ac'],
+  ['series','03 · Series Capacitors and Commutation','Change C, L_c or I_dc and observe the dynamic capacitor contribution, net commutating voltage and the SCR current transfer.','drive','transfer'],
+  ['compare','04 · LCC versus CCC · Identical Conditions','Only the three series capacitors differ. Compare commutation overlap and converter reactive power at the same electrical operating point.','compare','powerCompare']
  ];
  const names=['a','b','c'];
  let settings={alpha:15,idc:.8,vPeak:1,LmH:.24,CmF:26,R:.012,f:60,qShunt:.40};
- let mode='CCC',cursor=8,cacheKey='',cached=null,previousC=26,needRepaint=null;
+ let mode='LCC',cursor=8,cacheKey='',cached=null,needRepaint=null;
  const $=id=>document.getElementById(id),fmt=(x,n=2)=>Number.isFinite(x)?x.toFixed(n):'—';
  const fields=[['alpha','α firing','°',0,60,1],['idc','I DC','p.u.',.3,1.2,.05],['vPeak','V phase pk','p.u.',.8,1.2,.05],
    ['LmH','L commutation','mH',.12,.38,.01],['CmF','C series','mF',12,100,1],['qShunt','Q shunt','p.u.',0,1.2,.05]];
@@ -31,10 +21,14 @@ const CCCChapter=(()=>{
    return domains[kind]||domains.voltage;
  };
  function getResults(){
-   const hasShunt=['shunt','filters'].includes(currentLesson()[0]);
+   const hasShunt=currentLesson()[0]==='shunt';
    const p={...settings,CmF:mode==='LCC'?0:settings.CmF,
      qShunt:hasShunt?settings.qShunt:0};const key=JSON.stringify(p);
-   if(key!==cacheKey){cacheKey=key;cached={main:CCCModel.solve(p),lcc:CCCModel.solve({...p,CmF:0})};}
+   if(key!==cacheKey){
+     cacheKey=key;
+     const lcc=CCCModel.solve({...p,CmF:0});
+     cached={main:mode==='LCC'?lcc:CCCModel.solve(p),lcc};
+   }
    return cached;
  }
  function currentLesson(){return lessons.find(l=>l[0]===$('ch4-root')?.dataset.lesson)||lessons[0];}
@@ -47,11 +41,11 @@ const CCCChapter=(()=>{
  }
  function circuitSvg(point,hasCap,values){
    if(!nativeSchematics)throw Error('Native Schemdraw diagrams not loaded');
-   const shunt=['shunt','filters'].includes(currentLesson()[0]);
+   const shunt=currentLesson()[0]==='shunt';
    return nativeSchematics[(hasCap?'ccc':'lcc')+(shunt?'_shunt':'')];
  }
- function updateCircuit(point,hasCap,values){
-   const svg=$('ch4-circuit')?.querySelector('svg[data-native-symbols="true"]');
+ function updateCircuit(point,hasCap,values,targetSvg=null){
+   const svg=targetSvg||$('ch4-circuit')?.querySelector('svg[data-native-symbols="true"]');
    if(!svg)return;
    const amps=point?.current||[0,0,0],capVolts=point?.capacitors||[0,0,0];
    const upper={a:'T1',b:'T3',c:'T5'},lower={a:'T2',b:'T4',c:'T6'};
@@ -68,6 +62,8 @@ const CCCChapter=(()=>{
      const capacitor=svg.querySelector('#live-capacitor-'+phase);
      if(capacitor)capacitor.textContent='vC'+phase+' = '+fmt(capVolts[k],3)+' p.u.';
    }
+   const dcLabel=svg.querySelector('#dc-current-label');
+   if(dcLabel)dcLabel.textContent='I_dc = '+fmt(values.idc,2)+' p.u.';
    const shuntText=svg.querySelector('#live-shunt');
    if(shuntText)shuntText.textContent='Q shunt = '+fmt(values.qShunt*values.vPeak**2,2)+' p.u.';
    svg.dataset.dynamicState='synchronized';
@@ -98,6 +94,47 @@ const CCCChapter=(()=>{
    canvas.dataset.axisClipped=String(tracks.some(t=>t.data.some(q=>Number.isFinite(q[1])&&(q[1]<lo||q[1]>hi))));
  }
  const line=(tr,fn,color,label)=>({label,color,data:tr.map(q=>[q.angle,fn(q)])});
+ function barPlot(canvas,items,title){
+   // Both teaching presets use deterministic Q-axis limits; no autoscaling.
+   const box=canvas.getBoundingClientRect(),w=Math.max(200,box.width),
+     h=Math.max(185,box.height),d=Math.min(2,window.devicePixelRatio||1);
+   canvas.width=Math.round(w*d);canvas.height=Math.round(h*d);
+   const ctx=canvas.getContext('2d');ctx.setTransform(d,0,0,d,0,0);
+   ctx.fillStyle='#fbfdfe';ctx.fillRect(0,0,w,h);
+   const full=FixedAxes.preset()==='full';
+   const lo=full?-2.5:-1.35,hi=full?2.5:1.45;
+   const x0=45,x1=w-12,y0=43,y1=h-46;
+   const Y=v=>y1-(v-lo)/(hi-lo)*(y1-y0);
+   ctx.fillStyle='#24495e';ctx.font='600 11px "Segoe UI",Arial';
+   ctx.fillText(title,10,16,w-20);
+   for(let k=0;k<=4;k++){
+     const y=y0+k*(y1-y0)/4, val=hi-(hi-lo)*k/4;
+     ctx.strokeStyle='#e6edf2';ctx.lineWidth=.8;ctx.beginPath();
+     ctx.moveTo(x0,y);ctx.lineTo(x1,y);ctx.stroke();
+     ctx.fillStyle='#6c8493';ctx.font='9px "Segoe UI",Arial';
+     ctx.fillText(fmt(val,1),4,y+3);
+   }
+   const origin=Y(0);
+   ctx.strokeStyle='#9eb0b9';ctx.lineWidth=1.2;
+   ctx.beginPath();ctx.moveTo(x0,origin);ctx.lineTo(x1,origin);ctx.stroke();
+   const cell=(x1-x0)/items.length;
+   items.forEach((item,k)=>{
+     const center=x0+(k+.5)*cell,wide=Math.min(46,cell*.54),
+       value=Math.max(lo,Math.min(hi,item.value)),y=Y(value);
+     ctx.fillStyle=item.color;
+     ctx.fillRect(center-wide/2,Math.min(origin,y),wide,Math.max(1,Math.abs(y-origin)));
+     ctx.fillStyle='#315468';ctx.font='600 10px "Segoe UI",Arial';
+     ctx.fillText(fmt(item.value,3),center-20,
+       value>=0?Math.max(y0+9,y-6):Math.min(y1-4,y+13));
+     ctx.font='9px "Segoe UI",Arial';
+     item.label.split('|').forEach((piece,j)=>
+       ctx.fillText(piece,center-Math.min(36,piece.length*2.6),h-25+j*11));
+   });
+   canvas.dataset.axisMode='fixed';
+   canvas.dataset.plotLimits=JSON.stringify({x:[0,items.length],y:[lo,hi]});
+   canvas.dataset.axisClipped=String(items.some(item=>item.value<lo||item.value>hi));
+ }
+
  function plot(canvas,kind,res,old){
    const tr=res.traces,p=res.params,first=tr.filter(q=>q.angle<60),mu=res.mu[0];
    const source=idx=>tr.map(q=>[q.angle,q.source[idx]]);
@@ -136,9 +173,17 @@ const CCCChapter=(()=>{
      series[0].data=first.map(q=>[q.angle,Math.max(0,-q.current[2])]);
      opts={title:'LCC AND CCC CURRENT TRANSFER',kind:'current',xEnd:60,mu,cursor};
    }else if(kind==='power'){
-     const a=res.powers,bar=[['P',a.P],['Q conv',a.Q],['Q shunt',-a.Qshunt],['Q grid',a.Qgrid]];
-     const make=bar.map(([label,value],i)=>({label,color:['#166f91','#be3e57','#139a8e','#ad7a34'][i],data:[[0,value],[60,value]]}));
-     series=make;opts={title:'POWER ACCOUNTING · FIXED BUS VOLTAGE',kind:'power',xEnd:60};
+      const p=res.powers;
+      barPlot(canvas,[{label:'Q|converter',value:p.Q,color:'#be3e57'},
+        {label:'−Q|capacitor',value:-p.Qshunt,color:'#168d94'},
+        {label:'Q|grid',value:p.Qgrid,color:'#ae7d34'}],
+        'REACTIVE POWER AT THE AC BUS (p.u.)');
+      return;
+   }else if(kind==='powerCompare'){
+      barPlot(canvas,[{label:'Q₁|LCC',value:old.powers.Q,color:'#287da4'},
+        {label:'Q₁|CCC',value:res.powers.Q,color:'#bf3e57'}],
+        'CONVERTER Q₁ · IDENTICAL OPERATING POINT (p.u.)');
+      return;
    }else if(kind==='phasor'){
      const ph=res.powers.phasor,vr=ph.v,ir=ph.i,scale=1;
      const tip=(v)=>[v[0]*scale,v[1]*scale];
@@ -163,79 +208,141 @@ const CCCChapter=(()=>{
       -(t.capacitors[2]-t.capacitors[1])
       -p.R*(t.current[2]-t.current[1]));
  }
- function metrics(res,ref,lessonId){
-   if(lessonId==='compare'){
-     // Compare two genuinely solved cases at identical AC, DC, firing and L/R settings.
-     return [['LCC μ',fmt(ref.avgMu,2)+'°'],['CCC μ',fmt(res.avgMu,2)+'°'],
-       ['Δμ CCC−LCC',fmt(res.avgMu-ref.avgMu,2)+'°'],
-       ['LCC Q₁',fmt(ref.powers.Q,4)+' p.u.'],
-       ['CCC Q₁',fmt(res.powers.Q,4)+' p.u.'],
-       ['ΔQ₁ CCC−LCC',fmt(res.powers.Q-ref.powers.Q,4)+' p.u.'],
-       ['LCC Ucomm(0°)',fmt(firstCommutatingDrive(ref),3)+' p.u.'],
-       ['CCC Ucomm(0°)',fmt(firstCommutatingDrive(res),3)+' p.u.']];
+ function metrics(result,lcc,lab){
+   const p=result.powers;
+   if(lab==='lcc')return [
+     ['Q₁ converter',fmt(p.Q,3)+' p.u.'],['P₁ converter',fmt(p.P,3)+' p.u.'],
+     ['Overlap μ',fmt(result.avgMu,2)+'°'],['Displacement PF',fmt(p.pf,3)],
+     ['I_dc imposed',fmt(settings.idc,2)+' p.u.']];
+   if(lab==='shunt')return [
+     ['Q converter',fmt(p.Q,3)+' p.u.'],['Q capacitor',fmt(p.Qshunt,3)+' p.u.'],
+     ['Q from grid',fmt(p.Qgrid,3)+' p.u.'],
+     ['PCC displacement PF',fmt(Math.abs(p.P)/Math.max(1e-9,Math.hypot(p.P,p.Qgrid)),3)],
+     ['Overlap μ',fmt(result.avgMu,2)+'°']];
+   if(lab==='series'){
+     const capPeak=Math.max(...result.traces.flatMap(t=>t.capacitors.map(Math.abs)));
+     return [['Overlap μ',fmt(result.avgMu,2)+'°'],['Q₁ converter',fmt(p.Q,3)+' p.u.'],
+       ['P₁ converter',fmt(p.P,3)+' p.u.'],['Peak |v_C|',fmt(capPeak,3)+' p.u.'],
+       ['Periodic error',fmt(result.residual,6)]];
    }
-   const p=res.powers;
-   return [['P AC',fmt(p.P,3)+' p.u.'],['Q converter',fmt(p.Q,3)+' p.u.'],['Q shunt',fmt(p.Qshunt,3)+' p.u.'],
-     ['Q grid',fmt(p.Qgrid,3)+' p.u.'],['PF displacement',fmt(p.pf,3)],['Average μ',fmt(res.avgMu,2)+'°'],
-     ['Balance P',fmt(p.imbalance,4)+' p.u.'],['Periodic error',fmt(res.residual,6)]];
+   return [['μ LCC',fmt(lcc.avgMu,2)+'°'],['μ CCC',fmt(result.avgMu,2)+'°'],
+     ['Δμ CCC−LCC',fmt(result.avgMu-lcc.avgMu,2)+'°'],
+     ['Q₁ LCC',fmt(lcc.powers.Q,4)+' p.u.'],
+     ['Q₁ CCC',fmt(p.Q,4)+' p.u.'],
+     ['ΔQ₁ CCC−LCC',fmt(p.Q-lcc.powers.Q,4)+' p.u.']];
  }
- function refresh(lesson){const root=$('ch4-root');if(!root)return;const {main,lcc}=getResults();
-   const status=$('ch4-status');if(!main.valid){status.textContent='INVALID OPERATING POINT · '+main.error;status.className='ch4-status invalid';
-      for(let id of ['ch4-chart-a','ch4-chart-b']){const c=$(id);const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);c.dataset.axisMode='invalid';}
-      $('ch4-circuit').innerHTML='<div class="ch4-fault">Numerical solution unavailable. Adjust firing angle, capacitance or commutation inductance. No fabricated waveform is shown.</div>';
-      $('ch4-metrics').innerHTML='';return;}
-   status.className='ch4-status';status.textContent=`${mode} · ${fmt(main.avgMu,2)}° overlap · periodic convergence in ${main.iterations} shooting iterations · ideal fixed DC current`;
-   const sample=main.traces[Math.min(main.traces.length-1,Math.floor(cursor*main.traces.length/360))];
-   $('ch4-circuit').innerHTML=circuitSvg(sample,mode!=='LCC',settings);
-    updateCircuit(sample,mode!=='LCC',settings);
-   const panelA=lesson[3],panelB=lesson[4];plot($('ch4-chart-a'),panelA,main,lcc);plot($('ch4-chart-b'),panelB,main,lcc);
-   $('ch4-metrics').innerHTML=metrics(main,lcc,lesson[0]).map(([lab,val])=>`<div class="ch4-metric"><small>${lab}</small><strong>${val}</strong></div>`).join('');
+ function renderCircuits(lab,main,lcc,index){
+   const host=$('ch4-circuit'),point=main.traces[index];
+   if(lab==='compare'){
+     host.innerHTML='<div class="ch4-compare-circuits">'+
+       '<div class="ch4-compare-item"><span>LCC · C bypassed</span>'+nativeSchematics.lcc+'</div>'+
+       '<div class="ch4-compare-item"><span>CCC · Series C</span>'+nativeSchematics.ccc+'</div></div>';
+     const diagrams=host.querySelectorAll('svg[data-native-symbols="true"]');
+     updateCircuit(lcc.traces[Math.min(lcc.traces.length-1,index)],false,settings,diagrams[0]);
+     updateCircuit(point,true,settings,diagrams[1]);
+   }else{
+     host.innerHTML=circuitSvg(point,lab==='series',settings);
+     updateCircuit(point,lab==='series',settings);
+   }
+ }
+ function refresh(lesson){
+   if(!$('ch4-root'))return;
+   const {main,lcc}=getResults(),status=$('ch4-status');
+   if(!main.valid||!lcc.valid){
+     status.className='ch4-status invalid';
+     status.textContent='OUTSIDE VALID OPERATING RANGE · '+(main.error||lcc.error);
+     for(const id of ['ch4-chart-a','ch4-chart-b']){
+       const canvas=$(id),g=canvas.getContext('2d');
+       g.clearRect(0,0,canvas.width,canvas.height);
+       canvas.dataset.axisMode='invalid';
+     }
+     $('ch4-circuit').innerHTML='<div class="ch4-fault">No valid switching solution. Change α, I_dc, L_c or C. No artificial waveforms are shown.</div>';
+     $('ch4-metrics').innerHTML='';$('ch4-warning').textContent='';return;
+   }
+   const lab=lesson[0],idx=Math.min(main.traces.length-1,
+     Math.floor(cursor*main.traces.length/360));
+   status.className='ch4-status';
+   status.textContent=(lab==='compare'?'LCC × CCC':mode)+
+     '  ·  μ = '+fmt(main.avgMu,2)+'°  ·  Q₁ = '+fmt(main.powers.Q,3)+
+     ' p.u.  ·  I_dc imposed';
+   renderCircuits(lab,main,lcc,idx);
+   plot($('ch4-chart-a'),lesson[3],main,lcc);
+   plot($('ch4-chart-b'),lesson[4],main,lcc);
+   const readings=metrics(main,lcc,lab);
+   $('ch4-metrics').style.setProperty('--ch4-metric-cols',String(readings.length));
+   $('ch4-metrics').innerHTML=readings.map(([key,val])=>
+     '<div class="ch4-metric"><small>'+key+'</small><strong>'+val+'</strong></div>').join('');
    $('ch4-cursor-value').textContent=fmt(cursor,0)+'°';
-   for(const name of Object.keys(settings)){let output=$('ch4-'+name+'-value');if(output)output.textContent=fmt(settings[name],name==='alpha'||name==='CmF'?0:2);}
-   const flag=$('ch4-warning');const clipped=['ch4-chart-a','ch4-chart-b'].some(id=>$(id).dataset.axisClipped==='true');
-   flag.textContent=clipped?'Waveform outside FOCUS limits — choose SCALE: FULL for an uncropped global view.':'';
-   if(lesson[0]==='central')$('ch4-note').textContent='The red net commutating drive includes source, instantaneous capacitor-voltage contribution AND the resistive redistribution term. Overlap follows 2XL·di_in/dθ = (e_in − e_out) − (vc,in − vc,out) − R(i_in − i_out). Both currents and capacitor voltages come from the same periodic solution.';
+   for(const name of Object.keys(settings)){
+     const output=$('ch4-'+name+'-value');
+     if(output)output.textContent=fmt(settings[name],name==='alpha'||name==='CmF'?0:2);
+   }
+   const clipped=['ch4-chart-a','ch4-chart-b'].some(id=>$(id).dataset.axisClipped==='true');
+   $('ch4-warning').textContent=clipped?
+     'FOCUS limit exceeded. Use SCALE: FULL for the complete curve.':'';
  }
- function mount(root,lessonId){const lesson=lessons.find(x=>x[0]===lessonId)||lessons[0];
-   if(lesson[0]==='compare'){mode='CCC';cacheKey='';}
-   root.className='slide technical ch4-slide';root.dataset.lesson=lesson[0];root.id='slide';
-   root.innerHTML=`<div id="ch4-root" class="ch4-root" data-lesson="${lesson[0]}"><div class="tech-head ch4-head"><div class="tech-index">04 · REACTIVE POWER / CCC</div>
-     <div class="tech-title"><h1>${lesson[1]}</h1><p>${lesson[2]}</p></div><span class="ch4-index">${lessons.findIndex(x=>x[0]===lesson[0])+1} / ${lessons.length}</span></div>
-     <div class="ch4-status" id="ch4-status"></div>
-     <div class="ch4-space">
-       <section class="panel"><div class="panel-head"><strong>01 / ELECTRICAL CIRCUIT</strong><button type="button" class="ch4-enlarge" id="ch4-enlarge" aria-label="Enlarge native Schemdraw circuit">⤢ ENLARGE</button></div><div class="ch4-circuit" id="ch4-circuit"></div></section>
-       <section class="panel"><div class="panel-head"><strong>02 / VOLTAGE / PHASOR</strong></div><div class="plot-wrapper"><canvas id="ch4-chart-a" aria-label="Synchronized CCC voltage or phasor graph"></canvas></div></section>
-       <section class="panel"><div class="panel-head"><strong>03 / CURRENT / POWER</strong></div><div class="plot-wrapper"><canvas id="ch4-chart-b" aria-label="Synchronized CCC current or power graph"></canvas></div></section>
-     </div><div class="ch4-controls"><label class="ch4-model-choice">TOPOLOGY <select id="ch4-mode"><option value="CCC">CCC · Series C</option><option value="LCC">LCC · Bypass C</option></select></label>
-     ${fields.map(([id,label,unit,min,max,step])=>`<label class="ch4-control"><span>${label} <output id="ch4-${id}-value">${fmt(settings[id],2)}</output> ${unit}</span><input id="ch4-${id}" type="range" min="${min}" max="${max}" step="${step}" value="${settings[id]}"></label>`).join('')}</div>
-     <div class="ch4-metrics" id="ch4-metrics"></div><div class="ch4-notes"><p id="ch4-note">${lesson[2]}</p><span id="ch4-warning"></span></div>
-     <div class="timeline ch4-timeline"><div class="timeline-top"><span>θ = <output id="ch4-cursor-value">${fmt(cursor,0)}°</output> · The pointer selects one instant; both plots keep fixed scales.</span></div>
-     <input id="ch4-cursor" class="angle-range" type="range" min="0" max="359.8" step="0.2" value="${cursor}"><div class="ticks"><span>0°</span><span>60°</span><span>120°</span><span>180°</span><span>240°</span><span>300°</span><span>360°</span></div></div></div>`;
+ function mount(root,lessonId){
+   const lesson=lessons.find(x=>x[0]===lessonId)||lessons[0];
+   const lab=lesson[0];
+   mode=lab==='lcc'||lab==='shunt'?'LCC':'CCC';cacheKey='';
+   root.className='slide technical ch4-slide';root.dataset.lesson=lab;root.id='slide';
+   const allowed={
+     lcc:['alpha','idc','vPeak','LmH'],
+     shunt:['alpha','idc','vPeak','LmH','qShunt'],
+     series:['alpha','idc','vPeak','LmH','CmF'],
+     compare:['alpha','idc','vPeak','LmH','CmF']
+   }[lab];
+   const headings={
+     lcc:['FUNDAMENTAL PHASORS','AC PHASE CURRENTS'],
+     shunt:['REACTIVE POWER BALANCE','AC PHASE CURRENTS'],
+     series:['NET COMMUTATING DRIVE','SCR CURRENT TRANSFER'],
+     compare:['LCC / CCC CURRENT TRANSFER','REACTIVE POWER COMPARISON']
+   }[lab];
+   root.innerHTML='<div id="ch4-root" class="ch4-root" data-lesson="'+lab+'">'+
+     '<div class="tech-head ch4-head"><div class="tech-index">04 · REACTIVE POWER LABS</div>'+
+     '<div class="tech-title"><h1>'+lesson[1]+'</h1><p>'+lesson[2]+'</p></div>'+
+     '<span class="ch4-index">'+(lessons.findIndex(x=>x[0]===lab)+1)+' / 4</span></div>'+
+     '<div class="ch4-status" id="ch4-status"></div>'+
+     '<div class="ch4-space">'+
+       '<section class="panel"><div class="panel-head"><strong>01 / CIRCUIT</strong>'+
+       '<button type="button" class="ch4-enlarge" id="ch4-enlarge">⤢ ENLARGE</button></div>'+
+       '<div class="ch4-circuit" id="ch4-circuit"></div></section>'+
+       '<section class="panel"><div class="panel-head"><strong>02 / '+headings[0]+'</strong></div>'+
+       '<div class="plot-wrapper"><canvas id="ch4-chart-a" aria-label="Synchronized converter waveform or phasor"></canvas></div></section>'+
+       '<section class="panel"><div class="panel-head"><strong>03 / '+headings[1]+'</strong></div>'+
+       '<div class="plot-wrapper"><canvas id="ch4-chart-b" aria-label="Synchronized current or reactive-power plot"></canvas></div></section></div>'+
+     '<div class="ch4-controls" id="ch4-controls">'+
+       fields.map(([id,label,unit,min,max,step])=>
+         '<label class="ch4-control" data-control="'+id+'"><span>'+label+
+         ' <output id="ch4-'+id+'-value">'+fmt(settings[id],2)+'</output> '+unit+'</span>'+
+         '<input id="ch4-'+id+'" type="range" min="'+min+'" max="'+max+
+         '" step="'+step+'" value="'+settings[id]+'"></label>').join('')+'</div>'+
+     '<div class="ch4-metrics" id="ch4-metrics"></div>'+
+     '<div class="ch4-notes"><p id="ch4-note">'+lesson[2]+'</p><span id="ch4-warning"></span></div>'+
+     '<div class="timeline ch4-timeline"><div class="timeline-top"><span>θ = '+
+       '<output id="ch4-cursor-value">'+fmt(cursor,0)+'°</output> · Move the angle cursor to follow SCR conduction.</span></div>'+
+       '<input id="ch4-cursor" class="angle-range" type="range" min="0" max="359.8" step="0.2" value="'+cursor+'">'+
+       '<div class="ticks"><span>0°</span><span>60°</span><span>120°</span><span>180°</span><span>240°</span><span>300°</span><span>360°</span></div>'+
+     '</div></div>';
+   $('ch4-controls').style.setProperty('--ch4-active-cols',String(allowed.length));
+   for(const [id] of fields){
+     const control=$('ch4-'+id),visible=allowed.includes(id);
+     control.disabled=!visible;
+     control.closest('label').style.display=visible?'':'none';
+     control.oninput=e=>{
+       if(!visible)return;
+       settings[id]=Number(e.currentTarget.value);cacheKey='';refresh(lesson);
+     };
+   }
    $('ch4-enlarge').onclick=()=>{
-      const svg=$('ch4-circuit')?.querySelector('svg');
-      if(!svg)return;
-      $('zoom-content').innerHTML=svg.outerHTML;
-      $('zoom-title').textContent='CH 04 · NATIVE SCHEMDRAW · '+mode;
-      const overlay=$('zoom-overlay');
-      overlay.classList.add('open');
-      overlay.setAttribute('aria-hidden','false');
-    };
-    $('ch4-mode').value=mode;
-    if(lesson[0]==='compare'){
-      $('ch4-mode').disabled=true;
-      $('ch4-mode').title='Both LCC and CCC are calculated and displayed simultaneously';
-    }
-   $('ch4-mode').onchange=e=>{mode=e.target.value;cacheKey='';const c=$('ch4-CmF');c.disabled=mode==='LCC';refresh(lesson);};
-   $('ch4-CmF').disabled=mode==='LCC';
-   for(const [id] of fields){$( 'ch4-'+id).oninput=e=>{settings[id]=+e.target.value;cacheKey='';refresh(lesson);};}
-   // Shunt variation changes the PCC reactive balance, not the bridge dynamics.
-   const shuntVisible=['shunt','filters'].includes(lesson[0]);
-   const shuntInput=$('ch4-qShunt');
-   shuntInput.disabled=!shuntVisible;
-   // Hide the entire inactive control: an old positive setting must not
-   // imply a connected shunt bank on lessons where there is none.
-   shuntInput.closest('label').style.display=shuntVisible?'':'none';
-   $('ch4-cursor').oninput=e=>{cursor=+e.target.value;refresh(lesson);};
+     const host=$('ch4-circuit');
+     if(!host.querySelector('svg'))return;
+     $('zoom-content').innerHTML=lab==='compare'?host.innerHTML:host.querySelector('svg').outerHTML;
+     $('zoom-title').textContent='CH 04 · '+lesson[1];
+     $('zoom-overlay').classList.add('open');
+     $('zoom-overlay').setAttribute('aria-hidden','false');
+   };
+   $('ch4-cursor').oninput=e=>{cursor=Number(e.currentTarget.value);refresh(lesson);};
    refresh(lesson);
    needRepaint=()=>refresh(lesson);
  }
