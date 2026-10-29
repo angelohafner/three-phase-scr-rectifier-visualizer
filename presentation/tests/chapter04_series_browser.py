@@ -49,7 +49,8 @@ with sync_playwright() as pw:
         }''')
 
     initial=snapshot()
-    assert initial['limits'][0]['x']==[0,30]
+    assert initial['limits'][0]['x']==[0,360]
+    assert initial['limits'][0]['y']==[-.3,.3]
     assert initial['limits'][1]['x']==[0,30]
     assert initial['limits'][2]['x']==[0,30]
     assert page.locator('#ch4-cursor').get_attribute('max')=='30'
@@ -95,7 +96,8 @@ with sync_playwright() as pw:
 
     page.locator('#axis-scale-btn').click()
     full=snapshot()
-    assert all(lim['x']==[0,60] for lim in full['limits']),full
+    assert [lim['x'] for lim in full['limits']]==[[0,360],[0,60],[0,60]],full
+    assert full['limits'][0]['y']==[-1.3,1.3]
     assert page.locator('#ch4-cursor').get_attribute('max')=='60'
     assert full['limits']!=initial['limits']
     page.locator('#ch4-CmF').evaluate('''el=>{
