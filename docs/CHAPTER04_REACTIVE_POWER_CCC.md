@@ -195,3 +195,21 @@ CCC reference with a second LCC curve.
 ## Current teaching interface
 
 The original 15-lesson scope described above is historical. It has been superseded by four focused experiments described in [CHAPTER04_FOUR_LABS.md](CHAPTER04_FOUR_LABS.md). The dynamic CCC equations are unchanged; the Chapter 04 DC current is now an imposed boundary with no physically redundant Ldc/current-source symbols.
+
+## Comparison with matched fundamental active power
+
+The four-laboratory comparison now has a selectable **same-AC-active-power**
+mode, in addition to **same-firing-settings** mode. In matched-P mode,
+the CCC alpha is solved numerically against the physically calculated
+fundamental AC P1 of the LCC reference, while I_dc, voltage, leakage
+inductance and phase resistance are held identical. The CCC alpha may
+differ and is explicitly shown. Q1, Q/P and displacement PF1 are reported
+for each solution. Since equal P1 and equal alpha are different constraints,
+the apparent reactive advantage of the CCC may change sign.
+
+The solver has bounded alpha search (0°–90°), an active-power residual
+tolerance of 2e-5 p.u., and fail-closed behavior for unavailable operating
+points. It does not pretend the original same-alpha comparison was an
+equal-power comparison. Additional Node and offline-browser regressions
+verify equality of AC P1, conservation of imposed DC current and Q/P
+consistency.

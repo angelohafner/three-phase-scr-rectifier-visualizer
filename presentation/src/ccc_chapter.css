@@ -80,3 +80,23 @@
 .ch4-space .panel:has(.ch4-compare-circuits){height:390px;flex-basis:390px}
 .ch4-compare-circuits{flex-direction:column}
 #zoom-content .ch4-compare-circuits{flex-direction:column}}
+
+/* Equal-active-power comparison keeps the physical constraint explicit. */
+.ch4-basis{display:flex;align-items:center;flex-wrap:wrap;gap:7px 12px;
+  flex-shrink:0;padding:5px 10px;background:#f1f7f9;
+  border:1px solid #d7e6ed;border-radius:7px;color:#315a6f}
+.ch4-basis label{font:700 10px "Segoe UI",Arial,sans-serif;white-space:nowrap}
+.ch4-basis select{padding:5px 9px;max-width:380px;min-width:255px;
+  border:1px solid #b8d0da;border-radius:6px;background:white;color:#234e63;
+  font:600 11px "Segoe UI",Arial,sans-serif}
+.ch4-basis span{flex:1;min-width:180px;font:normal 10px "Segoe UI",Arial,sans-serif;
+  line-height:1.25;color:#507183}
+.ch4-slide:has(.ch4-basis) .ch4-metrics{row-gap:4px}
+.ch4-slide:has(.ch4-basis) .ch4-metric{padding:4px 7px;gap:2px}
+.ch4-slide:has(.ch4-basis) .ch4-metric small{font-size:9px}
+.ch4-slide:has(.ch4-basis) .ch4-metric strong{font-size:11px}
+@media(max-width:850px){
+  .ch4-basis{flex-direction:column;align-items:stretch;gap:5px}
+  .ch4-basis select{min-width:0;max-width:none;width:100%}
+  .ch4-basis span{min-width:0}
+}

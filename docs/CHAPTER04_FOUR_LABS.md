@@ -45,3 +45,36 @@ regressions and four-lab browser control interaction.
 
 Build with:
 `python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html`
+
+## Fair reactive-power comparison (additional comparison mode)
+
+The fourth laboratory now offers two clearly labeled calculation modes:
+
+- **Same firing settings:** LCC and CCC use identical phase voltage, imposed
+  DC current, leakage reactor, phase resistance, and firing angle. Their AC
+  fundamental active powers are permitted to differ.
+- **Same fundamental active power P1 (default):** The LCC firing angle remains
+  the user-controlled reference. The CCC firing angle is numerically adjusted
+  until its fundamental AC active power agrees with the LCC within
+  2e-5 p.u. The DC current, phase voltage, leakage inductance, series
+  resistance and capacitor value are otherwise held fixed. The matched CCC
+  firing angle may lie between 0° and 90°, while the reference LCC slider
+  is limited to 0°–60°. No additional circuit dynamics is fabricated.
+
+The comparison displays P1, Q1, Q/P, the *fundamental displacement* PF1,
+both firing angles, both calculated commutation overlaps, and the signed
+difference in Q. Q/P is the ratio of fundamental AC powers at the supply
+reference; it is **not** the ratio of total apparent power or the DC-side
+power factor. If power matching cannot find a valid periodic CCC point,
+the lab explicitly reports that matching is unavailable instead of
+displaying invented waveforms.
+
+A physically important teaching result: at the nominal 15°/0.8 p.u. LCC
+operating point, the earlier same-angle CCC comparison reduces Q1, but
+matching AC P1 instead moves CCC alpha to approximately 16.86° and can
+make its Q1 **slightly greater** than the LCC value. The CCC is therefore
+not guaranteed to have lower reactive demand for the same active power.
+
+The matching method and its model/feasibility regression tests are in
+presentation/src/ccc_power_match.js and
+presentation/tests/chapter04_equal_power.js.
