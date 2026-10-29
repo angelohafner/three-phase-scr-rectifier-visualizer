@@ -109,9 +109,13 @@ def reference(params, samples=1800):
         complex_power=np.sum(V1*np.conj(I1))/2/1.5
         drive=source(0)[2]-source(0)[1]-(capacitor_samples[0,2]-capacitor_samples[0,1])
         drive-=resistance*(current_samples[0,2]-current_samples[0,1])
+        energy=.5*capacitance*1000**2*np.sum(capacitor_samples**2,axis=1)
         return {"mu":float(np.mean(mu)),"Q":float(complex_power.imag),
                 "P":float(complex_power.real),"signed_drive":float(-drive),
-                "vc_peak":float(np.max(np.abs(capacitor_samples)))}
+                "vc_peak":float(np.max(np.abs(capacitor_samples))),
+                "vc_rms":float(np.sqrt(np.mean(capacitor_samples**2))),
+                "energy_avg_j":float(np.mean(energy)),
+                "initial_cap":float(capacitor_samples[0,2]-capacitor_samples[0,1])}
 
     if XC:
         # Build an initial capacitor-voltage estimate independently from
@@ -129,14 +133,18 @@ def reference(params, samples=1800):
 def javascript_result(params):
     program=(
         "const model=require('./presentation/src/ccc_model.js');"
+        "const series=require('./presentation/src/ccc_series_sensitivity.js');"
         "const result=model.solve(JSON.parse(process.argv[1]));"
         "if(!result.valid)throw Error(result.error);"
         "const t=result.traces[0],p=result.params;"
         "const drive=-((t.source[2]-t.source[1])"
         "-(t.capacitors[2]-t.capacitors[1])"
         "-p.R*(t.current[2]-t.current[1]));"
+        "const s=series.fromSolved(result);"
         "console.log(JSON.stringify({mu:result.avgMu,Q:result.powers.Q,"
-        "P:result.powers.P,signed_drive:drive}));"
+        "P:result.powers.P,signed_drive:drive,vc_peak:s.voltagePeak,"
+        "vc_rms:s.voltageRMS,energy_avg_j:s.energyAverageJ,"
+        "initial_cap:s.initial.capacitor}));"
     )
     completed=subprocess.run(["node","-e",program,json.dumps(params)],
                              cwd=ROOT,check=True,capture_output=True,text=True)
@@ -154,6 +162,10 @@ for size in (0,12,26,80):
     assert abs(ref["Q"]-js["Q"])<.00025,(size,ref,js)
     assert abs(ref["P"]-js["P"])<.00025,(size,ref,js)
     assert abs(ref["signed_drive"]-js["signed_drive"])<.0003
+    assert abs(ref["vc_peak"]-js["vc_peak"])<.0005
+    assert abs(ref["vc_rms"]-js["vc_rms"])<.0005
+    assert abs(ref["energy_avg_j"]-js["energy_avg_j"])<1.5
+    assert abs(ref["initial_cap"]-js["initial_cap"])<.0005
     records.append({"CmF":size,"independent":ref,"javascript":js})
 
 plain=records[0]["independent"]
@@ -171,5 +183,24 @@ for size in (0,26):
     assert abs(ref["mu"]-js["mu"])<.02,(size,ref,js)
     assert abs(ref["Q"]-js["Q"])<.00035,(size,ref,js)
 
-print("PASS: independent SciPy event solver matches JS μ/P/Q and commutating drive in six scenarios.")
+# Audit voltage and energy dynamics at six C values in three operating conditions.
+sensitivity_cases=0
+for point in [
+    conditions,
+    {**conditions,"alpha":60,"idc":.75,"LmH":.32,"vPeak":.85},
+    {**conditions,"alpha":30,"idc":1.0,"LmH":.32},
+]:
+    for size in (8,12,26,50,73,100):
+        parameters={**point,"CmF":size}
+        ref=reference(parameters,samples=1800)
+        js=javascript_result(parameters)
+        assert abs(ref["mu"]-js["mu"])<.025,(parameters,ref,js)
+        assert abs(ref["Q"]-js["Q"])<.0005,(parameters,ref,js)
+        assert abs(ref["vc_peak"]-js["vc_peak"])<.0006,(parameters,ref,js)
+        assert abs(ref["vc_rms"]-js["vc_rms"])<.0006,(parameters,ref,js)
+        assert abs(ref["initial_cap"]-js["initial_cap"])<.0006
+        assert abs(ref["energy_avg_j"]-js["energy_avg_j"])<2.5
+        sensitivity_cases+=1
+
+print(f"PASS: independent SciPy matched JS μ/P/Q, instantaneous v_C, RMS, peak and capacitor energy in {sensitivity_cases+6} scenarios.")
 print(json.dumps(records,indent=2))
