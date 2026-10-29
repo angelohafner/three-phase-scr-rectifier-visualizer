@@ -54,7 +54,8 @@ with sync_playwright() as pw:
     after=page.locator('#ch4-status').inner_text()
     assert page.locator('#ch4-circuit svg [data-role="series-capacitor"]').count()==3
     assert page.locator('#ch4-qShunt').is_disabled()
-    assert 'Net drive (incl. R)' in page.evaluate("document.querySelector('#ch4-chart-a').getAttribute('aria-label')") or True
+    # Firing and capacitance changes must preserve fixed graph domains.
+    assert page.locator('#ch4-chart-a').get_attribute('data-axis-mode')=='fixed'
     assert before!=after,(before,after)
     assert old==page.locator('#ch4-chart-b').get_attribute('data-plot-limits')
     page.locator('#ch4-mode').select_option('LCC')
