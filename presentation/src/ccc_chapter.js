@@ -6,11 +6,11 @@ const CCCChapter=(()=>{
   ['lcc','01 · Reactive Power in LCC','Vary α, I_dc, AC voltage or L_c. Observe current displacement, Q and the calculated commutation overlap.','phasor','ac'],
   ['shunt','02 · Shunt Capacitor Compensation','Change the shunt capacitor bank. Compare converter Q, capacitive injection and the reactive power actually drawn from the grid.','power','ac'],
   ['series','03 · Series Capacitors and Commutation','Change C, L_c or I_dc and observe the dynamic capacitor contribution, net commutating voltage and the SCR current transfer.','drive','transfer'],
-  ['compare','04 · LCC versus CCC · Identical Conditions','Only the three series capacitors differ. Compare commutation overlap and converter reactive power at the same electrical operating point.','compare','powerCompare']
+  ['compare','04 · LCC versus CCC · Active Power and Reactive Demand','Compare matched fundamental active power or identical settings. Observe P₁, Q₁, Q/P, displacement PF, α and μ.','compare','powerCompare']
  ];
  const names=['a','b','c'];
  let settings={alpha:15,idc:.8,vPeak:1,LmH:.24,CmF:26,R:.012,f:60,qShunt:.40};
- let mode='LCC',cursor=8,cacheKey='',cached=null,needRepaint=null;
+ let mode='LCC',cursor=8,comparisonBasis='equal-power',cacheKey='',cached=null,needRepaint=null;
  const $=id=>document.getElementById(id),fmt=(x,n=2)=>Number.isFinite(x)?x.toFixed(n):'—';
  const fields=[['alpha','α firing','°',0,60,1],['idc','I DC','p.u.',.3,1.2,.05],['vPeak','V phase pk','p.u.',.8,1.2,.05],
    ['LmH','L commutation','mH',.12,.38,.01],['CmF','C series','mF',12,100,1],['qShunt','Q shunt','p.u.',0,1.2,.05]];
@@ -21,13 +21,20 @@ const CCCChapter=(()=>{
    return domains[kind]||domains.voltage;
  };
  function getResults(){
-   const hasShunt=currentLesson()[0]==='shunt';
+   const lab=currentLesson()[0],hasShunt=lab==='shunt';
    const p={...settings,CmF:mode==='LCC'?0:settings.CmF,
-     qShunt:hasShunt?settings.qShunt:0};const key=JSON.stringify(p);
+     qShunt:hasShunt?settings.qShunt:0};
+   const key=JSON.stringify({parameters:p,lab,basis:comparisonBasis});
    if(key!==cacheKey){
      cacheKey=key;
      const lcc=CCCModel.solve({...p,CmF:0});
-     cached={main:mode==='LCC'?lcc:CCCModel.solve(p),lcc};
+     let matched=null;
+     let main=mode==='LCC'?lcc:CCCModel.solve(p);
+     if(lab==='compare'&&comparisonBasis==='equal-power'){
+       matched=CCCPowerMatch.match(lcc,p);
+       main=matched.valid?matched.ccc:{valid:false,error:matched.error};
+     }
+     cached={main,lcc,matched,basis:comparisonBasis};
    }
    return cached;
  }
@@ -102,7 +109,7 @@ const CCCChapter=(()=>{
    const ctx=canvas.getContext('2d');ctx.setTransform(d,0,0,d,0,0);
    ctx.fillStyle='#fbfdfe';ctx.fillRect(0,0,w,h);
    const full=FixedAxes.preset()==='full';
-   const comparing=title.includes('IDENTICAL OPERATING POINT');
+   const comparing=title.includes('COMPARISON');
    // Nominal Q differences remain legible without autoscaling during slider changes.
    const lo=full?-2.5:(comparing?0:-1.35),hi=full?2.5:(comparing?.85:1.45);
    const x0=45,x1=w-12,y0=43,y1=h-46;
@@ -111,7 +118,10 @@ const CCCChapter=(()=>{
    ctx.fillText(title,10,16,w-20);
    if(comparing){
      ctx.fillStyle='#607b8b';ctx.font='10px "Segoe UI",Arial';
-     ctx.fillText('ΔQ₁ CCC − LCC = '+fmt(items[1].value-items[0].value,4)+' p.u.',12,32,w-24);
+     const delta=items[1].value-items[0].value;
+     const relative=Math.abs(items[0].value)>1e-9?100*delta/items[0].value:NaN;
+     ctx.fillText('ΔQ₁ CCC − LCC = '+fmt(delta,4)+' p.u. ('+
+       (relative>=0?'+':'')+fmt(relative,2)+'%)',12,32,w-24);
    }
    for(let k=0;k<=4;k++){
      const y=y0+k*(y1-y0)/4, val=hi-(hi-lo)*k/4;
@@ -188,7 +198,9 @@ const CCCChapter=(()=>{
    }else if(kind==='powerCompare'){
       barPlot(canvas,[{label:'Q₁|LCC',value:old.powers.Q,color:'#287da4'},
         {label:'Q₁|CCC',value:res.powers.Q,color:'#bf3e57'}],
-        'CONVERTER Q₁ · IDENTICAL OPERATING POINT (p.u.)');
+        comparisonBasis==='equal-power'?
+          'CONVERTER Q₁ COMPARISON · EQUAL ACTIVE POWER (p.u.)':
+          'CONVERTER Q₁ COMPARISON · SAME FIRING SETTINGS (p.u.)');
       return;
    }else if(kind==='phasor'){
      const ph=res.powers.phasor,vr=ph.v,ir=ph.i,scale=1;
@@ -231,18 +243,30 @@ const CCCChapter=(()=>{
        ['P₁ converter',fmt(p.P,3)+' p.u.'],['Peak |v_C|',fmt(capPeak,3)+' p.u.'],
        ['Periodic error',fmt(result.residual,6)]];
    }
-   return [['μ LCC',fmt(lcc.avgMu,2)+'°'],['μ CCC',fmt(result.avgMu,2)+'°'],
-     ['Δμ CCC−LCC',fmt(result.avgMu-lcc.avgMu,2)+'°'],
-     ['Q₁ LCC',fmt(lcc.powers.Q,4)+' p.u.'],
-     ['Q₁ CCC',fmt(p.Q,4)+' p.u.'],
-     ['ΔQ₁ CCC−LCC',fmt(p.Q-lcc.powers.Q,4)+' p.u.']];
+   // Fundamental AC P1 and Q1 are computed from the source voltage/current phasors.
+   // Displacement power factor is distinct from true harmonic power factor.
+   const m=CCCPowerMatch.summarize(lcc,result);
+   return [['P₁ LCC',fmt(m.P_LCC,4)+' p.u.'],
+     ['P₁ CCC',fmt(m.P_CCC,4)+' p.u.'],
+     ['ΔP₁',fmt(m.deltaP,5)+' p.u.'],
+     ['Q₁ LCC',fmt(m.Q_LCC,4)+' p.u.'],
+     ['Q₁ CCC',fmt(m.Q_CCC,4)+' p.u.'],
+     ['ΔQ₁',fmt(m.deltaQ,4)+' p.u.'],
+     ['Q/P LCC',fmt(m.QoverP_LCC,3)],
+     ['Q/P CCC',fmt(m.QoverP_CCC,3)],
+     ['PF₁ LCC',fmt(m.PF1_LCC,3)],
+     ['PF₁ CCC',fmt(m.PF1_CCC,3)],
+     ['α LCC',fmt(m.alpha_LCC,2)+'°'],
+     ['α CCC',fmt(m.alpha_CCC,2)+'°'],
+     ['μ LCC',fmt(m.mu_LCC,2)+'°'],
+     ['μ CCC',fmt(m.mu_CCC,2)+'°']];
  }
  function renderCircuits(lab,main,lcc,index){
    const host=$('ch4-circuit'),point=main.traces[index];
    if(lab==='compare'){
      host.innerHTML='<div class="ch4-compare-circuits">'+
-       '<div class="ch4-compare-item"><span>LCC · C bypassed</span>'+nativeSchematics.lcc+'</div>'+
-       '<div class="ch4-compare-item"><span>CCC · Series C</span>'+nativeSchematics.ccc+'</div></div>';
+       '<div class="ch4-compare-item"><span>LCC · α='+fmt(lcc.params.alpha,2)+'°</span>'+nativeSchematics.lcc+'</div>'+
+       '<div class="ch4-compare-item"><span>CCC · α='+fmt(main.params.alpha,2)+'°</span>'+nativeSchematics.ccc+'</div></div>';
      const diagrams=host.querySelectorAll('svg[data-native-symbols="true"]');
      updateCircuit(lcc.traces[Math.min(lcc.traces.length-1,index)],false,settings,diagrams[0]);
      updateCircuit(point,true,settings,diagrams[1]);
