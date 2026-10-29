@@ -332,26 +332,55 @@ const CCCChapter=(()=>{
      updateCircuit(point,lab==='series',settings);
    }
  }
+ function syncSeriesCursor(){
+   const input=$('ch4-cursor'),ticks=$('ch4-cursor-ticks');
+   if(!input)return;
+   const end=FixedAxes.preset()==='full'?60:30;
+   cursor=Math.min(end,cursor);
+   input.max=String(end);input.value=String(cursor);
+   ticks.innerHTML=Array.from({length:7},(_,k)=>
+     '<span>'+fmt(k*end/6,0)+'°</span>').join('');
+ }
+ function updateSensitivityTable(){
+   const panel=$('ch4-sensitivity'),target=$('ch4-sensitivity-table');
+   if(!panel?.open||!target)return;
+   const rows=CCCSeriesSensitivity.sweep({...settings,qShunt:0},
+     CCCSeriesSensitivity.REFERENCE_CAPS);
+   const cells=rows.map(s=>s.valid?'<tr>'+
+     [s.CmF.toFixed(0),fmt(s.XC/s.XL,2),fmt(s.voltagePeak,4),
+      fmt(s.voltageRMS,4),fmt(s.initial.net,4),fmt(s.mu,2),
+      fmt(s.Q1,4),fmt(s.energyAverageJ,1)]
+      .map(v=>'<td>'+v+'</td>').join('')+'</tr>':
+      '<tr><td>'+s.CmF+'</td><td colspan="7">INVALID: '+s.error+'</td></tr>');
+   target.innerHTML='<table><thead><tr>'+
+     ['C (mF)','XC / XL','|vC| pk (p.u.)','vC rms (p.u.)',
+       'Net drive @0°','μ (°)','Q₁ (p.u.)','Stored E avg (J)']
+       .map(v=>'<th>'+v+'</th>').join('')+
+     '</tr></thead><tbody>'+cells.join('')+'</tbody></table>';
+ }
  function refresh(lesson){
    if(!$('ch4-root'))return;
-   const {main,lcc,matched}=getResults(),status=$('ch4-status');
+   const {main,lcc,matched,seriesReference}=getResults(),status=$('ch4-status');
    const lab=lesson[0];
    if(lab==='compare'){
      $('ch4-basis-detail').textContent=comparisonBasis==='equal-power'?
        'CCC α is calculated to match LCC fundamental AC P₁. I_dc, AC voltage, L_c, R and C are held fixed.':
        'Both converters use the same α and I_dc; their active powers can differ.';
    }
-   if(!main.valid||!lcc.valid){
+   if(!main.valid||!lcc.valid||(lab==='series'&&!seriesReference?.valid)){
      status.className='ch4-status invalid';
-     status.textContent='OUTSIDE VALID OPERATING RANGE · '+(main.error||lcc.error);
-     for(const id of ['ch4-chart-a','ch4-chart-b']){
-       const canvas=$(id),g=canvas.getContext('2d');
+     status.textContent='OUTSIDE VALID OPERATING RANGE · '+
+       (main.error||lcc.error||seriesReference?.error||'Reference solution invalid');
+     for(const id of ['ch4-chart-a','ch4-chart-b','ch4-cap-chart']){
+       const canvas=$(id);if(!canvas)continue;
+       const g=canvas.getContext('2d');
        g.clearRect(0,0,canvas.width,canvas.height);
        canvas.dataset.axisMode='invalid';
      }
      $('ch4-circuit').innerHTML='<div class="ch4-fault">No valid switching solution. Change α, I_dc, L_c or C. No artificial waveforms are shown.</div>';
      $('ch4-metrics').innerHTML='';$('ch4-warning').textContent='';return;
    }
+   if(lab==='series')syncSeriesCursor();
    const idx=Math.min(main.traces.length-1,
      Math.floor(cursor*main.traces.length/360));
    status.className='ch4-status';
@@ -367,11 +396,29 @@ const CCCChapter=(()=>{
        fmt(main.powers.Q,3)+' p.u. · I_dc imposed';
    }
    renderCircuits(lab,main,lcc,idx);
-   plot($('ch4-chart-a'),lesson[3],main,lcc);
-   plot($('ch4-chart-b'),lesson[4],main,lcc);
+   if(lab==='series'){
+     plot($('ch4-cap-chart'),'capacitorsLocal',main,lcc);
+     plot($('ch4-chart-a'),'drive',main,lcc,seriesReference);
+     plot($('ch4-chart-b'),'transfer',main,lcc,seriesReference);
+     const stats=CCCSeriesSensitivity.compare(main,seriesReference);
+     const qRatio=100*Math.abs(stats.dQ)/Math.max(1e-9,Math.abs(stats.reference.Q1));
+     $('ch4-series-reference-info').textContent='C = '+settings.CmF+
+       ' mF versus Cref = '+seriesReferenceC+' mF · Δμ = '+
+       fmt(stats.dMu,2)+'° · ΔQ₁ = '+fmt(stats.dQ,4)+' p.u. ('+
+       fmt(qRatio,2)+'% of reference Q).';
+     $('ch4-note').textContent='Blue: AC source; gold: dynamic capacitor contribution; '+
+       'red: net commutating drive including R; dashed: Cref drive. '+
+       'The three upper curves are the actual phase-capacitor voltages. '+
+       (qRatio<1?'Reactive Q changes less than 1% here, even though capacitor voltages and commutation still change.':
+         'Changing C alters the capacitor voltages, SCR transfer and reactive demand.');
+     updateSensitivityTable();
+   }else{
+     plot($('ch4-chart-a'),lesson[3],main,lcc);
+     plot($('ch4-chart-b'),lesson[4],main,lcc);
+   }
    const readings=metrics(main,lcc,lab);
    $('ch4-metrics').style.setProperty('--ch4-metric-cols',
-     String(lab==='compare'?7:readings.length));
+     String(lab==='compare'?7:lab==='series'?6:readings.length));
    $('ch4-metrics').innerHTML=readings.map(([key,val])=>
      '<div class="ch4-metric"><small>'+key+'</small><strong>'+val+'</strong></div>').join('');
    $('ch4-cursor-value').textContent=fmt(cursor,0)+'°';
@@ -379,7 +426,8 @@ const CCCChapter=(()=>{
      const output=$('ch4-'+name+'-value');
      if(output)output.textContent=fmt(settings[name],name==='alpha'||name==='CmF'?0:2);
    }
-   const clipped=['ch4-chart-a','ch4-chart-b'].some(id=>$(id).dataset.axisClipped==='true');
+   const clipped=['ch4-chart-a','ch4-chart-b','ch4-cap-chart'].some(id=>
+     $(id)?.dataset.axisClipped==='true');
    $('ch4-warning').textContent=clipped?
      'FOCUS limit exceeded. Use SCALE: FULL for the complete curve.':'';
  }
