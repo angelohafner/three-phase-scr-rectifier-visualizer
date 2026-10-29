@@ -31,7 +31,7 @@ PHASE_Y = (152.0, 282.0, 412.0)
 PHASE_X = (590.0, 715.0, 840.0)
 PHASES = "abc"
 VIEW_W, VIEW_H = 1080, 564
-REQUIRED = ("SCR", "SourceSin", "SourceI", "Inductor",
+REQUIRED = ("SCR", "SourceSin", "Inductor",
             "Capacitor", "ResistorIEEE", "Transformer", "Ground", "Dot")
 
 
@@ -256,7 +256,7 @@ def one(caps: bool, shunt: bool) -> tuple[str, dict]:
         "viewBox":f"0 0 {VIEW_W} {VIEW_H}",
         "role":"img",
         "aria-label":"Native Schemdraw three-phase transformer, six SCR valves, "
-                     "series capacitor bank and external DC current source",
+                     "series capacitor bank and two external DC terminals",
         "data-generator":"chapter04_schemdraw.py",
         "data-library":"schemdraw",
         "data-native-symbols":"true",
@@ -271,7 +271,7 @@ def one(caps: bool, shunt: bool) -> tuple[str, dict]:
         "Three idealized transformer windings, each with a physical leakage "
         "inductor and resistance. CCC includes one dynamic series capacitor "
         "per AC phase; LCC bypasses these elements. SCR polarities and "
-        "the isolated DC positive/negative rails are explicit. "
+        "the open positive/negative DC boundary terminals are explicit. "
         "The electromagnetic transformer equivalent itself is not solved."
     )
     add(root,"rect",x=0,y=0,width=VIEW_W,height=VIEW_H,fill="#ffffff")
@@ -358,23 +358,21 @@ def one(caps: bool, shunt: bool) -> tuple[str, dict]:
             label(notes,472,y+34,f"vC{phase} = 0.00",size=13,
                   key=f"live-capacitor-{phase}")
         capacitor_info[phase]={"phase_input":s1,"valve_node":[PHASE_X[index],y]}
+    # I_dc is an externally imposed operating boundary, not a physical source.
+    # Do not draw L_dc in series with an ideal current-source constraint.
+    # The positive/negative terminals lead to an external, unmodeled DC system.
     segment(dcp,PHASE_X[0],34,990,34,name="bus-dc-positive")
     segment(dcp,PHASE_X[0],513,990,513,name="bus-dc-negative")
     for phase,x in zip(PHASES,PHASE_X):
         bridge(valves,x,phase)
-    smoothing=native_two(dcp,"Inductor",(990,118),(990,182),
-                         "smoothing-inductor",transverse=43)
-    smoothing.set("data-role","dc-smoothing")
-    sink=native_two(dcp,"SourceI",(990,310),(990,391),
-                    "dc-current-source",transverse=79)
-    sink.set("data-role","dc-current-source")
-    segment(dcp,990,34,990,118)
-    segment(dcp,990,182,990,310)
-    segment(dcp,990,391,990,513)
-    label(notes,1009,49,"DC +",size=15)
-    label(notes,1009,507,"DC −",size=15)
-    label(notes,1007,162,"Ldc",size=14)
-    label(notes,1042,362,"Idc",size=14,key="dc-current-label")
+    native_dot(dcp,990,34,"dc-positive-terminal")
+    native_dot(dcp,990,513,"dc-negative-terminal")
+    label(notes,1000,49,"DC+",size=14)
+    label(notes,1000,510,"DC−",size=14)
+    label(notes,893,252,"I_dc imposed",size=15,color=ACCENT,
+          key="dc-current-label")
+    label(notes,893,278,"External DC link",size=12,color=MUTED)
+    label(notes,893,298,"not modeled",size=12,color=MUTED)
     label(notes,351,91,"Lc  +  R  +  C" if caps else "Lc  +  R  (C BYPASSED)",size=13)
     label(notes,29,555,"Transformer winding geometry is symbolic; its electromagnetic dynamics are not simulated.",size=12,color=MUTED)
     if shunt:
@@ -391,7 +389,7 @@ def one(caps: bool, shunt: bool) -> tuple[str, dict]:
         "series_capacitors":3 if caps else 0,
         "shunt_capacitors":3 if shunt else 0,
         "source_reference":"AC sources on symbolic transformer primaries; dynamic e_k is the referred secondary voltage",
-        "current_reference":"DC current sink oriented from DC+ toward DC−",
+        "current_reference":"I_dc externally imposed with open DC terminals; no DC current source or smoothing reactor",
         "phase_nodes":capacitor_info,
         "dc_positive_y":34,
         "dc_negative_y":513,

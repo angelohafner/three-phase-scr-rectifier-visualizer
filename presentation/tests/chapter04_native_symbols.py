@@ -7,8 +7,8 @@ from xml.etree import ElementTree as ET
 
 ROOT=Path(__file__).resolve().parents[2]
 DIR=ROOT/'presentation'/'assets'/'chapter04'
-counts_expected={'SCR':6,'Transformer':3,'SourceSin':3,'Inductor':4,
-                 'ResistorIEEE':3,'SourceI':1,'Ground':2,'Dot':3}
+counts_expected={'SCR':6,'Transformer':3,'SourceSin':3,'Inductor':3,
+                 'ResistorIEEE':3,'Ground':2,'Dot':5}
 
 for variant in ('lcc','ccc','lcc_shunt','ccc_shunt'):
     svg=DIR/(variant+'.svg')
@@ -45,6 +45,11 @@ for variant in ('lcc','ccc','lcc_shunt','ccc_shunt'):
     p=root.find(".//*[@id='bus-dc-positive']")
     n=root.find(".//*[@id='bus-dc-negative']")
     assert p is not None and n is not None and p.get('d')!=n.get('d')
+    assert root.find(".//*[@id='dc-positive-terminal']") is not None
+    assert root.find(".//*[@id='dc-negative-terminal']") is not None
+    assert root.find(".//*[@id='dc-current-source']") is None
+    assert root.find(".//*[@id='smoothing-inductor']") is None
+    assert counts['SourceI']==0,(variant,counts)
 
     # Every native capacitor plate must be joined to each branch terminal.
     # Verify the actual SVG conductor geometry, not only nominal metadata.

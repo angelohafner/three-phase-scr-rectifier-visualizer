@@ -208,7 +208,7 @@ def build(source: Path, out: Path, src: Path) -> dict:
         'built_with':[{'path':'presentation/src/'+name,
                        'git_blob_sha':_git_blob_sha(src/name)} for name in source_files],
         'html_sha256':hashlib.sha256(out.read_bytes()).hexdigest(),
-        'slides':97,
+        'slides':86,
         'convention':'I_dc: rectifier to inverter; Vdc,r positive, Vdc,i negative in normal power flow',
     }
     (out.parent/(out.stem+'.build.json')).write_text(json.dumps(trace,indent=2)+'\n',encoding='utf-8')
@@ -218,7 +218,7 @@ def build(source: Path, out: Path, src: Path) -> dict:
         'individual_circuits': len(figures['rectifier']) + len(figures['inverter']),
         'hvdc_topology_pairs': len(figures['hvdc']),
         'reference_waveforms': sum(map(len, refs.values())),
-        'slides': 97,
+        'slides': 86,
         'offline': True,
     }
 

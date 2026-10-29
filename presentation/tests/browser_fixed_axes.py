@@ -16,7 +16,7 @@ with sync_playwright() as pw:
     page.set_content(HTML.read_text(encoding='utf-8'),wait_until='domcontentloaded',timeout=120000)
     page.wait_for_function('!!window.LCCPresentationTest')
     deck=page.evaluate('window.LCCPresentationTest.deck')
-    assert len(deck)==97
+    assert len(deck)==86
     assert page.evaluate('window.LCCPresentationTest.axisPreset()')=='focus'
 
     def snapshot():
@@ -108,5 +108,5 @@ with sync_playwright() as pw:
     assert page.locator('#cs-left').get_attribute('data-axis-clipped')=='false'
     assert page.evaluate('window.LCCPresentationTest.axisPreset()')=='full'
     assert not errors,errors
-    print('97-slide fixed-axis audit, readable RLE focus and full-envelope switching verified.',flush=True)
+    print('86-slide fixed-axis audit, readable RLE focus and full-envelope switching verified.',flush=True)
     browser.close()

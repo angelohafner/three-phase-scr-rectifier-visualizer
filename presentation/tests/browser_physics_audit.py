@@ -23,7 +23,7 @@ with sync_playwright() as browser_tools:
     page.set_content(HTML.read_text(encoding='utf-8'),wait_until='domcontentloaded',timeout=120000)
     page.wait_for_function('!!window.LCCPresentationTest',timeout=40000)
     slides = page.evaluate('window.LCCPresentationTest.deck')
-    assert len(slides)==97, len(slides)
+    assert len(slides)==86, len(slides)
     inventory=[]
     capture={'commutation','overlap','polarity','controller','comparison'}
     for ix, slide in enumerate(slides):
@@ -58,9 +58,9 @@ with sync_playwright() as browser_tools:
         if slide['type']=='state' and slide['side']=='rectifier' and slide['id']==1:
             assert 'RL load' not in info['title'], info['title']
         if ix%12==0:
-            print(f'Audited slide {ix+1}/97: {info["title"]}',flush=True)
+            print(f'Audited slide {ix+1}/86: {info["title"]}',flush=True)
     (REPORT/'slide_inventory.json').write_text(json.dumps(inventory,indent=2),encoding='utf-8')
-    print('All 97 slides render without missing schematics/plots.')
+    print('All 86 slides render without missing schematics/plots.')
     cs={s['lesson']:i for i,s in enumerate(slides) if s['type']=='current_source'}
     for lesson in ['commutation','overlap']:
         page.evaluate('(i)=>window.LCCPresentationTest.setSlide(i)',cs[lesson])
@@ -130,4 +130,4 @@ with sync_playwright() as browser_tools:
     print('RLE/source comparison respects the selected circuit model.')
     assert not errors,errors
     browser.close()
-print('PASS — 97 slides, per-slide control restrictions, electrical models, continuous sliders.')
+print('PASS — 86 slides, per-slide control restrictions, electrical models, continuous sliders.')

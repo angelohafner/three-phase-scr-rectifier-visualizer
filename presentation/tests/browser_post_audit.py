@@ -19,7 +19,7 @@ with sync_playwright() as p:
     page.set_content(HTML.read_text(encoding='utf-8'),wait_until='domcontentloaded',timeout=120000)
     page.wait_for_function('Boolean(window.LCCPresentationTest)')
     deck=page.evaluate('window.LCCPresentationTest.deck')
-    assert len(deck)==97
+    assert len(deck)==86
     for i,slide in enumerate(deck):
         page.evaluate('(i)=>window.LCCPresentationTest.setSlide(i)',i)
         assert page.evaluate("document.getElementById('slide').scrollWidth <= document.getElementById('slide').clientWidth+2"),i
@@ -51,4 +51,4 @@ with sync_playwright() as p:
     assert page.locator('#cs-right').bounding_box()['height']>=190
     assert not errors,errors
     browser.close()
-print('PASS: 97 slides without horizontal overflow, signed DC plots, mobile focus controls.')
+print('PASS: 86 slides without horizontal overflow, signed DC plots, mobile focus controls.')
