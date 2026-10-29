@@ -35,6 +35,11 @@ with sync_playwright() as pw:
     assert 'How Series Capacitors Assist Thyristor Commutation' in page.locator('h1').inner_text()
     before=page.locator('#ch4-status').inner_text()
     assert page.locator('#ch4-circuit svg [data-valve]').count()==6
+    page.locator('#ch4-enlarge').click()
+    assert page.locator('#zoom-overlay').get_attribute('aria-hidden')=='false'
+    assert page.locator('#zoom-content svg [data-valve]').count()==6
+    page.locator('#zoom-close').click()
+    assert page.locator('#zoom-overlay').get_attribute('aria-hidden')=='true'
     old=page.locator('#ch4-chart-b').get_attribute('data-plot-limits')
     page.locator('#ch4-CmF').evaluate('e=>{e.value="12";e.dispatchEvent(new Event("input",{bubbles:true}))}')
     after=page.locator('#ch4-status').inner_text()
@@ -54,6 +59,9 @@ with sync_playwright() as pw:
     assert page.locator('#ch4-circuit').is_visible()
     assert page.locator('#ch4-chart-a').is_visible()
     assert page.locator('#ch4-chart-b').is_visible()
+    page.locator('#ch4-enlarge').click()
+    assert page.locator('#zoom-content svg[data-native-symbols="true"]').count()==1
+    page.locator('#zoom-close').click()
     assert not errors,errors
     browser.close()
 print('PASS: 97 slides, 15 new CCC lessons, stable axes and dynamic parameter controls.')

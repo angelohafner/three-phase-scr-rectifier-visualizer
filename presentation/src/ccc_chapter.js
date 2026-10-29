@@ -180,7 +180,7 @@ const CCCChapter=(()=>{
      <div class="tech-title"><h1>${lesson[1]}</h1><p>${lesson[2]}</p></div><span class="ch4-index">${lessons.findIndex(x=>x[0]===lesson[0])+1} / ${lessons.length}</span></div>
      <div class="ch4-status" id="ch4-status"></div>
      <div class="ch4-space">
-       <section class="panel"><div class="panel-head"><strong>01 / ELECTRICAL CIRCUIT</strong></div><div class="ch4-circuit" id="ch4-circuit"></div></section>
+       <section class="panel"><div class="panel-head"><strong>01 / ELECTRICAL CIRCUIT</strong><button type="button" class="ch4-enlarge" id="ch4-enlarge" aria-label="Enlarge native Schemdraw circuit">⤢ ENLARGE</button></div><div class="ch4-circuit" id="ch4-circuit"></div></section>
        <section class="panel"><div class="panel-head"><strong>02 / VOLTAGE / PHASOR</strong></div><div class="plot-wrapper"><canvas id="ch4-chart-a" aria-label="Synchronized CCC voltage or phasor graph"></canvas></div></section>
        <section class="panel"><div class="panel-head"><strong>03 / CURRENT / POWER</strong></div><div class="plot-wrapper"><canvas id="ch4-chart-b" aria-label="Synchronized CCC current or power graph"></canvas></div></section>
      </div><div class="ch4-controls"><label class="ch4-model-choice">TOPOLOGY <select id="ch4-mode"><option value="CCC">CCC · Series C</option><option value="LCC">LCC · Bypass C</option></select></label>
@@ -188,7 +188,16 @@ const CCCChapter=(()=>{
      <div class="ch4-metrics" id="ch4-metrics"></div><div class="ch4-notes"><p id="ch4-note">${lesson[2]}</p><span id="ch4-warning"></span></div>
      <div class="timeline ch4-timeline"><div class="timeline-top"><span>θ = <output id="ch4-cursor-value">${fmt(cursor,0)}°</output> · The pointer selects one instant; both plots keep fixed scales.</span></div>
      <input id="ch4-cursor" class="angle-range" type="range" min="0" max="359.8" step="0.2" value="${cursor}"><div class="ticks"><span>0°</span><span>60°</span><span>120°</span><span>180°</span><span>240°</span><span>300°</span><span>360°</span></div></div></div>`;
-   $('ch4-mode').value=mode;
+   $('ch4-enlarge').onclick=()=>{
+      const svg=$('ch4-circuit')?.querySelector('svg');
+      if(!svg)return;
+      $('zoom-content').innerHTML=svg.outerHTML;
+      $('zoom-title').textContent='CH 04 · NATIVE SCHEMDRAW · '+mode;
+      const overlay=$('zoom-overlay');
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden','false');
+    };
+    $('ch4-mode').value=mode;
    $('ch4-mode').onchange=e=>{mode=e.target.value;cacheKey='';const c=$('ch4-CmF');c.disabled=mode==='LCC';refresh(lesson);};
    $('ch4-CmF').disabled=mode==='LCC';
    for(const [id] of fields){$( 'ch4-'+id).oninput=e=>{settings[id]=+e.target.value;cacheKey='';refresh(lesson);};}

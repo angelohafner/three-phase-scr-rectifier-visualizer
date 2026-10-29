@@ -42,3 +42,16 @@
 .ch4-circuit svg [data-role="component"] path,
 .ch4-circuit svg [data-role="component"] polygon,
 .ch4-circuit svg [data-role="component"] circle{vector-effect:non-scaling-stroke}
+
+/* Chapter 04 electrical symbols remain vector-sharp at presentation zoom. */
+.ch4-enlarge{margin-left:auto;flex-shrink:0;padding:4px 8px;
+  border:1px solid #a8c9d6;border-radius:5px;background:#edf7fa;
+  font:700 10px "Segoe UI",Arial,sans-serif;color:#275d76;cursor:pointer}
+.ch4-enlarge:hover,.ch4-enlarge:focus-visible{background:#d9f3f8}
+#zoom-content svg[data-native-symbols="true"]{width:100%;height:100%}
+#zoom-content svg [data-role="scr"][data-active="true"] path,
+#zoom-content svg [data-role="scr"][data-active="true"] polygon{
+  stroke:#c43e59!important;stroke-width:3.8!important}
+#zoom-content svg [data-role="scr"][data-active="true"] polygon{fill:#ffe4e8!important}
+#zoom-content svg [data-wire-phase][data-active="true"]{
+  stroke:#c43e59!important;stroke-width:3.3!important}

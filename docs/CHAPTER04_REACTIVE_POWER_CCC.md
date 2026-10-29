@@ -142,3 +142,9 @@ python presentation/tests/chapter04_native_symbols.py
 python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html
 python presentation/tests/chapter04_browser.py
 ```
+
+### Enlarged native schematic
+
+Use the ENLARGE control in the Chapter 04 circuit panel to view the same
+live-highlighted, real Schemdraw SVG in the existing full-screen diagram
+viewer. Desktop and mobile interactions are regression tested.
