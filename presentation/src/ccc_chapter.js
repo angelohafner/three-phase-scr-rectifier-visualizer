@@ -6,7 +6,7 @@ const CCCChapter=(()=>{
   ['firing','Firing Angle and Fundamental Displacement','Vary α while maintaining the imposed DC current. Watch the current fundamental, Q and the bridge mean DC voltage.','phasor','dc'],
   ['overlap','Commutation Reactance and Current Overlap','The transformer leakage reactor limits current transfer. The overlap is calculated by the differential equation, not independently imposed.','drive','transfer'],
   ['phasors','Reading Converter Voltage and Current Phasors','The fundamental-frequency Q is calculated from the complex voltage and current phasors at the AC terminals.','phasor','ac'],
-  ['stations','Rectifier versus Inverter Reactive Power','Both conventional LCC stations normally demand reactive power. Signed DC power differs; do not reverse the AC reactive-power sign simply because DC power reverses.','phasor','dc'],
+  ['stations','Rectifier versus Inverter Reactive Power','Rectifier waveforms are numerically solved here; inverter reactive-demand concepts are qualitative. The model does NOT simulate inverter-side SCR operation or an AC/DC power reversal.','phasor','dc'],
   ['shunt','What Does Shunt Compensation Actually Change?','A shunt capacitor supplies local capacitive vars; it does not change the idealized converter valve currents at a fixed AC bus voltage.','power','ac'],
   ['filters','Shunt Capacitors and Harmonic AC Filters','Fundamental-frequency reactive support and harmonic filtering are distinct functions. This laboratory solves the shunt fundamental Q, not filter resonances.','power','ac'],
   ['series','Where Do CCC Series Capacitors Belong?','Three series capacitors sit between transformer leakage paths and the valve bridge, not in parallel at the AC bus.','capacitors','ac'],
@@ -31,7 +31,9 @@ const CCCChapter=(()=>{
    return domains[kind]||domains.voltage;
  };
  function getResults(){
-   const p={...settings,CmF:mode==='LCC'?0:settings.CmF};const key=JSON.stringify(p);
+   const hasShunt=['shunt','filters'].includes(currentLesson()[0]);
+   const p={...settings,CmF:mode==='LCC'?0:settings.CmF,
+     qShunt:hasShunt?settings.qShunt:0};const key=JSON.stringify(p);
    if(key!==cacheKey){cacheKey=key;cached={main:CCCModel.solve(p),lcc:CCCModel.solve({...p,CmF:0})};}
    return cached;
  }
@@ -104,7 +106,9 @@ const CCCChapter=(()=>{
    if(kind==='drive'){
      const s=first,sign=-1;
      const supply=q=>sign*(q.source[2]-q.source[1]),assist=q=>-sign*(q.capacitors[2]-q.capacitors[1]);
-     series=[line(s,supply,'#287da4','AC line'),line(s,assist,'#c38a28','Capacitor'),line(s,q=>supply(q)+assist(q),'#bc3c57','Available')];
+     const drive=q=>supply(q)+assist(q)-sign*p.R*(q.current[2]-q.current[1]);
+     series=[line(s,supply,'#287da4','AC line'),line(s,assist,'#c38a28','Capacitor'),
+       line(s,drive,'#bc3c57','Net drive (incl. R)')];
      opts={title:'COMMUTATING VOLTAGE · FIRST 60° SECTOR',kind:'voltage',xEnd:60,mu,cursor};
    }else if(kind==='transfer'){
      series=[line(first,q=>Math.max(0,-q.current[2]),'#c13d56','Incoming T6'),line(first,q=>Math.max(0,-q.current[1]),'#227ca4','Outgoing T4'),
@@ -172,7 +176,7 @@ const CCCChapter=(()=>{
    for(const name of Object.keys(settings)){let output=$('ch4-'+name+'-value');if(output)output.textContent=fmt(settings[name],name==='alpha'||name==='CmF'?0:2);}
    const flag=$('ch4-warning');const clipped=['ch4-chart-a','ch4-chart-b'].some(id=>$(id).dataset.axisClipped==='true');
    flag.textContent=clipped?'Waveform outside FOCUS limits — choose SCALE: FULL for an uncropped global view.':'';
-   if(lesson[0]==='central')$('ch4-note').textContent='The voltage difference includes the instantaneous capacitor contributions. Overlap follows 2XL·di_in/dθ = (e_in − e_out) − (vc,in − vc,out) − R(i_in − i_out). Capacitors follow dvc/dθ = XC·i. Both waveforms are results from the same six-pulse periodic solution.';
+   if(lesson[0]==='central')$('ch4-note').textContent='The red net commutating drive includes source, instantaneous capacitor-voltage contribution AND the resistive redistribution term. Overlap follows 2XL·di_in/dθ = (e_in − e_out) − (vc,in − vc,out) − R(i_in − i_out). Both currents and capacitor voltages come from the same periodic solution.';
  }
  function mount(root,lessonId){const lesson=lessons.find(x=>x[0]===lessonId)||lessons[0];
    root.className='slide technical ch4-slide';root.dataset.lesson=lesson[0];root.id='slide';
@@ -202,7 +206,7 @@ const CCCChapter=(()=>{
    $('ch4-CmF').disabled=mode==='LCC';
    for(const [id] of fields){$( 'ch4-'+id).oninput=e=>{settings[id]=+e.target.value;cacheKey='';refresh(lesson);};}
    // Shunt variation changes the PCC reactive balance, not the bridge dynamics.
-   if(!['shunt','filters','origin','phasors','compare','limits','grid'].includes(lesson[0])){$('ch4-qShunt').disabled=true;}
+   if(!['shunt','filters'].includes(lesson[0])){$('ch4-qShunt').disabled=true;}
    $('ch4-cursor').oninput=e=>{cursor=+e.target.value;refresh(lesson);};
    refresh(lesson);
    needRepaint=()=>refresh(lesson);

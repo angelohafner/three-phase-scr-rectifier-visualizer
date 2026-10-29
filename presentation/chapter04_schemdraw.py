@@ -140,6 +140,47 @@ def arbitrary_native(parent: ET.Element, obj: object, name: str,
     return g
 
 
+
+def native_capacitor(parent: ET.Element, start: tuple[float,float],
+                     end: tuple[float,float], key: str, phase: str,
+                     transverse: float) -> ET.Element:
+    """Center actual native capacitor plates and close both terminal conductors.
+
+    Schemdraw's Capacitor segments contain two plates, not built-in leads.
+    Their native path x coordinates determine the exact contact points; this
+    avoids any visually convincing but electrically open wire gaps.
+    """
+    obj=elm.Capacitor()
+    xvals=sorted({round(float(p[0]),9) for segment in obj.segments
+                  if hasattr(segment,"path") for p in segment.path
+                  if math.isfinite(float(p[0])) and math.isfinite(float(p[1]))})
+    if len(xvals)!=2 or xvals[1]<=xvals[0]:
+        raise RuntimeError("Unexpected native capacitor plate geometry")
+    dx,dy=end[0]-start[0],end[1]-start[1]
+    length=math.hypot(dx,dy)
+    if length<14:raise RuntimeError("Capacitor branch too short")
+    ux,uy=dx/length,dy/length
+    vx,vy=-uy,ux
+    midx,midy=(start[0]+end[0])/2,(start[1]+end[1])/2
+    gap=min(12.,length/3)
+    native_center=(xvals[0]+xvals[1])/2
+    def transform(p):
+        longitudinal=(float(p[0])-native_center)*gap/(xvals[1]-xvals[0])
+        cross=float(p[1])*transverse
+        return midx+longitudinal*ux+cross*vx,midy+longitudinal*uy+cross*vy
+    group=arbitrary_native(parent,obj,"Capacitor",transform,key)
+    group.set("data-phase",phase)
+    group.set("data-terminal-start",f"{start[0]:.3f},{start[1]:.3f}")
+    group.set("data-terminal-end",f"{end[0]:.3f},{end[1]:.3f}")
+    plate_left=transform((xvals[0],0))
+    plate_right=transform((xvals[1],0))
+    group.set("data-contact-left",f"{plate_left[0]:.3f},{plate_left[1]:.3f}")
+    group.set("data-contact-right",f"{plate_right[0]:.3f},{plate_right[1]:.3f}")
+    segment(parent,*start,*plate_left,name=key+"-lead-in",phase=phase)
+    segment(parent,*plate_right,*end,name=key+"-lead-out",phase=phase)
+    return group
+
+
 def transformer(parent: ET.Element, x: float, top: float,
                 phase: str) -> dict[str, tuple[float, float]]:
     """Place a native two-winding Transformer using its real winding anchors."""
@@ -264,8 +305,8 @@ def one(caps: bool, shunt: bool) -> tuple[str, dict]:
         segment(ac_primary,24,bottom,73,bottom)
         neutral_primary.append(bottom)
         if shunt:
-            g = native_two(ac_primary,"Capacitor",(132,top+14),(132,bottom-14),
-                           f"shunt-{phase}",phase,transverse=39)
+            g = native_capacitor(ac_primary,(132,top+14),(132,bottom-14),
+                                 f"shunt-{phase}",phase,transverse=39)
             g.set("data-role","shunt-capacitor")
             segment(ac_primary,132,top,132,top+14)
             segment(ac_primary,132,bottom-14,132,bottom)
@@ -300,8 +341,8 @@ def one(caps: bool, shunt: bool) -> tuple[str, dict]:
         r.set("data-role","phase-resistance")
         segment(wires,462,y,478,y,phase=phase)
         if caps:
-            capacitor=native_two(phases,"Capacitor",(478,y),(523,y),
-                                 f"series-{phase}",phase,transverse=48)
+            capacitor=native_capacitor(phases,(478,y),(523,y),
+                                       f"series-{phase}",phase,transverse=48)
             capacitor.set("data-role","series-capacitor")
         else:
             segment(wires,478,y,523,y,phase=phase)
@@ -334,7 +375,7 @@ def one(caps: bool, shunt: bool) -> tuple[str, dict]:
     label(notes,1009,507,"DC −",size=15)
     label(notes,1007,162,"Ldc",size=14)
     label(notes,1015,362,"Idc",size=15)
-    label(notes,351,91,"Lc  +  R  +  C",size=13)
+    label(notes,351,91,"Lc  +  R  +  C" if caps else "Lc  +  R  (C BYPASSED)",size=13)
     label(notes,29,555,"Transformer winding geometry is symbolic; its electromagnetic dynamics are not simulated.",size=12,color=MUTED)
     if shunt:
         label(notes,114,48,"3φ shunt bank",size=13,color=ACCENT)

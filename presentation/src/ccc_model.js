@@ -58,10 +58,27 @@ const CCCModel=(()=>{
      if(store)traces.push({angle:k*360/N,source:waves,capacitors:vc.slice(),current:current.slice(),valve:csource,dc:plus-minus,
        overlap:!!info,sector:sect,transfer:info?Math.abs(s)/p.idc:1,voltageDifference:info?(csource[info.incoming]-csource[info.out]):0,
        outgoing:info?.out??-1,incoming:info?.incoming??-1});
-     const [newvc,news]=integrate(angle,vc,s,info,p,2*PI/N,sect);vc=newvc;
-     if(info){s=news;const target=info.sign*p.idc;
-       if(s*info.sign< -1e-5){fail='Attempted thyristor reverse-current conduction.';break;}
-       if(s*info.sign>=p.idc){mu[sect]=(k+1)*360/N-sect*60;info=null;finished++;}
+     const h=2*PI/N;
+     const [nextVC,nextS]=integrate(angle,vc,s,info,p,h,sect);
+     if(info&&nextS*info.sign>=p.idc){
+       // Resolve the actual SCR current-transfer event within this integration step.
+       // The remaining fraction is integrated with the new conducting pair alone.
+       let left=0,right=h;
+       for(let iteration=0;iteration<23;iteration++){
+         const mid=(left+right)/2;
+         const [,trial]=integrate(angle,vc,s,info,p,mid,sect);
+         if(trial*info.sign>=p.idc)right=mid;else left=mid;
+       }
+       const [eventVC]=integrate(angle,vc,s,info,p,right,sect);
+       const postCurrent=currentArray(null,0,p,sect);
+       vc=eventVC.map((v,j)=>v+p.XC*postCurrent[j]*(h-right));
+       mu[sect]=(angle+right-sect*PI/3)*180/PI;
+       info=null;s=0;finished++;
+     }else{
+       vc=nextVC;s=nextS;
+       if(info&&s*info.sign< -1e-5){
+         fail='Attempted thyristor reverse-current conduction.';break;
+       }
      }
    }
    if(!fail&&info)fail='Unfinished commutation at the cycle boundary.';
@@ -78,7 +95,7 @@ const CCCModel=(()=>{
    return init.map(v=>v-average);
  }
  function shooting(p){if(!p.XC){let x=cycle(p,[0,0,0],true);return {...x,converged:x.valid,iterations:0,residual:0};}
-   let x=estimate(p);const eps=2e-4;
+   let x=estimate(p);const eps=1e-6;
    for(let n=0;n<18;n++){
      let a=cycle(p,x);
      if(!a.valid)return {...a,converged:false,iterations:n,residual:NaN};

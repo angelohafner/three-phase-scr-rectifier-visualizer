@@ -1,5 +1,6 @@
 """Chapter 04 native Schemdraw provenance and topological consistency checks."""
 from collections import Counter
+import math
 from pathlib import Path
 import json
 from xml.etree import ElementTree as ET
@@ -41,6 +42,23 @@ for variant in ('lcc','ccc','lcc_shunt','ccc_shunt'):
     p=root.find(".//*[@id='bus-dc-positive']")
     n=root.find(".//*[@id='bus-dc-negative']")
     assert p is not None and n is not None and p.get('d')!=n.get('d')
+
+    # Every native capacitor plate must be joined to each branch terminal.
+    # Verify the actual SVG conductor geometry, not only nominal metadata.
+    for cap in root.findall('.//*[@data-symbol="schemdraw.elements.Capacitor"]'):
+        key=cap.get('id')
+        left=tuple(float(v) for v in cap.get('data-contact-left').split(','))
+        right=tuple(float(v) for v in cap.get('data-contact-right').split(','))
+        start=tuple(float(v) for v in cap.get('data-terminal-start').split(','))
+        end=tuple(float(v) for v in cap.get('data-terminal-end').split(','))
+        for suffix,a,b in (('-lead-in',start,left),('-lead-out',right,end)):
+            lead=root.find(f".//*[@id='{key+suffix}']")
+            assert lead is not None,(variant,key,suffix)
+            points=[tuple(float(v) for v in xy.split(','))
+                    for xy in lead.get('d').replace('M ','').split(' L ')]
+            assert len(points)==2
+            assert all(math.dist(points[k],target)<.002 for k,target in enumerate((a,b)))
+        assert math.dist(left,right)>5,(variant,key)
     meta=json.loads(manifest.read_text(encoding='utf-8'))
     assert meta['topology']==('CCC' if variant.startswith('ccc') else 'LCC')
     assert meta['series_capacitors']==(3 if variant.startswith('ccc') else 0)

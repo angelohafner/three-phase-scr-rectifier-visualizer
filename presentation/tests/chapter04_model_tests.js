@@ -11,8 +11,12 @@ assert.equal(nominal.traces.length,1800);
 assert.ok(nominal.mu.every(mu=>mu>0&&mu<60));
 assert.ok(nominal.powers.Q>0&&plain.powers.Q>0);
 assert.ok(Math.abs(nominal.avgMu-plain.avgMu)>.4,'Series C must change the solved overlap');
+assert.ok(Math.abs(plain.avgMu-13.0593077)<.012,'LCC overlap must match the analytic commutation reference');
+assert.ok(Math.abs(nominal.avgMu-10.78508)<.04,'CCC overlap must resolve the actual switching event');
+assert.ok(nominal.powers.Q<plain.powers.Q,'Same-condition CCC nominal reactive power must be lower');
+assert.ok(nominal.powers.Q>0&&plain.powers.Q>0);
 assert.ok(Math.abs(nominal.powers.imbalance)<.005,'AC power, DC bridge power and losses must balance');
-assert.ok(nominal.residual<.0002,'Capacitor solution must be periodic');
+assert.ok(nominal.residual<.000001,'Capacitor solution must be periodic');
 const currents=nominal.traces.map(x=>x.current);
 for(const i of currents){close(i[0]+i[1]+i[2],0,1e-9);assert.ok(i.every(a=>Math.abs(a)<=.80001));}
 const peak=nominal.traces.reduce((v,q)=>Math.max(v,...q.capacitors.map(Math.abs)),0);
