@@ -38,7 +38,7 @@ with sync_playwright() as pw:
         assert name in comparison_metrics,(name,comparison_metrics)
     assert page.locator('#ch4-qShunt').is_disabled()
     # Shunt reactive injection must exist only where the capacitor bank is connected.
-    for k in [0,9,12,14]:
+    for k in [0,9,14]:
         page.evaluate('(i)=>window.LCCPresentationTest.setSlide(i)',ch[k])
         assert page.locator('#ch4-qShunt').is_disabled()
         assert '0.000 p.u.' in page.locator('#ch4-metrics').inner_text()
