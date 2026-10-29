@@ -55,3 +55,9 @@
 #zoom-content svg [data-role="scr"][data-active="true"] polygon{fill:#ffe4e8!important}
 #zoom-content svg [data-wire-phase][data-active="true"]{
   stroke:#c43e59!important;stroke-width:3.3!important}
+
+/* Match normal Chapter 04 typography in the enlarged circuit, overriding
+   the generic equation-focused SVG text rule used by older slide chapters. */
+#zoom-content svg[data-native-symbols="true"] text{
+  font-family:"Segoe UI",Arial,sans-serif!important;
+}

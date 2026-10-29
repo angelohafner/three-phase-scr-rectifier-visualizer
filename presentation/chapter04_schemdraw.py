@@ -311,7 +311,7 @@ def one(caps: bool, shunt: bool) -> tuple[str, dict]:
         crosses=list(PHASE_X[:index])
         wire(wires,jump_path(523,PHASE_X[index],y,crosses),
              name=f"feed-{phase}-post",phase=phase)
-        label(notes,527,y-16,f"i{phase} = 0.00",size=14,
+        label(notes,435,y+60,f"i{phase} = 0.00",size=14,
               key=f"live-current-{phase}")
         if caps:
             label(notes,472,y+34,f"vC{phase} = 0.00",size=13,
