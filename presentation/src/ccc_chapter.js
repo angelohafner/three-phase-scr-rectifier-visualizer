@@ -18,7 +18,7 @@ const CCCChapter=(()=>{
  const fixedBounds=(kind)=>{
    const full=typeof FixedAxes!=='undefined'&&FixedAxes.preset()==='full';
    const domains={current:full?[-.05,1.6]:[-.02,1.35],voltage:full?[-3.5,3.5]:[-2.4,2.4],signedCurrent:full?[-1.8,1.8]:[-1.4,1.4],
-    cap:full?[-1.3,1.3]:[-.55,.55],commDrive:full?[-4,4]:[-.5,2.4],
+    cap:full?[-1.3,1.3]:[-.30,.30],commDrive:full?[-4,4]:[-.5,2.4],
     power:full?[-2,2]:[-1.1,1.4],dc:full?[-3.5,3.5]:[-2,2]};
    return domains[kind]||domains.voltage;
  };
@@ -204,13 +204,13 @@ const CCCChapter=(()=>{
        kind:'current',xEnd:reference?(focus?30:60):60,mu,cursor,
        muRef:reference?.mu?.[0]};
    }else if(kind==='capacitorsLocal'){
-     // The three native capacitor-voltage states share the commutation axis.
-     series=[line(first,q=>q.capacitors[0],'#c13d56','v C,a'),
-       line(first,q=>q.capacitors[1],'#287da4','v C,b'),
-       line(first,q=>q.capacitors[2],'#0e8893','v C,c')];
-     const focus=FixedAxes.preset()!=='full';
-     opts={title:'INSTANTANEOUS SERIES-CAPACITOR VOLTAGES · p.u.',
-       kind:'cap',xEnd:focus?30:60,cursor,mu};
+     // Use the full six-sector cycle to show actual capacitor charging and
+     // discharging. A 0–30 degree window alone hides this physical change.
+     series=[line(tr,q=>q.capacitors[0],'#c13d56','v C,a'),
+       line(tr,q=>q.capacitors[1],'#287da4','v C,b'),
+       line(tr,q=>q.capacitors[2],'#0e8893','v C,c')];
+     opts={title:'SERIES-CAPACITOR VOLTAGES · FULL 360° CYCLE · p.u.',
+       kind:'cap',xEnd:360,cursor};
    }else if(kind==='valves'){
      const names=['T1','T2','T3','T4','T5','T6'];
      const phases=[0,0,1,1,2,2],upper=[true,false,true,false,true,false];
@@ -410,7 +410,7 @@ const CCCChapter=(()=>{
        fmt(qRatio,2)+'% of reference Q).';
      $('ch4-note').textContent='Blue: AC source; gold: dynamic capacitor contribution; '+
        'red: net commutating drive including R; dashed: Cref drive. '+
-       'The three upper curves are the actual phase-capacitor voltages. '+
+       'The upper chart shows all three capacitor voltages over a full 360° cycle; the lower graphs focus on the 30°/60° commutation interval. '+
        (qRatio<1?'Reactive Q changes less than 1% here, even though capacitor voltages and commutation still change.':
          'Changing C alters the capacitor voltages, SCR transfer and reactive demand.');
      updateSensitivityTable();
