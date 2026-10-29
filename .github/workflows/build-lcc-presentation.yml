@@ -59,6 +59,8 @@ jobs:
         run: node presentation/tests/fixed_axis_model_bounds.js
       - name: Validate switched CCC physics and periodic capacitor solution
         run: node presentation/tests/chapter04_model_tests.js
+      - name: Audit series capacitance dynamic voltage and energy sensitivity
+        run: node presentation/tests/chapter04_series_sensitivity.js
       - name: Verify CCC versus LCC with independent SciPy event solver
         run: python presentation/tests/chapter04_independent_reference.py
       - name: Verify equal-active-power LCC/CCC comparisons and unattainable cases
