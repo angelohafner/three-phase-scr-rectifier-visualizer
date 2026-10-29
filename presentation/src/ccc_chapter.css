@@ -30,3 +30,15 @@
 @media(max-width:520px){.ch4-slide{padding:5px;gap:3px}.ch4-space .panel{height:220px}.ch4-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.ch4-metric strong{font-size:11px}.ch4-controls{gap:6px;padding:5px}.ch4-notes{flex-wrap:wrap}.ch4-notes p{font-size:10px}#ch4-warning{max-width:100%}#nav-reactive{font-size:8px}}
 
 @media(max-width:850px){.ch4-root{display:block;height:auto;min-height:unset}.ch4-space{display:flex;flex-direction:column;flex:0 0 auto;height:auto;min-height:unset;gap:8px}.ch4-space .panel{flex:0 0 260px;height:260px;min-height:260px}.ch4-controls{margin:8px 0}.ch4-notes{margin:8px 0}.ch4-timeline{margin-bottom:8px}}
+/* Native Schemdraw symbols are retained; highlighting changes only their styles. */
+.ch4-circuit svg [data-role="scr"][data-active="true"] path,
+.ch4-circuit svg [data-role="scr"][data-active="true"] polygon{
+  stroke:#c43e59!important;stroke-width:3.8!important;
+}
+.ch4-circuit svg [data-role="scr"][data-active="true"] polygon{fill:#ffe4e8!important}
+.ch4-circuit svg [data-wire-phase][data-active="true"]{
+  stroke:#c43e59!important;stroke-width:3.3!important;
+}
+.ch4-circuit svg [data-role="component"] path,
+.ch4-circuit svg [data-role="component"] polygon,
+.ch4-circuit svg [data-role="component"] circle{vector-effect:non-scaling-stroke}

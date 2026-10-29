@@ -839,6 +839,8 @@
    else if(s.type==='reactive')CCCChapter.repaint();
  }
  function setup(){
+    // Load the four immutable native Schemdraw SVGs before mounting Chapter 04.
+    CCCChapter.setSchematics(DATA.chapter04_schematics);
    $('axis-scale-btn').onclick=toggleAxisScale;
    $('axis-scale-settings').onclick=toggleAxisScale;
    refreshAxisButton();

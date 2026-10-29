@@ -20,7 +20,7 @@ except ImportError:
 import rectifier_art as art
 
 SCHEMDRAW_AVAILABLE = elm is not None
-NATIVE_NAMES = ('SCR', 'ResistorIEEE', 'Inductor', 'SourceSin', 'SourceV', 'SourceI')
+NATIVE_NAMES = ('SCR', 'ResistorIEEE', 'Inductor', 'Capacitor', 'SourceSin', 'SourceV', 'SourceI')
 
 
 @dataclass(frozen=True)

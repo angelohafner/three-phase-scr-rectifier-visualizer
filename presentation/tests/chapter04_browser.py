@@ -22,19 +22,28 @@ with sync_playwright() as pw:
         page.evaluate('(i)=>window.LCCPresentationTest.setSlide(i)',idx)
         assert 'INVALID' not in page.locator('#ch4-status').inner_text()
         assert page.locator('#ch4-circuit svg').count()==1
+        svg=page.locator('#ch4-circuit svg')
+        assert svg.get_attribute('data-native-symbols')=='true'
+        assert svg.locator('[data-role="scr"][data-symbol-source="native-instance"]').count()==6
+        assert svg.locator('[data-symbol="schemdraw.elements.Transformer"]').count()==3
+        assert svg.locator('[data-symbol="schemdraw.elements.SourceI"]').count()==1
+        assert svg.get_attribute('data-dynamic-state')=='synchronized'
         assert page.locator('#ch4-chart-a').evaluate('c=>c.width>150')
         assert page.locator('#ch4-chart-b').evaluate('c=>c.dataset.axisMode==="fixed"')
     main=ch[9]
     page.evaluate('(i)=>window.LCCPresentationTest.setSlide(i)',main)
     assert 'How Series Capacitors Assist Thyristor Commutation' in page.locator('h1').inner_text()
     before=page.locator('#ch4-status').inner_text()
+    assert page.locator('#ch4-circuit svg [data-valve]').count()==6
     old=page.locator('#ch4-chart-b').get_attribute('data-plot-limits')
     page.locator('#ch4-CmF').evaluate('e=>{e.value="12";e.dispatchEvent(new Event("input",{bubbles:true}))}')
     after=page.locator('#ch4-status').inner_text()
+    assert page.locator('#ch4-circuit svg [data-role="series-capacitor"]').count()==3
     assert before!=after,(before,after)
     assert old==page.locator('#ch4-chart-b').get_attribute('data-plot-limits')
     page.locator('#ch4-mode').select_option('LCC')
     assert page.locator('#ch4-CmF').is_disabled()
+    assert page.locator('#ch4-circuit svg [data-role="series-capacitor"]').count()==0
     assert 'LCC · ' in page.locator('#ch4-status').inner_text()
     page.locator('#ch4-mode').select_option('CCC')
     assert page.locator('#ch4-CmF').is_enabled()

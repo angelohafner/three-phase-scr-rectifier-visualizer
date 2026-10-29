@@ -44,6 +44,10 @@ jobs:
         run: python halfwave_figures.py --output-dir output_lcc/fundamentals
       - name: Build ideal current-source teaching diagrams and waveforms
         run: python current_source_figures.py --out output_lcc/current_source
+      - name: Generate Chapter 04 native Schemdraw gallery
+        run: python presentation/chapter04_schemdraw.py --output-dir presentation/assets/chapter04
+      - name: Audit Chapter 04 native symbols and electrical topology
+        run: python presentation/tests/chapter04_native_symbols.py
       - name: Build standalone offline HTML
         run: python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html
       - name: Syntax validation
@@ -76,6 +80,8 @@ jobs:
             output_lcc/current_source/rectifier/circuits/*.svg
             output_lcc/current_source/inverter/circuits/*.svg
             output_lcc/current_source/rectifier/waveforms/*.svg
+            presentation/assets/chapter04/*.svg
+            presentation/assets/chapter04/*.manifest.json
           retention-days: 90
       - name: Upload HTML-only deliverable
         uses: actions/upload-artifact@v4

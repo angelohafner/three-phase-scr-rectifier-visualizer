@@ -109,3 +109,36 @@ node presentation/tests/chapter04_model_tests.js
 python presentation/tests/chapter04_browser.py
 python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html
 ```
+## Native Schemdraw components and topology provenance
+
+All four selectable schematics (LCC, CCC, and their shunt variants) are
+generated in Python by `presentation/chapter04_schemdraw.py` from actual
+Schemdraw 0.23 component objects. There are no handmade SVG electrical
+symbols. The native SCR, Transformer, SourceSin, SourceI, Inductor,
+ResistorIEEE, Capacitor, Ground and Dot geometries are converted from
+Schemdraw element segments, preserving provenance in each SVG group with
+`data-symbol-source="native-instance"`.
+
+The schematic shows three symbolic isolated transformers with a common
+secondary star connection. Primary-side shunt capacitors are connected
+across the AC bus; CCC series capacitors remain separate physical elements
+after the leakage reactors, between transformer and six-SCR bridge.
+The positive/negative DC rails are never shorted, but are joined through
+a native DC current source and smoothing inductor. Native symbol generation
+and connectivity are audited before each HTML build.
+
+The transformer windings are **schematic topology**: the physical converter
+model refers the AC source voltage to the transformer secondary and does not
+simulate magnetic flux, winding saturation or a complete EMT grid.
+
+The standalone HTML embeds the four authentic SVG variants and only uses
+JavaScript to change SCR-conduction styling and numerical annotations.
+The capacitor-voltage differential model remains unchanged.
+
+Generate and validate with:
+```bash
+python presentation/chapter04_schemdraw.py
+python presentation/tests/chapter04_native_symbols.py
+python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html
+python presentation/tests/chapter04_browser.py
+```

@@ -144,7 +144,12 @@ def build(source: Path, out: Path, src: Path) -> dict:
             key=load+':'+('on' if conducting else 'off')
             xml=ET.tostring(circuit_svg(load,conducting).getroot(),encoding='unicode')
             halfwave_figures[key]=svg_xml(xml)
+    # Chapter 04 uses actual Schemdraw elements; no symbol fallback is allowed.
+    from chapter04_schemdraw import generate_assets as generate_chapter04
+    chapter04_schematics = generate_chapter04(
+        source / 'presentation' / 'assets' / 'chapter04')
     data = {
+        'chapter04_schematics': chapter04_schematics,
         'halfwave_figures': halfwave_figures,
         'current_source_figures':current_source_figures,
         'load_figures': load_figures,

@@ -36,56 +36,39 @@ const CCCChapter=(()=>{
    return cached;
  }
  function currentLesson(){return lessons.find(l=>l[0]===$('ch4-root')?.dataset.lesson)||lessons[0];}
+ let nativeSchematics=null;
+ function setSchematics(values){
+   const required=['lcc','ccc','lcc_shunt','ccc_shunt'];
+   if(!values||required.some(key=>!values[key]||!values[key].includes('data-native-symbols="true"')))
+     throw Error('Missing native Schemdraw Chapter 04 schematic variants');
+   nativeSchematics=values;
+ }
  function circuitSvg(point,hasCap,values){
-   const currents=point?.current||[0,0,0],capV=point?.capacitors||[0,0,0];
-   const up=['T1','T3','T5'],lo=['T2','T4','T6'];
-   let result=`<svg viewBox="0 0 980 510" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Six-pulse bridge, three transformer leakage inductors and selectable three series commutation capacitors">
-   <rect width="980" height="510" fill="#fff"/><text x="22" y="23" fill="#365569" font-size="13">THREE-PHASE TRANSFORMER SECONDARY · SIX-PULSE BRIDGE</text>
-   <path d="M600 38H928V475H600" stroke="#294e63" fill="none" stroke-width="3"/><text x="937" y="48" font-size="17" fill="#294e63">DC+</text><text x="937" y="477" font-size="17" fill="#294e63">DC−</text>
-   <g font-family="Segoe UI, Arial" fill="#274c61" font-size="14"><text x="20" y="488">Transformer reactance X<tspan baseline-shift="sub" font-size="10">L</tspan> remains physical</text>
-   <text x="430" y="488">${hasCap?'Series C voltage: solved dynamically':'Series capacitor bypassed (conventional LCC)'}</text></g>`;
-   const branch=(x,y,upper,label,active)=>{
-     let center=(upper?38:y)+(upper?(y-38)*.52:(475-y)*.48),direction=upper?'upper':'lower';
-     // A conventional SCR symbol uses an anode-to-cathode bar and a gate lead.
-     return `<g stroke="${active?'#be344f':'#315165'}" stroke-width="${active?4:2.6}" fill="none" stroke-linejoin="round">
-       <path d="M${x} ${upper?38:y}V${center-15} M${x} ${center+16}V${upper?y:475}"/>
-       <path d="M${x-15} ${center+10}L${x+15} ${center+10}L${x} ${center-8}Z" fill="${active?'#ffd4db':'#f0f6f9'}"/>
-       <path d="M${x-17} ${center-9}H${x+17} M${x+20} ${center+23}L${x+6} ${center+5}"/>
-       <circle cx="${x+21}" cy="${center+23}" r="2.7" fill="${active?'#be344f':'#315165'}" stroke="none"/>
-       </g><text x="${x+24}" y="${center+4}" font-size="16" font-weight="600" fill="${active?'#be344f':'#36576b'}">${label}</text>`;
-   };
-   names.forEach((ph,k)=>{
-     const y=132+128*k,x=620+103*k,active=currents[k];
-     let highlight=Math.abs(active)>.025;let wire=highlight?'#be344f':'#416073';
-     result+=`<g font-family="Segoe UI, Arial" stroke-linecap="round" stroke-linejoin="round">
-      <text x="30" y="${y+6}" font-size="18" font-weight="700" fill="#214963">${ph.toUpperCase()}</text>
-      <path d="M52 ${y}H76M124 ${y}H201" fill="none" stroke="${wire}" stroke-width="3"/>
-      <circle cx="100" cy="${y}" r="24" fill="#fcfdff" stroke="${wire}" stroke-width="3"/>
-      <path d="M81 ${y}q10 -18 19 0t19 0" fill="none" stroke="${wire}" stroke-width="2"/>
-      <path d="M201 ${y}H229q8 -24 16 0t16 0t16 0t16 0H323" fill="none" stroke="${wire}" stroke-width="3"/>
-      <text x="237" y="${y-32}" font-size="14" fill="#36576b">L<tspan baseline-shift="sub" font-size="10">c</tspan></text>
-      <path d="M323 ${y}H374M395 ${y}H${x}" fill="none" stroke="${wire}" stroke-width="3"/>
-      ${hasCap?`<path d="M374 ${y-23}V${y+23}M395 ${y-23}V${y+23}" stroke="${wire}" stroke-width="4"/><text x="363" y="${y-31}" font-size="12" fill="#35677a">C ${fmt(capV[k],2)}</text>`:
-        `<path d="M374 ${y}H395" stroke="${wire}" stroke-width="3"/><text x="361" y="${y-30}" font-size="12" fill="#708392">bypass</text>`}
-      <circle cx="${x}" cy="${y}" r="6" fill="${highlight?'#be344f':'#315165'}" stroke="#fff" stroke-width="2"/>
-      ${branch(x,y,true,up[k],active>.025)}${branch(x,y,false,lo[k],active<-.025)}
-      <text x="495" y="${y-13}" font-size="14" fill="${highlight?'#be344f':'#38617b'}">i${ph} = ${fmt(active,2)}</text></g>`;
-   });
-   // Insulated wire-jumps show that phase leads do not join other valve legs.
-   for(const [x,y,k] of [[620,260,1],[620,388,2],[723,388,2]]){
-     const ink=Math.abs(currents[k])>.025?'#be344f':'#416073';
-     result+=`<path d="M${x-13} ${y}H${x+13}" stroke="#fff" stroke-width="10" fill="none"/>
-       <path d="M${x-13} ${y}Q${x} ${y-17} ${x+13} ${y}" stroke="${ink}" stroke-width="3" fill="none"/>`;
+   if(!nativeSchematics)throw Error('Native Schemdraw diagrams not loaded');
+   const shunt=['shunt','filters'].includes(currentLesson()[0]);
+   return nativeSchematics[(hasCap?'ccc':'lcc')+(shunt?'_shunt':'')];
+ }
+ function updateCircuit(point,hasCap,values){
+   const svg=$('ch4-circuit')?.querySelector('svg[data-native-symbols="true"]');
+   if(!svg)return;
+   const amps=point?.current||[0,0,0],capVolts=point?.capacitors||[0,0,0];
+   const upper={a:'T1',b:'T3',c:'T5'},lower={a:'T2',b:'T4',c:'T6'};
+   for(const [k,phase] of names.entries()){
+     const current=amps[k],active=Math.abs(current)>0.025;
+     svg.querySelectorAll('[data-wire-phase="'+phase+'"]').forEach(w=>
+       w.setAttribute('data-active',String(active)));
+     for(const [valve,conducting] of [[upper[phase],current>0.025],[lower[phase],current<-.025]]){
+       const symbol=svg.querySelector('[data-valve="'+valve+'"]');
+       if(symbol)symbol.setAttribute('data-active',String(conducting));
+     }
+     const iText=svg.querySelector('#live-current-'+phase);
+     if(iText)iText.textContent='i'+phase+' = '+fmt(current,2)+' p.u.';
+     const capacitor=svg.querySelector('#live-capacitor-'+phase);
+     if(capacitor)capacitor.textContent='vC'+phase+' = '+fmt(capVolts[k],3)+' p.u.';
    }
-   if(['shunt','filters'].includes(currentLesson()[0])){
-     // This separate inset represents a three-phase shunt bank at the fixed AC bus.
-     result+=`<g><rect x="190" y="36" width="290" height="84" rx="7" stroke="#aac6d5" fill="#f4fafb"/>
-       <text x="203" y="54" fill="#27526a" font-size="13" font-weight="600">AC BUS SHUNT BANK (3φ EQUIV.)</text>
-       <path d="M221 65H273 M273 65V80 M260 80H286 M260 87H286 M273 87V103" fill="none" stroke="#188c95" stroke-width="2.6"/>
-       <path d="M259 103H287 M263 108H283 M268 113H278" stroke="#188c95" fill="none" stroke-width="2"/>
-       <text x="304" y="88" fill="#167886" font-size="17">Q sh = ${fmt(values.qShunt*values.vPeak**2,2)} p.u.</text></g>`;
-   }
-   return result+`<text x="640" y="501" font-size="12" fill="#587688">Bridge supplied by externally imposed I DC</text></svg>`;
+   const shuntText=svg.querySelector('#live-shunt');
+   if(shuntText)shuntText.textContent='Q shunt = '+fmt(values.qShunt*values.vPeak**2,2)+' p.u.';
+   svg.dataset.dynamicState='synchronized';
  }
  function graph(canvas,tracks,opts={}){
    const rect=canvas.getBoundingClientRect(),w=Math.max(200,rect.width),h=Math.max(185,rect.height);
@@ -182,6 +165,7 @@ const CCCChapter=(()=>{
    status.className='ch4-status';status.textContent=`${mode} · ${fmt(main.avgMu,2)}° overlap · periodic convergence in ${main.iterations} shooting iterations · ideal fixed DC current`;
    const sample=main.traces[Math.min(main.traces.length-1,Math.floor(cursor*main.traces.length/360))];
    $('ch4-circuit').innerHTML=circuitSvg(sample,mode!=='LCC',settings);
+    updateCircuit(sample,mode!=='LCC',settings);
    const panelA=lesson[3],panelB=lesson[4];plot($('ch4-chart-a'),panelA,main,lcc);plot($('ch4-chart-b'),panelB,main,lcc);
    $('ch4-metrics').innerHTML=metrics(main,lcc).map(([lab,val])=>`<div class="ch4-metric"><small>${lab}</small><strong>${val}</strong></div>`).join('');
    $('ch4-cursor-value').textContent=fmt(cursor,0)+'°';
@@ -215,5 +199,5 @@ const CCCChapter=(()=>{
    needRepaint=()=>refresh(lesson);
  }
  function repaint(){if(needRepaint&&$('ch4-root'))needRepaint();}
- return {lessons,mount,repaint,settings,getResults};
+ return {lessons,mount,repaint,settings,getResults,setSchematics};
 })();
