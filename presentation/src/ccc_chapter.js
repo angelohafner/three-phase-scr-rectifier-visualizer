@@ -112,7 +112,9 @@ const CCCChapter=(()=>{
    for(const x of ticks){ctx.fillText(x+'°',Math.max(x0,Math.min(x1-22,X(x)-12)),h-13);}
    for(let j=0;j<=4;j++){const val=hi-j*(hi-lo)/4;ctx.fillText(fmt(val,Math.abs(hi)>5?0:1),3,y0+6+j*(y1-y0)/4);}
    let lx=12;for(const tr of tracks.slice(0,4)){ctx.fillStyle=tr.color||'#bd3d56';ctx.fillRect(lx,31,13,2);ctx.fillStyle='#37566a';ctx.font='9px "Segoe UI", Arial';ctx.fillText(tr.label,lx+16,34);lx+=Math.max(57,tr.label.length*6+28);}
-   canvas.dataset.axisMode='fixed';canvas.dataset.plotLimits=JSON.stringify({x:[0,xEnd],y:[lo,hi]});
+   canvas.dataset.axisMode='fixed';
+   canvas.dataset.traceNames=JSON.stringify(tracks.map(t=>t.label));
+   canvas.dataset.plotLimits=JSON.stringify({x:[0,xEnd],y:[lo,hi]});
    canvas.dataset.axisClipped=String(tracks.some(t=>t.data.some(q=>
      q[0]>=0&&q[0]<=xEnd&&Number.isFinite(q[1])&&(q[1]<lo||q[1]>hi))));
  }
