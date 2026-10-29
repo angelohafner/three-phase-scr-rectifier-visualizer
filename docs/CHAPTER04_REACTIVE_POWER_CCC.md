@@ -33,7 +33,10 @@ connect to a common DC bus, subtracting their phase equations gives:
 
 `2*X_L*(di_in/dtheta) = e_in-e_out - (v_c,in-v_c,out) - R*(i_in-i_out)`
 
-This is integrated with RK4 at 0.2 electrical-degree intervals. Six firing
+The branch equations are integrated with RK4 at 0.2 electrical-degree
+sampling intervals; the actual end of commutation is now resolved inside
+each step by event bisection. The remainder of that step uses the new
+conducting valve pair, avoiding artificial transfer-angle quantization. Six firing
 commands are issued 60 electrical degrees apart; switching events complete
 when incoming current reaches its full signed `I_dc`. Negative attempted SCR
 current, missing forward commutating voltage or overlap crossing the next
@@ -41,7 +44,7 @@ firing event invalidate the operating point. The solver does not substitute
 an empirical overlap angle. Non-overlap conduction charges the capacitors
 according to current paths. A two-dimensional damped Newton shooting method
 adjusts two initial capacitor voltages, with the third constrained to zero
-sum, until the end-of-cycle mismatch falls below `2e-4 p.u.`. Failure to
+sum, until the end-of-cycle mismatch falls below `1e-6 p.u.`. Failure to
 converge is reported without fabricated waveforms.
 
 For `C_series=0` the capacitors are bypassed and the corresponding LCC model
@@ -148,3 +151,31 @@ python presentation/tests/chapter04_browser.py
 Use the ENLARGE control in the Chapter 04 circuit panel to view the same
 live-highlighted, real Schemdraw SVG in the existing full-screen diagram
 viewer. Desktop and mobile interactions are regression tested.
+
+## Independent physical verification (29 October 2026)
+
+An independent numerical reference, `presentation/tests/chapter04_independent_reference.py`,
+integrates the LCC and CCC branch equations using SciPy's adaptive
+`solve_ivp`, with terminal events for outgoing/incoming valve current
+transfer and `scipy.optimize.root` for periodic capacitor-voltage shooting.
+It does not reuse the JavaScript RK4 integrator or its event logic.
+
+For exactly matched AC voltage, DC current, firing angle, leakage
+inductance, series resistance and base quantities, the independent
+reference confirms that at the nominal point, CCC with 26 mF per
+phase **shortens the overlap**, **increases the initial signed
+commutating drive**, and **reduces fundamental converter Q**.
+This conclusion is point-specific; it is not assumed for every feasible
+CCC condition.
+
+The central drive chart now includes the instantaneous series
+capacitor contribution **and** the resistive redistribution term.
+The shunt bank is included in the grid reactive-power balance only
+on the lessons where it is actually drawn and connected.
+The inverter comparison remains explicitly qualitative: only a
+six-pulse rectifier switching problem has been solved dynamically.
+
+Native Schemdraw capacitor symbols do not include conductor leads,
+so both contact points are derived from their authentic segment
+coordinates and explicit wires close the connections to actual circuit
+terminals. Geometry regression validates the real lead endpoints.

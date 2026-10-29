@@ -116,7 +116,6 @@ def reference(params, samples=1800):
     if XC:
         # Build an initial capacitor-voltage estimate independently from
         # the integrated LCC current waveform (not from the CCC JS solver).
-        ref=reference({**params,"CmF":0},samples=720)
         guess=np.array([-.01,-.075])*(26/float(params["CmF"]))*(current/.8)
         result=root(lambda x:cycle(x),guess,tol=1e-9)
         if np.max(np.abs(cycle(result.x)))>1e-7:

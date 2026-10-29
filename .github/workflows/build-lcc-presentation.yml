@@ -29,7 +29,7 @@ jobs:
           node-version: '22'
       - name: Install model and graphics dependencies
         run: |
-          python -m pip install -r requirements-waveforms.txt pytest pillow playwright lxml "schemdraw>=0.22,<0.24"
+          python -m pip install -r requirements-waveforms.txt pytest pillow playwright lxml "schemdraw>=0.22,<0.24" "scipy>=1.11"
           python -m playwright install --with-deps chromium
       - name: Verify native Schemdraw elements
         run: |
@@ -59,6 +59,8 @@ jobs:
         run: node presentation/tests/fixed_axis_model_bounds.js
       - name: Validate switched CCC physics and periodic capacitor solution
         run: node presentation/tests/chapter04_model_tests.js
+      - name: Verify CCC versus LCC with independent SciPy event solver
+        run: python presentation/tests/chapter04_independent_reference.py
       - name: Verify interactive HTML in offline Chromium
         run: |
           python presentation/tests/browser_smoke.py
