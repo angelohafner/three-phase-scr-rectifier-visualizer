@@ -229,7 +229,12 @@ const CCCChapter=(()=>{
    $('ch4-CmF').disabled=mode==='LCC';
    for(const [id] of fields){$( 'ch4-'+id).oninput=e=>{settings[id]=+e.target.value;cacheKey='';refresh(lesson);};}
    // Shunt variation changes the PCC reactive balance, not the bridge dynamics.
-   if(!['shunt','filters'].includes(lesson[0])){$('ch4-qShunt').disabled=true;}
+   const shuntVisible=['shunt','filters'].includes(lesson[0]);
+   const shuntInput=$('ch4-qShunt');
+   shuntInput.disabled=!shuntVisible;
+   // Hide the entire inactive control: an old positive setting must not
+   // imply a connected shunt bank on lessons where there is none.
+   shuntInput.closest('label').style.display=shuntVisible?'':'none';
    $('ch4-cursor').oninput=e=>{cursor=+e.target.value;refresh(lesson);};
    refresh(lesson);
    needRepaint=()=>refresh(lesson);
