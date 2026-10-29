@@ -14,7 +14,7 @@ const CCCChapter=(()=>{
   ['central','How Series Capacitors Assist Thyristor Commutation','CORE LAB — the circuit, available commutating voltage and outgoing/incoming SCR currents share one numerical switching solution.','drive','transfer'],
   ['current','Follow Both SCR Currents During Commutation','A constant DC current imposes the sum of conducting valve currents, but the transfer waveform and μ are dynamically calculated.','drive','transfer'],
   ['ccc','Capacitor-Commutated Converter: Six-Pulse Laboratory','Six firing events per fundamental cycle, phase-capacitor states, switching-dependent reactor currents and periodic shooting.','capacitors','valves'],
-  ['compare','Conventional LCC versus CCC, Same Conditions','Compare actual computed overlap, input reactive power and capacitor-voltage dynamics, not an equivalent L − 1/(ω²C).','compare','transfer'],
+  ['compare','Conventional LCC versus CCC, Same Conditions','Both switching models use the SAME AC/DC, firing, leakage and resistance parameters. The metrics report independent μ, Q₁ and initial commutating drive for each topology.','compare','transfer'],
   ['grid','AC Voltage Sensitivity and Grid Strength','Explore imposed bus-voltage variations. The surrounding Thevenin grid and commutation-failure recovery are NOT solved by this stiff-source model.','power','drive'],
   ['limits','Operating Limits, Validation and Conclusions','Invalid firing, uncompleted commutation or failed periodic shooting must be reported, never replaced by invented current waveforms.','power','capacitors']
  ];
@@ -156,10 +156,28 @@ const CCCChapter=(()=>{
    }
    graph(canvas,series,opts);
  }
- function metrics(res,ref){let p=res.powers;
+ function firstCommutatingDrive(res){
+   // Lower-group commutation T4 -> T6 uses the positive transfer-current convention.
+   const t=res.traces[0],p=res.params,sign=-1;
+   return sign*((t.source[2]-t.source[1])
+      -(t.capacitors[2]-t.capacitors[1])
+      -p.R*(t.current[2]-t.current[1]));
+ }
+ function metrics(res,ref,lessonId){
+   if(lessonId==='compare'){
+     // Compare two genuinely solved cases at identical AC, DC, firing and L/R settings.
+     return [['LCC μ',fmt(ref.avgMu,2)+'°'],['CCC μ',fmt(res.avgMu,2)+'°'],
+       ['Δμ CCC−LCC',fmt(res.avgMu-ref.avgMu,2)+'°'],
+       ['LCC Q₁',fmt(ref.powers.Q,4)+' p.u.'],
+       ['CCC Q₁',fmt(res.powers.Q,4)+' p.u.'],
+       ['ΔQ₁ CCC−LCC',fmt(res.powers.Q-ref.powers.Q,4)+' p.u.'],
+       ['LCC Ucomm(0°)',fmt(firstCommutatingDrive(ref),3)+' p.u.'],
+       ['CCC Ucomm(0°)',fmt(firstCommutatingDrive(res),3)+' p.u.']];
+   }
+   const p=res.powers;
    return [['P AC',fmt(p.P,3)+' p.u.'],['Q converter',fmt(p.Q,3)+' p.u.'],['Q shunt',fmt(p.Qshunt,3)+' p.u.'],
-     ['Q grid',fmt(p.Qgrid,3)+' p.u.'],['PF displacement',fmt(p.pf,3)],['Average μ',fmt(res.avgMu,1)+'°'],
-     ['Balance P',fmt(p.imbalance,4)+' p.u.'],['Periodic error',fmt(res.residual,5)]];
+     ['Q grid',fmt(p.Qgrid,3)+' p.u.'],['PF displacement',fmt(p.pf,3)],['Average μ',fmt(res.avgMu,2)+'°'],
+     ['Balance P',fmt(p.imbalance,4)+' p.u.'],['Periodic error',fmt(res.residual,6)]];
  }
  function refresh(lesson){const root=$('ch4-root');if(!root)return;const {main,lcc}=getResults();
    const status=$('ch4-status');if(!main.valid){status.textContent='INVALID OPERATING POINT · '+main.error;status.className='ch4-status invalid';
@@ -171,7 +189,7 @@ const CCCChapter=(()=>{
    $('ch4-circuit').innerHTML=circuitSvg(sample,mode!=='LCC',settings);
     updateCircuit(sample,mode!=='LCC',settings);
    const panelA=lesson[3],panelB=lesson[4];plot($('ch4-chart-a'),panelA,main,lcc);plot($('ch4-chart-b'),panelB,main,lcc);
-   $('ch4-metrics').innerHTML=metrics(main,lcc).map(([lab,val])=>`<div class="ch4-metric"><small>${lab}</small><strong>${val}</strong></div>`).join('');
+   $('ch4-metrics').innerHTML=metrics(main,lcc,lesson[0]).map(([lab,val])=>`<div class="ch4-metric"><small>${lab}</small><strong>${val}</strong></div>`).join('');
    $('ch4-cursor-value').textContent=fmt(cursor,0)+'°';
    for(const name of Object.keys(settings)){let output=$('ch4-'+name+'-value');if(output)output.textContent=fmt(settings[name],name==='alpha'||name==='CmF'?0:2);}
    const flag=$('ch4-warning');const clipped=['ch4-chart-a','ch4-chart-b'].some(id=>$(id).dataset.axisClipped==='true');
@@ -179,6 +197,7 @@ const CCCChapter=(()=>{
    if(lesson[0]==='central')$('ch4-note').textContent='The red net commutating drive includes source, instantaneous capacitor-voltage contribution AND the resistive redistribution term. Overlap follows 2XL·di_in/dθ = (e_in − e_out) − (vc,in − vc,out) − R(i_in − i_out). Both currents and capacitor voltages come from the same periodic solution.';
  }
  function mount(root,lessonId){const lesson=lessons.find(x=>x[0]===lessonId)||lessons[0];
+   if(lesson[0]==='compare'){mode='CCC';cacheKey='';}
    root.className='slide technical ch4-slide';root.dataset.lesson=lesson[0];root.id='slide';
    root.innerHTML=`<div id="ch4-root" class="ch4-root" data-lesson="${lesson[0]}"><div class="tech-head ch4-head"><div class="tech-index">04 · REACTIVE POWER / CCC</div>
      <div class="tech-title"><h1>${lesson[1]}</h1><p>${lesson[2]}</p></div><span class="ch4-index">${lessons.findIndex(x=>x[0]===lesson[0])+1} / ${lessons.length}</span></div>
@@ -202,6 +221,10 @@ const CCCChapter=(()=>{
       overlay.setAttribute('aria-hidden','false');
     };
     $('ch4-mode').value=mode;
+    if(lesson[0]==='compare'){
+      $('ch4-mode').disabled=true;
+      $('ch4-mode').title='Both LCC and CCC are calculated and displayed simultaneously';
+    }
    $('ch4-mode').onchange=e=>{mode=e.target.value;cacheKey='';const c=$('ch4-CmF');c.disabled=mode==='LCC';refresh(lesson);};
    $('ch4-CmF').disabled=mode==='LCC';
    for(const [id] of fields){$( 'ch4-'+id).oninput=e=>{settings[id]=+e.target.value;cacheKey='';refresh(lesson);};}

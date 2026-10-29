@@ -179,3 +179,14 @@ Native Schemdraw capacitor symbols do not include conductor leads,
 so both contact points are derived from their authentic segment
 coordinates and explicit wires close the connections to actual circuit
 terminals. Geometry regression validates the real lead endpoints.
+
+## Side-by-side teaching comparison
+
+The LCC/CCC comparison lesson now shows eight comparable measured quantities:
+both commutation overlap angles, their signed difference, both fundamental
+reactive powers, their difference, and the initial positive commutating
+voltage available for the lower-group transfer T4 → T6. The topology selector
+is disabled on that lesson, since both solvers already run simultaneously
+with exactly identical electrical settings except for the presence/absence
+of three native series capacitors. A user cannot inadvertently replace the
+CCC reference with a second LCC curve.

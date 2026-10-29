@@ -30,6 +30,22 @@ with sync_playwright() as pw:
         assert svg.get_attribute('data-dynamic-state')=='synchronized'
         assert page.locator('#ch4-chart-a').evaluate('c=>c.width>150')
         assert page.locator('#ch4-chart-b').evaluate('c=>c.dataset.axisMode==="fixed"')
+    comparison=ch[12]
+    page.evaluate('(i)=>window.LCCPresentationTest.setSlide(i)',comparison)
+    assert page.locator('#ch4-mode').is_disabled()
+    comparison_metrics=page.locator('#ch4-metrics').inner_text()
+    for name in ['LCC μ','CCC μ','Δμ','LCC Q₁','CCC Q₁','ΔQ₁','LCC Ucomm','CCC Ucomm']:
+        assert name in comparison_metrics,(name,comparison_metrics)
+    assert page.locator('#ch4-qShunt').is_disabled()
+    # Shunt reactive injection must exist only where the capacitor bank is connected.
+    for k in [0,9,12,14]:
+        page.evaluate('(i)=>window.LCCPresentationTest.setSlide(i)',ch[k])
+        assert page.locator('#ch4-qShunt').is_disabled()
+        assert '0.000 p.u.' in page.locator('#ch4-metrics').inner_text()
+    for k in [5,6]:
+        page.evaluate('(i)=>window.LCCPresentationTest.setSlide(i)',ch[k])
+        assert page.locator('#ch4-qShunt').is_enabled()
+        assert page.locator('#ch4-circuit svg [data-role="shunt-capacitor"]').count()==3
     main=ch[9]
     page.evaluate('(i)=>window.LCCPresentationTest.setSlide(i)',main)
     assert 'How Series Capacitors Assist Thyristor Commutation' in page.locator('h1').inner_text()
