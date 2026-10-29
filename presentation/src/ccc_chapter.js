@@ -113,7 +113,8 @@ const CCCChapter=(()=>{
    for(let j=0;j<=4;j++){const val=hi-j*(hi-lo)/4;ctx.fillText(fmt(val,Math.abs(hi)>5?0:1),3,y0+6+j*(y1-y0)/4);}
    let lx=12;for(const tr of tracks.slice(0,4)){ctx.fillStyle=tr.color||'#bd3d56';ctx.fillRect(lx,31,13,2);ctx.fillStyle='#37566a';ctx.font='9px "Segoe UI", Arial';ctx.fillText(tr.label,lx+16,34);lx+=Math.max(57,tr.label.length*6+28);}
    canvas.dataset.axisMode='fixed';canvas.dataset.plotLimits=JSON.stringify({x:[0,xEnd],y:[lo,hi]});
-   canvas.dataset.axisClipped=String(tracks.some(t=>t.data.some(q=>Number.isFinite(q[1])&&(q[1]<lo||q[1]>hi))));
+   canvas.dataset.axisClipped=String(tracks.some(t=>t.data.some(q=>
+     q[0]>=0&&q[0]<=xEnd&&Number.isFinite(q[1])&&(q[1]<lo||q[1]>hi))));
  }
  const line=(tr,fn,color,label)=>({label,color,data:tr.map(q=>[q.angle,fn(q)])});
  function barPlot(canvas,items,title){
@@ -276,10 +277,22 @@ const CCCChapter=(()=>{
      ['PCC displacement PF',fmt(Math.abs(p.P)/Math.max(1e-9,Math.hypot(p.P,p.Qgrid)),3)],
      ['Overlap μ',fmt(result.avgMu,2)+'°']];
    if(lab==='series'){
-     const capPeak=Math.max(...result.traces.flatMap(t=>t.capacitors.map(Math.abs)));
-     return [['Overlap μ',fmt(result.avgMu,2)+'°'],['Q₁ converter',fmt(p.Q,3)+' p.u.'],
-       ['P₁ converter',fmt(p.P,3)+' p.u.'],['Peak |v_C|',fmt(capPeak,3)+' p.u.'],
-       ['Periodic error',fmt(result.residual,6)]];
+     const {seriesReference}=getResults();
+     const observed=CCCSeriesSensitivity.compare(result,seriesReference);
+     const instant=CCCSeriesSensitivity.sample(result,cursor);
+     const a=observed.main,b=observed.reference;
+     return [['vC,a @θ',fmt(instant.capacitors[0],3)+' p.u.'],
+       ['vC,b @θ',fmt(instant.capacitors[1],3)+' p.u.'],
+       ['vC,c @θ',fmt(instant.capacitors[2],3)+' p.u.'],
+       ['Cap assist @θ',fmt(instant.capacitor,3)+' p.u.'],
+       ['Net drive @θ',fmt(instant.net,3)+' p.u.'],
+       ['Peak |vC|',fmt(a.voltagePeak,3)+' p.u.'],
+       ['μ C / ref',fmt(a.mu,2)+'° / '+fmt(b.mu,2)+'°'],
+       ['Δμ C−ref',fmt(observed.dMu,2)+'°'],
+       ['Q₁ C / ref',fmt(a.Q1,4)+' / '+fmt(b.Q1,4)],
+       ['ΔQ₁ C−ref',fmt(observed.dQ,4)+' p.u.'],
+       ['X_C / X_L',fmt(a.XC/a.XL,2)],
+       ['Avg. E_C',fmt(a.energyAverageJ,1)+' J']];
    }
    // Fundamental AC P1 and Q1 are computed from the source voltage/current phasors.
    // Displacement power factor is distinct from true harmonic power factor.
