@@ -283,7 +283,13 @@ const CCCChapter=(()=>{
  }
  function refresh(lesson){
    if(!$('ch4-root'))return;
-   const {main,lcc}=getResults(),status=$('ch4-status');
+   const {main,lcc,matched}=getResults(),status=$('ch4-status');
+   const lab=lesson[0];
+   if(lab==='compare'){
+     $('ch4-basis-detail').textContent=comparisonBasis==='equal-power'?
+       'CCC α is calculated to match LCC fundamental AC P₁. I_dc, AC voltage, L_c, R and C are held fixed.':
+       'Both converters use the same α and I_dc; their active powers can differ.';
+   }
    if(!main.valid||!lcc.valid){
      status.className='ch4-status invalid';
      status.textContent='OUTSIDE VALID OPERATING RANGE · '+(main.error||lcc.error);
@@ -295,17 +301,26 @@ const CCCChapter=(()=>{
      $('ch4-circuit').innerHTML='<div class="ch4-fault">No valid switching solution. Change α, I_dc, L_c or C. No artificial waveforms are shown.</div>';
      $('ch4-metrics').innerHTML='';$('ch4-warning').textContent='';return;
    }
-   const lab=lesson[0],idx=Math.min(main.traces.length-1,
+   const idx=Math.min(main.traces.length-1,
      Math.floor(cursor*main.traces.length/360));
    status.className='ch4-status';
-   status.textContent=(lab==='compare'?'LCC × CCC':mode)+
-     '  ·  μ = '+fmt(main.avgMu,2)+'°  ·  Q₁ = '+fmt(main.powers.Q,3)+
-     ' p.u.  ·  I_dc imposed';
+   if(lab==='compare'){
+     status.textContent=comparisonBasis==='equal-power'?
+       'EQUAL P₁ ≈ '+fmt(lcc.powers.P,4)+' p.u. · ΔP₁ = '+
+       fmt(main.powers.P-lcc.powers.P,5)+' p.u. · α LCC = '+
+       fmt(lcc.params.alpha,2)+'° / CCC = '+fmt(main.params.alpha,2)+'° · same I_dc':
+       'SAME FIRING SETTINGS · α = '+fmt(lcc.params.alpha,2)+'° · P₁ LCC = '+
+       fmt(lcc.powers.P,4)+' / CCC = '+fmt(main.powers.P,4)+' p.u.';
+   }else{
+     status.textContent=mode+' · μ = '+fmt(main.avgMu,2)+'° · Q₁ = '+
+       fmt(main.powers.Q,3)+' p.u. · I_dc imposed';
+   }
    renderCircuits(lab,main,lcc,idx);
    plot($('ch4-chart-a'),lesson[3],main,lcc);
    plot($('ch4-chart-b'),lesson[4],main,lcc);
    const readings=metrics(main,lcc,lab);
-   $('ch4-metrics').style.setProperty('--ch4-metric-cols',String(readings.length));
+   $('ch4-metrics').style.setProperty('--ch4-metric-cols',
+     String(lab==='compare'?7:readings.length));
    $('ch4-metrics').innerHTML=readings.map(([key,val])=>
      '<div class="ch4-metric"><small>'+key+'</small><strong>'+val+'</strong></div>').join('');
    $('ch4-cursor-value').textContent=fmt(cursor,0)+'°';
@@ -339,6 +354,12 @@ const CCCChapter=(()=>{
      '<div class="tech-title"><h1>'+lesson[1]+'</h1><p>'+lesson[2]+'</p></div>'+
      '<span class="ch4-index">'+(lessons.findIndex(x=>x[0]===lab)+1)+' / 4</span></div>'+
      '<div class="ch4-status" id="ch4-status"></div>'+
+     (lab==='compare'?
+       '<div class="ch4-basis"><label for="ch4-compare-basis">COMPARISON BASIS</label>'+
+       '<select id="ch4-compare-basis">'+
+       '<option value="equal-power">Same fundamental active power P₁ (CCC α adjusted)</option>'+
+       '<option value="same-settings">Same firing angle and parameters</option>'+
+       '</select><span id="ch4-basis-detail"></span></div>':'')+
      '<div class="ch4-space">'+
        '<section class="panel"><div class="panel-head"><strong>01 / CIRCUIT</strong>'+
        '<button type="button" class="ch4-enlarge" id="ch4-enlarge">⤢ ENLARGE</button></div>'+
@@ -360,6 +381,12 @@ const CCCChapter=(()=>{
        '<input id="ch4-cursor" class="angle-range" type="range" min="0" max="359.8" step="0.2" value="'+cursor+'">'+
        '<div class="ticks"><span>0°</span><span>60°</span><span>120°</span><span>180°</span><span>240°</span><span>300°</span><span>360°</span></div>'+
      '</div></div>';
+   if(lab==='compare'){
+     $('ch4-compare-basis').value=comparisonBasis;
+     $('ch4-compare-basis').onchange=e=>{
+       comparisonBasis=e.target.value;cacheKey='';refresh(lesson);
+     };
+   }
    $('ch4-controls').style.setProperty('--ch4-active-cols',String(allowed.length));
    for(const [id] of fields){
      const control=$('ch4-'+id),visible=allowed.includes(id);
@@ -383,5 +410,13 @@ const CCCChapter=(()=>{
    needRepaint=()=>refresh(lesson);
  }
  function repaint(){if(needRepaint&&$('ch4-root'))needRepaint();}
- return {lessons,mount,repaint,settings,getResults,setSchematics};
+ return {lessons,mount,repaint,settings,getResults,setSchematics,
+   getComparisonBasis:()=>comparisonBasis,
+   setComparisonBasis:value=>{
+     if(!['equal-power','same-settings'].includes(value))
+       throw Error('Unknown comparison basis');
+     comparisonBasis=value;cacheKey='';
+     if($('ch4-compare-basis'))$('ch4-compare-basis').value=value;
+     if(currentLesson()[0]==='compare'&&$('ch4-root'))refresh(currentLesson());
+   }};
 })();
