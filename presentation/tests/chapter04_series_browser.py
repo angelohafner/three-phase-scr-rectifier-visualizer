@@ -80,11 +80,11 @@ with sync_playwright() as pw:
     assert '50 mF' in page.locator('#ch4-series-reference-info').inner_text()
     page.locator('#ch4-series-reference').select_option('100')
 
-    svgBefore=page.locator('#ch4-circuit svg #live-capacitor-a').inner_text()
+    svgBefore=page.locator('#ch4-circuit svg #live-capacitor-a').text_content()
     page.locator('#ch4-cursor').evaluate('''el=>{
       el.value="17";el.dispatchEvent(new Event('input',{bubbles:true}));
     }''')
-    svgAfter=page.locator('#ch4-circuit svg #live-capacitor-a').inner_text()
+    svgAfter=page.locator('#ch4-circuit svg #live-capacitor-a').text_content()
     assert svgAfter!=svgBefore
     assert '@θ' in page.locator('#ch4-metrics').inner_text()
 
