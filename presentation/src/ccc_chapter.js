@@ -102,11 +102,17 @@ const CCCChapter=(()=>{
    const ctx=canvas.getContext('2d');ctx.setTransform(d,0,0,d,0,0);
    ctx.fillStyle='#fbfdfe';ctx.fillRect(0,0,w,h);
    const full=FixedAxes.preset()==='full';
-   const lo=full?-2.5:-1.35,hi=full?2.5:1.45;
+   const comparing=title.includes('IDENTICAL OPERATING POINT');
+   // Nominal Q differences remain legible without autoscaling during slider changes.
+   const lo=full?-2.5:(comparing?0:-1.35),hi=full?2.5:(comparing?.85:1.45);
    const x0=45,x1=w-12,y0=43,y1=h-46;
    const Y=v=>y1-(v-lo)/(hi-lo)*(y1-y0);
    ctx.fillStyle='#24495e';ctx.font='600 11px "Segoe UI",Arial';
    ctx.fillText(title,10,16,w-20);
+   if(comparing){
+     ctx.fillStyle='#607b8b';ctx.font='10px "Segoe UI",Arial';
+     ctx.fillText('ΔQ₁ CCC − LCC = '+fmt(items[1].value-items[0].value,4)+' p.u.',12,32,w-24);
+   }
    for(let k=0;k<=4;k++){
      const y=y0+k*(y1-y0)/4, val=hi-(hi-lo)*k/4;
      ctx.strokeStyle='#e6edf2';ctx.lineWidth=.8;ctx.beginPath();
@@ -240,6 +246,12 @@ const CCCChapter=(()=>{
      const diagrams=host.querySelectorAll('svg[data-native-symbols="true"]');
      updateCircuit(lcc.traces[Math.min(lcc.traces.length-1,index)],false,settings,diagrams[0]);
      updateCircuit(point,true,settings,diagrams[1]);
+     // Emphasize the commutation paths in the small side-by-side circuit tiles.
+     // The full native vector geometry and provenance remain embedded in each SVG.
+     for(const svg of diagrams){
+       svg.dataset.fullViewBox=svg.getAttribute('viewBox');
+       svg.setAttribute('viewBox','315 58 640 456');
+     }
    }else{
      host.innerHTML=circuitSvg(point,lab==='series',settings);
      updateCircuit(point,lab==='series',settings);
