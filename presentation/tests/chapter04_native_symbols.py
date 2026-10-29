@@ -39,6 +39,9 @@ for variant in ('lcc','ccc','lcc_shunt','ccc_shunt'):
             assert el is not None and el.get('data-role')=='series-capacitor'
         else:
             assert root.find(f".//*[@id='series-{phase}']") is None
+    # Ensure the current-source label does not intersect the native source circle.
+    current_label=root.find(".//*[@id='dc-current-label']")
+    assert current_label is not None and float(current_label.get('x'))>1040
     p=root.find(".//*[@id='bus-dc-positive']")
     n=root.find(".//*[@id='bus-dc-negative']")
     assert p is not None and n is not None and p.get('d')!=n.get('d')

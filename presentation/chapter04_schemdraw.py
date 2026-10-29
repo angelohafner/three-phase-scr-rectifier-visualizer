@@ -374,7 +374,7 @@ def one(caps: bool, shunt: bool) -> tuple[str, dict]:
     label(notes,1009,49,"DC +",size=15)
     label(notes,1009,507,"DC −",size=15)
     label(notes,1007,162,"Ldc",size=14)
-    label(notes,1015,362,"Idc",size=15)
+    label(notes,1042,362,"Idc",size=14,key="dc-current-label")
     label(notes,351,91,"Lc  +  R  +  C" if caps else "Lc  +  R  (C BYPASSED)",size=13)
     label(notes,29,555,"Transformer winding geometry is symbolic; its electromagnetic dynamics are not simulated.",size=12,color=MUTED)
     if shunt:

@@ -83,3 +83,6 @@ This project models a **six-pulse rectifier with ideal externally imposed DC cur
 The reported Q, S, and power factor refer to fundamental-frequency displacement, not total harmonic apparent power or a complete loss/energy audit of an AC network. Fixed-source shunt Q assumptions are deliberate; the new capacitor series dynamics are solved explicitly.
 
 The numerical results demonstrate model consistency, not physical hardware certification.
+
+The final visual audit also moved the DC current-source label outside
+the native circled SourceI while preserving its library-defined arrow.
