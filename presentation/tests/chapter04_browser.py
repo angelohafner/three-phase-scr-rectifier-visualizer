@@ -90,6 +90,14 @@ with sync_playwright() as pw:
     page.locator('#ch4-enlarge').click()
     assert page.locator('#zoom-content svg[data-native-symbols="true"]').count()==1
     page.locator('#zoom-close').click()
+    # Audit the entire new chapter at a typical notebook width as well.
+    page.set_viewport_size({'width':1100,'height':760})
+    for i in ch:
+        page.evaluate('(i)=>window.LCCPresentationTest.setSlide(i)',i)
+        assert page.locator('#ch4-circuit svg').count()==1
+        assert page.locator('#ch4-chart-a').get_attribute('data-axis-mode')=='fixed'
+        assert page.locator('#ch4-chart-b').get_attribute('data-axis-mode')=='fixed'
+        assert page.evaluate("document.querySelector('#slide').scrollWidth-document.querySelector('#slide').clientWidth")<=2
     assert not errors,errors
     browser.close()
 print('PASS: 97 slides, 15 new CCC lessons, stable axes and dynamic parameter controls.')

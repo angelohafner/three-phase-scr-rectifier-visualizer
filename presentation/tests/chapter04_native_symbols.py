@@ -58,6 +58,15 @@ for variant in ('lcc','ccc','lcc_shunt','ccc_shunt'):
                     for xy in lead.get('d').replace('M ','').split(' L ')]
             assert len(points)==2
             assert all(math.dist(points[k],target)<.002 for k,target in enumerate((a,b)))
+        # Native plate middles must coincide with the documented lead contacts.
+        plates=cap.findall('./{http://www.w3.org/2000/svg}path')
+        assert len(plates)==2,(variant,key,len(plates))
+        for plate,contact in zip(plates,(left,right)):
+            coords=[tuple(float(v) for v in pair.split(','))
+                    for pair in plate.get('d').replace('M ','').split(' L ')]
+            center=((coords[0][0]+coords[-1][0])/2,
+                    (coords[0][1]+coords[-1][1])/2)
+            assert math.dist(center,contact)<.002,(variant,key,center,contact)
         assert math.dist(left,right)>5,(variant,key)
     meta=json.loads(manifest.read_text(encoding='utf-8'))
     assert meta['topology']==('CCC' if variant.startswith('ccc') else 'LCC')
