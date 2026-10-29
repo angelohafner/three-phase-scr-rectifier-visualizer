@@ -16,6 +16,9 @@ from xml.etree import ElementTree as ET
 import schemdraw
 import schemdraw.elements as elm
 
+import sys
+# Allow execution by path while importing the shared repository-root symbol renderer.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import schemdraw_symbols as native
 
 NS = "http://www.w3.org/2000/svg"

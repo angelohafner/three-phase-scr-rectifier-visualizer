@@ -34,6 +34,10 @@ jobs:
       - name: Verify native Schemdraw elements
         run: |
           python -c "import schemdraw.elements as elm; assert all(hasattr(elm, name) for name in ('SCR','ResistorIEEE','Inductor','SourceSin','SourceV','SourceI'))"
+      - name: Generate Chapter 04 native Schemdraw gallery
+        run: python presentation/chapter04_schemdraw.py --output-dir presentation/assets/chapter04
+      - name: Audit Chapter 04 native symbols and electrical topology
+        run: python presentation/tests/chapter04_native_symbols.py
       - name: Regenerate six-pulse rectifier and inverter SVG galleries
         run: python lcc_converter.py --side both --alpha 145 --mu 15 --output-dir output_lcc
       - name: Regenerate full HVDC circuit SVG and PNG galleries
@@ -44,10 +48,6 @@ jobs:
         run: python halfwave_figures.py --output-dir output_lcc/fundamentals
       - name: Build ideal current-source teaching diagrams and waveforms
         run: python current_source_figures.py --out output_lcc/current_source
-      - name: Generate Chapter 04 native Schemdraw gallery
-        run: python presentation/chapter04_schemdraw.py --output-dir presentation/assets/chapter04
-      - name: Audit Chapter 04 native symbols and electrical topology
-        run: python presentation/tests/chapter04_native_symbols.py
       - name: Build standalone offline HTML
         run: python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html
       - name: Syntax validation
