@@ -83,15 +83,52 @@ with sync_playwright() as pw:
                for svg in page.locator('#ch4-circuit svg').all())
     assert page.evaluate('''() => JSON.parse(
        document.getElementById('ch4-chart-b').dataset.plotLimits).y''')==[0,.85]
+    assert page.locator('#ch4-compare-basis').input_value()=='equal-power'
+    assert page.evaluate('CCCChapter.getComparisonBasis()')=='equal-power'
     metrics=page.locator('#ch4-metrics').inner_text()
-    for label in ('μ LCC','μ CCC','Δμ','Q₁ LCC','Q₁ CCC','ΔQ'):
-        assert label in metrics,(label,metrics)
-    operating=page.evaluate('''() => {
-      const {main,lcc}=CCCChapter.getResults();
-      return {muL:lcc.avgMu,muC:main.avgMu,qL:lcc.powers.Q,qC:main.powers.Q};
+    for name in ('P₁ LCC','P₁ CCC','ΔP₁','Q₁ LCC','Q₁ CCC','ΔQ₁',
+                 'Q/P LCC','Q/P CCC','PF₁ LCC','PF₁ CCC',
+                 'α LCC','α CCC','μ LCC','μ CCC'):
+        assert name in metrics,(name,metrics)
+    equal=page.evaluate('''() => {
+      const {main,lcc,matched}=CCCChapter.getResults();
+      return {P_LCC:lcc.powers.P,P_CCC:main.powers.P,
+        Q_LCC:lcc.powers.Q,Q_CCC:main.powers.Q,
+        alpha_LCC:lcc.params.alpha,alpha_CCC:main.params.alpha,
+        idc_LCC:lcc.params.idc,idc_CCC:main.params.idc,
+        residual:matched.errorP,ratio:main.powers.Q/main.powers.P};
     }''')
-    assert operating['muC']<operating['muL'],operating
-    assert operating['qC']<operating['qL'],operating
+    assert abs(equal['P_CCC']-equal['P_LCC'])<2e-5,equal
+    assert equal['idc_LCC']==equal['idc_CCC'],equal
+    assert equal['alpha_CCC']>equal['alpha_LCC'],equal
+    # Same-active-power comparison can reverse the nominal CCC Q advantage.
+    assert equal['Q_CCC']>equal['Q_LCC'],equal
+    domain=axis_limits()
+    page.locator('#ch4-compare-basis').select_option('same-settings')
+    same=page.evaluate('''() => {
+      const {main,lcc}=CCCChapter.getResults();
+      return {P_LCC:lcc.powers.P,P_CCC:main.powers.P,
+        Q_LCC:lcc.powers.Q,Q_CCC:main.powers.Q,
+        alpha_LCC:lcc.params.alpha,alpha_CCC:main.params.alpha};
+    }''')
+    assert same['alpha_CCC']==same['alpha_LCC'],same
+    assert abs(same['P_CCC']-same['P_LCC'])>.004,same
+    assert same['Q_CCC']<same['Q_LCC'],same
+    assert axis_limits()==domain,'Changing comparison basis rescaled chart'
+    page.locator('#ch4-compare-basis').select_option('equal-power')
+    assert page.evaluate('CCCChapter.getComparisonBasis()')=='equal-power'
+    assert axis_limits()==domain
+    beforeQ=page.evaluate('CCCChapter.getResults().main.powers.Q')
+    page.locator('#ch4-CmF').evaluate('''el=>{
+      el.value="73";el.dispatchEvent(new Event("input",{bubbles:true}))
+    }''')
+    afterChange=page.evaluate('''() => {
+      const {main,lcc}=CCCChapter.getResults();
+      return {pErr:main.powers.P-lcc.powers.P,q:main.powers.Q};
+    }''')
+    assert abs(afterChange['pErr'])<2e-5,afterChange
+    assert abs(afterChange['q']-beforeQ)>.001,afterChange
+    assert axis_limits()==domain
     assert page.locator('#ch4-qShunt').is_hidden()
     page.locator('#ch4-CmF').is_visible()
     page.locator('#ch4-enlarge').click()
