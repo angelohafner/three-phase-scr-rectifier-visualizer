@@ -106,3 +106,7 @@ numerical endpoint regressions run in CI. See
 Switch scales using **SCALE: FOCUS / SCALE: FULL** in the desktop header,
 or under Parameters on phones. If the focused domain is exceeded, the chart
 shows a warning and the full-range scale preserves the entire trace.
+
+## Chapter 04 — Reactive power and capacitor-commutated converters
+
+Fifteen interactive slides introduce conventional LCC fundamental-frequency reactive power, shunt compensation and a dynamic six-pulse CCC. The central *How Series Capacitors Assist Thyristor Commutation* laboratory calculates capacitor voltages and SCR current transfer from switched differential equations with the commutation reactor preserved. The solved model is a fixed-DC-current educational rectifier, not a full EMT-grade two-terminal or 12-pulse station. Both FOCUS and FULL fixed scales remain available. See [the technical guide](../docs/CHAPTER04_REACTIVE_POWER_CCC.md).

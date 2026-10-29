@@ -30,6 +30,7 @@
  for(let i=1;i<=12;i++)deck.push(slide('inverter','state',i));
  deck.push(slide('hvdc','chapter'));
  for(let i=1;i<=24;i++)deck.push(slide('hvdc','state',i));
+ for(const lesson of CCCChapter.lessons)deck.push({side:'reactive',type:'reactive',lesson:lesson[0]});
  deck.push(slide('end','end'));
  const iMap=Object.fromEntries(stages.map(side=>[side,deck.findIndex(x=>x.side===side&&x.type==='state')]));
  const chapterIndex=Object.fromEntries(stages.map(side=>[side,deck.findIndex(x=>x.side===side&&x.type==='chapter')]));
@@ -90,7 +91,7 @@
    const id=LCC.mod(s.id-1+v,count)+1;
    goto(iMap[s.side]+id-1);
  }
- function selectStage(stage){pause();goto(stage==='fundamentals'?deck.findIndex(s=>s.side==='fundamentals'&&s.type==='chapter'):chapterIndex[stage]);}
+ function selectStage(stage){pause();goto(stage==='fundamentals'?deck.findIndex(s=>s.side==='fundamentals'&&s.type==='chapter'):stage==='reactive'?deck.findIndex(s=>s.type==='reactive'):chapterIndex[stage]);}
  function diagramSource(s,active){
    if(s.side==='hvdc')return DATA.diagrams.hvdc[`${active.r}:${active.i}`]||null;
    return DATA.diagrams[s.side][String(s.id)]||null;
@@ -761,20 +762,20 @@
    const s=current();
    $('page-counter').textContent=`${slideIndex+1} / ${deck.length}`;
    $('progress-fill').style.width=`${((slideIndex+1)/deck.length*100).toFixed(2)}%`;
-   $('nav-fund').classList.toggle('active',s.side==='fundamentals');$('nav-rect').classList.toggle('active',s.side==='rectifier');$('nav-inv').classList.toggle('active',s.side==='inverter');$('nav-hvdc').classList.toggle('active',s.side==='hvdc');
+   $('nav-fund').classList.toggle('active',s.side==='fundamentals');$('nav-rect').classList.toggle('active',s.side==='rectifier');$('nav-inv').classList.toggle('active',s.side==='inverter');$('nav-hvdc').classList.toggle('active',s.side==='hvdc');$('nav-reactive').classList.toggle('active',s.side==='reactive');
    $('footer-prev').disabled=slideIndex===0;$('footer-next').disabled=slideIndex===deck.length-1;
-   $('current-chapter').textContent=s.side==='fundamentals'?'CH 00 · THYRISTOR FUNDAMENTALS':s.side==='rectifier'?'CH 01 · RECTIFIER':s.side==='inverter'?'CH 02 · INVERTER':s.side==='hvdc'?'CH 03 · HVDC LINK':'HVDC LCC LEARNING LAB';
+   $('current-chapter').textContent=s.side==='fundamentals'?'CH 00 · THYRISTOR FUNDAMENTALS':s.side==='rectifier'?'CH 01 · RECTIFIER':s.side==='inverter'?'CH 02 · INVERTER':s.side==='hvdc'?'CH 03 · HVDC LINK':s.side==='reactive'?'CH 04 · REACTIVE POWER / CCC':'HVDC LCC LEARNING LAB';
    $('settings-gamma').textContent=(180-params.alphaI-params.muI).toFixed(1)+'°';
    applyInductorAvailability();
    updateSettingsRelevance();
  }
  function render(){
    updateSchedule();const s=current();
-   if(s.type==='state')renderState(s);else if(s.type==='load')renderLoadSlide(s);else if(s.type==='fundamentals')renderFundamentalsSlide(s);else if(s.type==='current_source')renderCurrentSourceSlide(s);else renderHero(s);
+   if(s.type==='state')renderState(s);else if(s.type==='load')renderLoadSlide(s);else if(s.type==='fundamentals')renderFundamentalsSlide(s);else if(s.type==='current_source')renderCurrentSourceSlide(s);else if(s.type==='reactive')CCCChapter.mount($('slide'),s.lesson);else renderHero(s);
    updateSlideChrome();
  }
  function togglePlay(){if(playing){pause();return;}
-   if(current().type==='current_source'&&current().lesson==='controller')return;
+   if(current().type==='reactive'||current().type==='current_source'&&current().lesson==='controller')return;
    if(!['state','load','fundamentals','current_source'].includes(current().type)){goto(iMap[activeStage()]??deck.findIndex(s=>s.type==='fundamentals'));}
    playing=true;lastTick=0;render();raf=requestAnimationFrame(tick);
  }
@@ -814,7 +815,8 @@
    const n=stage==='hvdc'?24:12;
    return `<div class="overview-section">${shortName(stage)} · ${n} states</div><div class="overview-grid">${Array.from({length:n},(_,k)=>{const ix=iMap[stage]+k,active=ix===slideIndex?'active':'';return `<button data-slide="${ix}" class="${active}">STATE ${String(k+1).padStart(2,'0')}<small>${stage==='hvdc'?'JOINT':(k%2?'OVERLAP':'NORMAL')}</small></button>`;}).join('')}</div>`;
  }).join('');
-   $('overview-body').innerHTML=fundIntro+intro+currentSourceIndex+grids;$('overview-body').querySelectorAll('[data-slide]').forEach(b=>b.addEventListener('click',()=>{switchOverlay('overview-overlay',false);goto(+b.dataset.slide); }));switchOverlay('overview-overlay',true);
+   const cccIndex='<div class="overview-section">CH 04 · REACTIVE POWER / CCC</div><div class="overview-grid">'+deck.map((s,i)=>s.type==='reactive'?'<button data-slide="'+i+'">'+CCCChapter.lessons.find(x=>x[0]===s.lesson)?.[1]+'</button>':'').join('')+'</div>';
+   $('overview-body').innerHTML=fundIntro+intro+currentSourceIndex+grids+cccIndex;$('overview-body').querySelectorAll('[data-slide]').forEach(b=>b.addEventListener('click',()=>{switchOverlay('overview-overlay',false);goto(+b.dataset.slide); }));switchOverlay('overview-overlay',true);
  }
  function refreshAxisButton(){
    const full=FixedAxes.preset()==='full';
@@ -834,13 +836,14 @@
    else if(s.type==='load')renderLoadDetails();
    else if(s.type==='state')renderPlots();
    else if(s.type==='current_source')renderCurrentSourceDetails();
+   else if(s.type==='reactive')CCCChapter.repaint();
  }
  function setup(){
    $('axis-scale-btn').onclick=toggleAxisScale;
    $('axis-scale-settings').onclick=toggleAxisScale;
    refreshAxisButton();
    $('footer-prev').onclick=()=>navDelta(-1);$('footer-next').onclick=()=>navDelta(1);
-   $('nav-fund').onclick=()=>selectStage('fundamentals');$('nav-rect').onclick=()=>selectStage('rectifier');$('nav-inv').onclick=()=>selectStage('inverter');$('nav-hvdc').onclick=()=>selectStage('hvdc');
+   $('nav-fund').onclick=()=>selectStage('fundamentals');$('nav-rect').onclick=()=>selectStage('rectifier');$('nav-inv').onclick=()=>selectStage('inverter');$('nav-hvdc').onclick=()=>selectStage('hvdc');$('nav-reactive').onclick=()=>selectStage('reactive');
    $('settings-open').onclick=()=>switchOverlay('settings-overlay',true);$('settings-close').onclick=()=>switchOverlay('settings-overlay',false);
    $('overview-open').onclick=overview;$('overview-close').onclick=()=>switchOverlay('overview-overlay',false);
    $('help-open').onclick=()=>switchOverlay('help-overlay',true);$('help-close').onclick=()=>switchOverlay('help-overlay',false);
@@ -854,7 +857,7 @@
      if(document.querySelector('.settings-overlay.open,.overview-overlay.open,.zoom-overlay.open,.help-overlay.open'))return;
      if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();navDelta(1);}else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();navDelta(-1);}else if(e.key==='Home'){goto(0);}else if(e.key==='End'){goto(deck.length-1);}else if(e.key.toLowerCase()==='o'){overview();}else if(e.key.toLowerCase()==='f'){$('fullscreen-btn').click();}else if(e.key.toLowerCase()==='p'){togglePlay();}
    });
-   window.addEventListener('resize',()=>{if(current().type==='state'&&!showReference)renderPlots();if(current().type==='current_source')renderCurrentSourceDetails();if(current().type==='load')renderLoadDetails();if(current().type==='fundamentals')renderFundamentalsDetails();});
+   window.addEventListener('resize',()=>{if(current().type==='state'&&!showReference)renderPlots();if(current().type==='current_source')renderCurrentSourceDetails();if(current().type==='load')renderLoadDetails();if(current().type==='fundamentals')renderFundamentalsDetails();if(current().type==='reactive')CCCChapter.repaint();});
    setupSettings();updateParam('alphaR',params.alphaR);goto(0);
    window.LCCPresentationTest={params,deck,getSlide:()=>current(),getIndex:()=>slideIndex,setSlide:i=>goto(i),setTheta:a=>{setTheta(a);syncSlideFromAngle();render();},at:LCC.at,sample:LCC.sample,halfWave:HalfWave.get,loadSample:LoadModel.sample,loadAt:LoadModel.at,schedule:()=>runtimeSchedule,currentSource:CurrentSourceModel,axisPreset:FixedAxes.preset,setAxisPreset:mode=>{
      FixedAxes.setPreset(mode);refreshAxisButton();const s=current();

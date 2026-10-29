@@ -16,7 +16,7 @@ with sync_playwright() as playwright:
     page.on('pageerror',lambda err:errors.append(str(err)))
     page.set_content(HTML.read_text(encoding='utf-8'),wait_until='domcontentloaded',timeout=120000)
     page.wait_for_function('Boolean(window.LCCPresentationTest)')
-    assert page.evaluate('window.LCCPresentationTest.deck.length')==82
+    assert page.evaluate('window.LCCPresentationTest.deck.length')==97
     page.evaluate('window.LCCPresentationTest.setSlide(20)')
     assert page.locator('#load-choice option').count()==4
     page.locator('#load-choice').select_option('RLE')
@@ -35,4 +35,4 @@ with sync_playwright() as playwright:
         assert page.locator('#plot-canvas').evaluate('(canvas)=>canvas.width>100')
     assert not errors, '\n'.join(errors)
     browser.close()
-print('PASS: 82 slides, four load models, SCR vAK, selected valves, offline charts.')
+print('PASS: 97 slides, four load models, SCR vAK, selected valves, offline charts.')

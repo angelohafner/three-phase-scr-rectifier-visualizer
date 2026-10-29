@@ -158,6 +158,7 @@ def build(source: Path, out: Path, src: Path) -> dict:
     template = (src / 'template.html').read_text(encoding='utf-8')
     assets = {
         '<!--INLINE_CSS-->': (src / 'styles.css').read_text(encoding='utf-8'),
+        '<!--INLINE_CCC_CSS-->': (src / 'ccc_chapter.css').read_text(encoding='utf-8'),
         '<!--INLINE_WAVEFORMS-->': (src / 'waveforms.js').read_text(encoding='utf-8'),
         '<!--INLINE_MATH_UI-->': (src / 'math_ui.js').read_text(encoding='utf-8'),
         '<!--INLINE_FIXED_AXES-->': (src / 'fixed_axes.js').read_text(encoding='utf-8'),
@@ -168,6 +169,8 @@ def build(source: Path, out: Path, src: Path) -> dict:
         '<!--INLINE_CURRENT_SOURCE_MODEL-->': (src / 'current_source.js').read_text(encoding='utf-8'),
         '<!--INLINE_CURRENT_SOURCE_POLICY-->': (src / 'current_source_policy.js').read_text(encoding='utf-8'),
         '<!--INLINE_CURRENT_SOURCE_CHARTS-->': (src / 'current_source_charts.js').read_text(encoding='utf-8'),
+        '<!--INLINE_CCC_MODEL-->': (src / 'ccc_model.js').read_text(encoding='utf-8'),
+        '<!--INLINE_CCC_CHAPTER-->': (src / 'ccc_chapter.js').read_text(encoding='utf-8'),
         '<!--INLINE_PRESENTATION-->': (src / 'presentation.js').read_text(encoding='utf-8'),
         '<!--INLINE_DATA-->': json.dumps(data, ensure_ascii=False, separators=(',', ':'))
             .replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026'),
@@ -193,14 +196,14 @@ def build(source: Path, out: Path, src: Path) -> dict:
         except (OSError,subprocess.SubprocessError):
             revision='local-uncommitted'
     source_files=['waveforms.js','fixed_axes.js','charts.js','load_charts.js',
-        'current_source.js','current_source_charts.js','presentation.js',
-        'styles.css','halfwave.js']
+        'current_source.js','current_source_charts.js','ccc_model.js',
+        'ccc_chapter.js','presentation.js','styles.css','halfwave.js']
     trace={
         'source_revision':revision,
         'built_with':[{'path':'presentation/src/'+name,
                        'git_blob_sha':_git_blob_sha(src/name)} for name in source_files],
         'html_sha256':hashlib.sha256(out.read_bytes()).hexdigest(),
-        'slides':82,
+        'slides':97,
         'convention':'I_dc: rectifier to inverter; Vdc,r positive, Vdc,i negative in normal power flow',
     }
     (out.parent/(out.stem+'.build.json')).write_text(json.dumps(trace,indent=2)+'\n',encoding='utf-8')
@@ -210,7 +213,7 @@ def build(source: Path, out: Path, src: Path) -> dict:
         'individual_circuits': len(figures['rectifier']) + len(figures['inverter']),
         'hvdc_topology_pairs': len(figures['hvdc']),
         'reference_waveforms': sum(map(len, refs.values())),
-        'slides': 82,
+        'slides': 97,
         'offline': True,
     }
 

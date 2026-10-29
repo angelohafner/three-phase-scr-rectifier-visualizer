@@ -1,0 +1,111 @@
+# Chapter 04 — Reactive power and capacitor-commutated converters
+
+## Scope and standards
+
+The new 15-slide offline laboratory describes a **six-pulse** LCC converter and
+its **capacitor-commutated (CCC)** counterpart. It follows the distinction in
+IEC 60633:2019: a *CCC* has series capacitors **between the transformer and
+valves**, not between the AC-filter bus and the grid. The implementation is
+an educational **switching-level stiff-current source model**, not a full EMT
+network/transformer simulation, a 12-pulse station or a commercial CCC design.
+
+The canonical primary lesson is **How Series Capacitors Assist Thyristor
+Commutation**: the phase circuits, capacitor voltage and SCR current transfer
+are driven by exactly the same numerical switching state trajectory.
+
+## Electrical quantities and equations
+
+Three sinusoidal phase voltages are normalized to a 1 kV peak phase base and
+currents to a 1 kA base, yielding a 1 Ω impedance base. A stiff external DC
+current source imposes the pole current. For each phase (source-to-bridge
+positive direction), with phase-specific series inductance, resistance and
+capacitor:
+
+- `e_k = v_valve,k + R*i_k + X_L*(di_k/dtheta) + v_c,k`
+- `dv_c,k/dtheta = X_C*i_k`
+- `X_L = omega*L/Z_base`, `X_C = 1/(omega*C*Z_base)`
+- `i_a + i_b + i_c = 0`
+
+During upper-group commutation, the incoming and outgoing currents sum to
+`+I_dc`; during lower-group commutation they sum to `-I_dc`. The stationary
+valve conducts the opposite total current. Because both commutating valves
+connect to a common DC bus, subtracting their phase equations gives:
+
+`2*X_L*(di_in/dtheta) = e_in-e_out - (v_c,in-v_c,out) - R*(i_in-i_out)`
+
+This is integrated with RK4 at 0.2 electrical-degree intervals. Six firing
+commands are issued 60 electrical degrees apart; switching events complete
+when incoming current reaches its full signed `I_dc`. Negative attempted SCR
+current, missing forward commutating voltage or overlap crossing the next
+firing event invalidate the operating point. The solver does not substitute
+an empirical overlap angle. Non-overlap conduction charges the capacitors
+according to current paths. A two-dimensional damped Newton shooting method
+adjusts two initial capacitor voltages, with the third constrained to zero
+sum, until the end-of-cycle mismatch falls below `2e-4 p.u.`. Failure to
+converge is reported without fabricated waveforms.
+
+For `C_series=0` the capacitors are bypassed and the corresponding LCC model
+uses the same leakage inductance and firing constraints.
+
+## Power and reactive power
+
+The positive current reference is from the three-phase AC source toward the
+converter. Fundamental voltage/current phasors are computed directly via
+Fourier projection of all three switching waveforms over one complete cycle:
+
+- `P_1 = 0.5 * sum Re(V1_k * conj(I1_k))`
+- `Q_1 = 0.5 * sum Im(V1_k * conj(I1_k))`
+
+Both P and Q are normalized to 1.5 MW on the chosen peak-voltage/current
+bases. `Q_conv > 0` means reactive power drawn from the ideal AC grid. The
+model also calculates the mean bridge DC power and series resistive losses;
+periodic stored-energy balance requires `P_AC ≈ P_DC + P_loss`.
+
+The shunt compensation calculation assumes a **fixed AC bus voltage**:
+`Q_cap = B_cap * V_phase_peak^2`, with `B_cap` expressed as the normalized
+nominal shunt reactive rating, and `Q_grid = Q_conv - Q_cap`. The shunt
+capacitor affects the grid reactive-power balance, **not** the SCR switching
+solution under the ideal stiff-bus assumption. Grid voltage recovery,
+network short-circuit ratio and resonant harmonic filters are not solved.
+
+The term *apparent power* in the chapter refers to **fundamental-frequency**
+`S_1 = hypot(P_1,Q_1)` and therefore the reported power factor is the
+*displacement factor*, not true total-harmonic apparent power factor.
+
+## Validation and key limitations
+
+- Six-pulse current conservation in every switching interval.
+- Capacitor voltage continuity and periodic shooting convergence.
+- The same X_L for LCC and CCC comparisons.
+- AC fundamental P versus DC power plus resistive losses.
+- The overlap angle responds physically to L and C; it is never assigned by a slider.
+- Two deterministic FOCUS/FULL vertical plot ranges, neither autoscaling.
+- No reverse SCR current and no invented waveform for invalid states.
+- Numerical step sensitivity is tested at 0.2° and 0.1°.
+
+A real HVDC-CCC additionally requires converter transformer magnetics,
+12-pulse transformer groups, finite DC smoothing, valve recovery, surge
+arresters, capacitor bypass and protection, finite grid Thevenin strength,
+harmonic filtering and EMT-grade transient validation. The **rectifier
+switching model only** is solved numerically here; explanations of inverter
+behavior and weak-grid sensitivity are qualitative and specifically labeled.
+
+## Research references
+
+- IEC 60633:2019, *High-voltage direct current transmission — Vocabulary*;
+  definition 5.11 of Capacitor-Commutated Converter.
+  https://standards.iteh.ai/catalog/standards/iec/4d716d96-f618-4343-ab13-96244d4e9dd5/iec-60633-2019
+- *Calculation of Main Circuit Steady-State Parameters for Capacitor Commutated Converter System*, Applied Sciences 13(2), 1171 (2023):
+  https://www.mdpi.com/2076-3417/13/2/1171
+- ABB Review, *Capacitor commutated converters for HVDC*, 1997:
+  https://library.e.abb.com/public/58287671df8ab97ec1256e8a00505641/25-33%20ENG%209702.pdf
+- *A Time-Domain Piecewise Analytical AC Harmonic Current Calculation Method Suitable for Capacitor Commutated Converter*, IEEE Transactions on Power Delivery 38(2), 2023:
+  https://ieeexplore.ieee.org/document/9857663
+
+## Development checks
+
+```bash
+node presentation/tests/chapter04_model_tests.js
+python presentation/tests/chapter04_browser.py
+python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html
+```
