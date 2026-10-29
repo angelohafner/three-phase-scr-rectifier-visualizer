@@ -175,6 +175,7 @@ def build(source: Path, out: Path, src: Path) -> dict:
         '<!--INLINE_CURRENT_SOURCE_POLICY-->': (src / 'current_source_policy.js').read_text(encoding='utf-8'),
         '<!--INLINE_CURRENT_SOURCE_CHARTS-->': (src / 'current_source_charts.js').read_text(encoding='utf-8'),
         '<!--INLINE_CCC_MODEL-->': (src / 'ccc_model.js').read_text(encoding='utf-8'),
+        '<!--INLINE_CCC_SENSITIVITY-->': (src / 'ccc_series_sensitivity.js').read_text(encoding='utf-8'),
         '<!--INLINE_CCC_POWER_MATCH-->': (src / 'ccc_power_match.js').read_text(encoding='utf-8'),
         '<!--INLINE_CCC_CHAPTER-->': (src / 'ccc_chapter.js').read_text(encoding='utf-8'),
         '<!--INLINE_PRESENTATION-->': (src / 'presentation.js').read_text(encoding='utf-8'),
@@ -203,7 +204,7 @@ def build(source: Path, out: Path, src: Path) -> dict:
             revision='local-uncommitted'
     source_files=['waveforms.js','fixed_axes.js','charts.js','load_charts.js',
         'current_source.js','current_source_charts.js','ccc_model.js',
-        'ccc_power_match.js','ccc_chapter.js','presentation.js','styles.css','halfwave.js']
+        'ccc_series_sensitivity.js','ccc_power_match.js','ccc_chapter.js','presentation.js','styles.css','halfwave.js']
     trace={
         'source_revision':revision,
         'built_with':[{'path':'presentation/src/'+name,
