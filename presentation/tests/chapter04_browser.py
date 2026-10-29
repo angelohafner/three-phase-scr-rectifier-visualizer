@@ -78,6 +78,11 @@ with sync_playwright() as pw:
     assert page.locator('#ch4-circuit svg').count()==2
     assert page.locator('#ch4-circuit svg[data-topology="LCC"]').count()==1
     assert page.locator('#ch4-circuit svg[data-topology="CCC"]').count()==1
+    # Both immutable native SVGs are focused on the commutation area.
+    assert all(svg.get_attribute('viewBox')=='315 58 640 456'
+               for svg in page.locator('#ch4-circuit svg').all())
+    assert page.evaluate('''() => JSON.parse(
+       document.getElementById('ch4-chart-b').dataset.plotLimits).y''')==[0,.85]
     metrics=page.locator('#ch4-metrics').inner_text()
     for label in ('μ LCC','μ CCC','Δμ','Q₁ LCC','Q₁ CCC','ΔQ'):
         assert label in metrics,(label,metrics)
