@@ -61,6 +61,8 @@ jobs:
         run: node presentation/tests/chapter04_model_tests.js
       - name: Verify CCC versus LCC with independent SciPy event solver
         run: python presentation/tests/chapter04_independent_reference.py
+      - name: Verify equal-active-power LCC/CCC comparisons and unattainable cases
+        run: node presentation/tests/chapter04_equal_power.js
       - name: Verify interactive HTML in offline Chromium
         run: |
           python presentation/tests/browser_smoke.py
