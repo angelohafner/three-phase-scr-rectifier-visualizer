@@ -80,3 +80,23 @@ presentation/src/ccc_power_match.js and
 presentation/tests/chapter04_equal_power.js.
 
 The matched-power solver is now accurate to 5e-7 p.u. (fundamental AC P1) so nominal LCC and CCC active-power readings agree even at four displayed decimal places. The circuit viewer restores the complete native Schemdraw topology when enlarged; the smaller comparison tiles focus on the valves and commutation components.
+
+## Series-capacitance sensitivity laboratory improvements
+
+The third laboratory now prioritizes three synchronized physical views:
+the six-pulse electrical circuit with native Schemdraw capacitors; **full
+360° instantaneous capacitor phase voltages** above the net source+capacitor+
+resistance commutating drive; and a 30° (FOCUS) / 60° (FULL) zoomed
+incoming/outgoing SCR current transfer. The latter two graphs overlay a
+separately solved reference capacitance, selected from 8/12/26/50/73/100 mF.
+All charts use fixed documented axes.
+
+A collapsed sensitivity table provides C, Xc/Xl, phase-voltage peak and RMS,
+initial net commutating drive, measured overlap, fundamental Q1 and mean
+stored capacitor energy. The active capacitance slider spans 8–100 mF.
+A 432-combination corner sweep with C=8/12/26/100 mF and extremes of
+alpha, I_dc, L_c and V_phase was valid within this educational model.
+This does not establish commercial equipment ratings.
+
+See [series-C technical sensitivity audit](CHAPTER04_SERIES_CAPACITOR_AUDIT_2026-10-29.md)
+for the physical explanation and three independent parameter sweeps.

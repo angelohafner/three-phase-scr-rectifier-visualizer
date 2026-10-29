@@ -76,10 +76,10 @@ These selected operating points show one direction of the C response; the teachi
 
 ## Implemented teaching improvements
 
-- The first voltage subpanel exposes each *instantaneous* `v_C,a`, `v_C,b`, and `v_C,c` over one commutation interval.
+- The first voltage subpanel exposes each *instantaneous* `v_C,a`, `v_C,b`, and `v_C,c` over the **full 0–360° capacitor charge/discharge cycle**. This prevents their slow change during the first few commutation degrees from appearing falsely constant.
 - The second voltage subpanel exposes source drive, capacitor assistance, physically computed total drive (including series resistance), and the total drive for the separately solved reference capacitance.
 - The third panel shows outgoing/incoming SCR currents, imposed `I_dc`, and the incoming SCR current from the reference capacitance.
-- FOCUS uses a **fixed 0°–30°** commutation window and purpose-specific vertical limits. FULL uses a **fixed 0°–60°** window; neither changes automatically when sliders move.
+- The capacitor-voltage panel keeps the full 0°–360° window in both modes, with fixed ±0.30 p.u. voltage limits in FOCUS and ±1.30 p.u. in FULL. The commutating-drive and SCR-current panels use a **fixed 0°–30°** window in FOCUS and a **fixed 0°–60°** window in FULL. No axis autoscales when sliders move.
 - A reference capacitor selector offers 8/12/26/50/73/100 mF under the same electrical conditions.
 - A collapsible sensitivity table includes `X_C/X_L`, capacitor peak and RMS voltage, stored energy, net commutating drive, μ and Q₁.
 - Numerical readouts report instantaneous capacitor voltages, capacitive contribution and net drive at the angular cursor, as well as the actual difference in μ and Q₁ relative to the reference.

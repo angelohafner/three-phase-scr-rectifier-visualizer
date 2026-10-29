@@ -306,3 +306,9 @@ Regenerate all new SVG/PNG figures with `python current_source_figures.py`; buil
 ## Four interactive laboratories in Chapter 04
 
 The last chapter now contains four focused labs (LCC reactive power, shunt capacitors, dynamically solved CCC series capacitors and side-by-side LCC/CCC comparison). There are **86 slides total**; the previous 82 are preserved. Current DC is an imposed external boundary condition in Chapter 04, not a current source plus a redundant series smoothing reactor. See [docs/CHAPTER04_FOUR_LABS.md](docs/CHAPTER04_FOUR_LABS.md).
+
+
+The series-capacitor lesson was audited for C sensitivity. It now displays
+the three **full-cycle capacitor voltages** and an enlarged commutation-drive
+plot, overlays a selectable C-reference solution, and offers an optional
+C-sweep table. See [the capacitor sensitivity audit](docs/CHAPTER04_SERIES_CAPACITOR_AUDIT_2026-10-29.md).
