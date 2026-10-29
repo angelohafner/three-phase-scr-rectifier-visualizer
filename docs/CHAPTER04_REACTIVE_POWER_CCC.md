@@ -190,3 +190,8 @@ is disabled on that lesson, since both solvers already run simultaneously
 with exactly identical electrical settings except for the presence/absence
 of three native series capacitors. A user cannot inadvertently replace the
 CCC reference with a second LCC curve.
+
+
+## Current teaching interface
+
+The original 15-lesson scope described above is historical. It has been superseded by four focused experiments described in [CHAPTER04_FOUR_LABS.md](CHAPTER04_FOUR_LABS.md). The dynamic CCC equations are unchanged; the Chapter 04 DC current is now an imposed boundary with no physically redundant Ldc/current-source symbols.

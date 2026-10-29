@@ -301,3 +301,8 @@ The presentation now includes **nine additional slides** on the DC current-sourc
 The comparison covers RLE load response, ideal DC current constraints and an averaged, bounded PI current controller. The inverter comparison converts the local inverter DC voltage drop to a common signed pole-voltage convention before calculating power. Current-source figures are under `output_lcc/current_source/`. See [Current-source technical guide](docs/CURRENT_SOURCE_TEACHING.md).
 
 Regenerate all new SVG/PNG figures with `python current_source_figures.py`; build the offline lecture with `python presentation/build_presentation.py --project . --output dist/lcc_hvdc_interactive.html`. Only HTML is generated for the presentation—no PPTX is generated.
+
+
+## Four interactive laboratories in Chapter 04
+
+The last chapter now contains four focused labs (LCC reactive power, shunt capacitors, dynamically solved CCC series capacitors and side-by-side LCC/CCC comparison). There are **86 slides total**; the previous 82 are preserved. Current DC is an imposed external boundary condition in Chapter 04, not a current source plus a redundant series smoothing reactor. See [docs/CHAPTER04_FOUR_LABS.md](docs/CHAPTER04_FOUR_LABS.md).
