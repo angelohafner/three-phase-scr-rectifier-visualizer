@@ -5,26 +5,28 @@ const CCCChapter=(()=>{
  const lessons=[
   ['lcc','01 · Reactive Power in LCC','Vary α, I_dc, AC voltage or L_c. Observe current displacement, Q and the calculated commutation overlap.','phasor','ac'],
   ['shunt','02 · Shunt Capacitor Compensation','Change the shunt capacitor bank. Compare converter Q, capacitive injection and the reactive power actually drawn from the grid.','power','ac'],
-  ['series','03 · Series Capacitors and Commutation','Change C, L_c or I_dc and observe the dynamic capacitor contribution, net commutating voltage and the SCR current transfer.','drive','transfer'],
+  ['series','03 · Series Capacitors and Commutation','See the instantaneous capacitor voltages, how they change the available commutation drive, and the SCR current-transfer interval. Compare against a fixed C reference.','drive','transfer'],
   ['compare','04 · LCC versus CCC · Active Power and Reactive Demand','Compare matched fundamental active power or identical settings. Observe P₁, Q₁, Q/P, displacement PF, α and μ.','compare','powerCompare']
  ];
  const names=['a','b','c'];
  let settings={alpha:15,idc:.8,vPeak:1,LmH:.24,CmF:26,R:.012,f:60,qShunt:.40};
- let mode='LCC',cursor=8,comparisonBasis='equal-power',cacheKey='',cached=null,needRepaint=null;
+ let mode='LCC',cursor=8,comparisonBasis='equal-power',
+     seriesReferenceC=100,cacheKey='',cached=null,needRepaint=null;
  const $=id=>document.getElementById(id),fmt=(x,n=2)=>Number.isFinite(x)?x.toFixed(n):'—';
  const fields=[['alpha','α firing','°',0,60,1],['idc','I DC','p.u.',.3,1.2,.05],['vPeak','V phase pk','p.u.',.8,1.2,.05],
-   ['LmH','L commutation','mH',.12,.38,.01],['CmF','C series','mF',12,100,1],['qShunt','Q shunt','p.u.',0,1.2,.05]];
+   ['LmH','L commutation','mH',.12,.38,.01],['CmF','C series','mF',8,100,1],['qShunt','Q shunt','p.u.',0,1.2,.05]];
  const fixedBounds=(kind)=>{
    const full=typeof FixedAxes!=='undefined'&&FixedAxes.preset()==='full';
    const domains={current:full?[-.05,1.6]:[-.02,1.35],voltage:full?[-3.5,3.5]:[-2.4,2.4],signedCurrent:full?[-1.8,1.8]:[-1.4,1.4],
-    cap:full?[-1.3,1.3]:[-.55,.55],power:full?[-2,2]:[-1.1,1.4],dc:full?[-3.5,3.5]:[-2,2]};
+    cap:full?[-1.3,1.3]:[-.55,.55],commDrive:full?[-4,4]:[-.5,2.4],
+    power:full?[-2,2]:[-1.1,1.4],dc:full?[-3.5,3.5]:[-2,2]};
    return domains[kind]||domains.voltage;
  };
  function getResults(){
    const lab=currentLesson()[0],hasShunt=lab==='shunt';
    const p={...settings,CmF:mode==='LCC'?0:settings.CmF,
      qShunt:hasShunt?settings.qShunt:0};
-   const key=JSON.stringify({parameters:p,lab,basis:comparisonBasis});
+   const key=JSON.stringify({parameters:p,lab,basis:comparisonBasis,seriesReferenceC});
    if(key!==cacheKey){
      cacheKey=key;
      const lcc=CCCModel.solve({...p,CmF:0});
@@ -34,7 +36,10 @@ const CCCChapter=(()=>{
        matched=CCCPowerMatch.match(lcc,p);
        main=matched.valid?matched.ccc:{valid:false,error:matched.error};
      }
-     cached={main,lcc,matched,basis:comparisonBasis};
+     const seriesReference=lab==='series'&&main.valid?
+       (settings.CmF===seriesReferenceC?main:
+         CCCModel.solve({...p,CmF:seriesReferenceC,qShunt:0})):null;
+     cached={main,lcc,matched,seriesReference,basis:comparisonBasis};
    }
    return cached;
  }
@@ -84,7 +89,8 @@ const CCCChapter=(()=>{
    ctx.fillStyle='#fbfdff';ctx.fillRect(0,0,w,h);ctx.fillStyle='#214960';ctx.font='600 12px "Segoe UI", Arial';ctx.fillText(opts.title||'',12,18,w-20);
    ctx.save();ctx.beginPath();ctx.rect(x0,y0,x1-x0,y1-y0);ctx.clip();
    if(opts.mu>0){ctx.fillStyle='#e8d9db90';ctx.fillRect(X(0),y0,X(opts.mu)-x0,y1-y0);}
-   const ticks=xEnd===60?[0,10,20,30,40,50,60]:[0,60,120,180,240,300,360];
+   const ticks=xEnd===30?[0,5,10,15,20,25,30]:
+      xEnd===60?[0,10,20,30,40,50,60]:[0,60,120,180,240,300,360];
    for(const x of ticks){ctx.strokeStyle='#e8eff3';ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(X(x),y0);ctx.lineTo(X(x),y1);ctx.stroke();}
    for(let j=0;j<=4;j++){let y=y0+j*(y1-y0)/4;ctx.strokeStyle='#e5edf2';ctx.beginPath();ctx.moveTo(x0,y);ctx.lineTo(x1,y);ctx.stroke();}
    if(lo<0&&hi>0){ctx.strokeStyle='#a9bfcb';ctx.beginPath();ctx.moveTo(x0,Y(0));ctx.lineTo(x1,Y(0));ctx.stroke();}
@@ -92,7 +98,16 @@ const CCCChapter=(()=>{
      let open=false;for(const q of tr.data){let x=q[0],y=q[1];if(x<0||x>xEnd||!Number.isFinite(y)){open=false;continue;}
        const yy=Y(y);if(!open)ctx.moveTo(X(x),yy);else ctx.lineTo(X(x),yy);open=true;
      }ctx.stroke();ctx.setLineDash([]);}
-   if(opts.cursor!==undefined){ctx.strokeStyle='#b53e4e';ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(X(Math.min(xEnd,opts.cursor)),y0);ctx.lineTo(X(Math.min(xEnd,opts.cursor)),y1);ctx.stroke();ctx.setLineDash([]);}
+   if(opts.muRef>0&&opts.muRef<xEnd){
+      ctx.strokeStyle='#59859a';ctx.setLineDash([3,4]);ctx.lineWidth=1.6;
+      ctx.beginPath();ctx.moveTo(X(opts.muRef),y0);ctx.lineTo(X(opts.muRef),y1);
+      ctx.stroke();ctx.setLineDash([]);ctx.lineWidth=1;
+    }
+    if(opts.cursor!==undefined&&opts.cursor<=xEnd){
+      ctx.strokeStyle='#b53e4e';ctx.setLineDash([4,4]);ctx.beginPath();
+      ctx.moveTo(X(Math.min(xEnd,opts.cursor)),y0);ctx.lineTo(X(Math.min(xEnd,opts.cursor)),y1);
+      ctx.stroke();ctx.setLineDash([]);
+    }
    ctx.restore();ctx.font='10px "Segoe UI", Arial';ctx.fillStyle='#698092';
    for(const x of ticks){ctx.fillText(x+'°',Math.max(x0,Math.min(x1-22,X(x)-12)),h-13);}
    for(let j=0;j<=4;j++){const val=hi-j*(hi-lo)/4;ctx.fillText(fmt(val,Math.abs(hi)>5?0:1),3,y0+6+j*(y1-y0)/4);}
