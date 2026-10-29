@@ -445,7 +445,7 @@ const CCCChapter=(()=>{
    const headings={
      lcc:['FUNDAMENTAL PHASORS','AC PHASE CURRENTS'],
      shunt:['REACTIVE POWER BALANCE','AC PHASE CURRENTS'],
-     series:['NET COMMUTATING DRIVE','SCR CURRENT TRANSFER'],
+     series:['CAPACITOR VOLTAGES AND COMMUTATING DRIVE','SCR CURRENT TRANSFER'],
      compare:['LCC / CCC CURRENT TRANSFER','REACTIVE POWER COMPARISON']
    }[lab];
    root.innerHTML='<div id="ch4-root" class="ch4-root" data-lesson="'+lab+'">'+
@@ -453,6 +453,12 @@ const CCCChapter=(()=>{
      '<div class="tech-title"><h1>'+lesson[1]+'</h1><p>'+lesson[2]+'</p></div>'+
      '<span class="ch4-index">'+(lessons.findIndex(x=>x[0]===lab)+1)+' / 4</span></div>'+
      '<div class="ch4-status" id="ch4-status"></div>'+
+     (lab==='series'?
+       '<div class="ch4-series-reference"><label for="ch4-series-reference">C REFERENCE</label>'+
+       '<select id="ch4-series-reference">'+
+       CCCSeriesSensitivity.REFERENCE_CAPS.map(C=>
+         '<option value="'+C+'">'+C+' mF</option>').join('')+
+       '</select><span id="ch4-series-reference-info"></span></div>':'')+
      (lab==='compare'?
        '<div class="ch4-basis"><label for="ch4-compare-basis">COMPARISON BASIS</label>'+
        '<select id="ch4-compare-basis">'+
@@ -464,7 +470,13 @@ const CCCChapter=(()=>{
        '<button type="button" class="ch4-enlarge" id="ch4-enlarge">⤢ ENLARGE</button></div>'+
        '<div class="ch4-circuit" id="ch4-circuit"></div></section>'+
        '<section class="panel"><div class="panel-head"><strong>02 / '+headings[0]+'</strong></div>'+
-       '<div class="plot-wrapper"><canvas id="ch4-chart-a" aria-label="Synchronized converter waveform or phasor"></canvas></div></section>'+
+       (lab==='series'?
+       '<div class="ch4-voltage-stack">'+
+         '<div class="ch4-voltage-item"><canvas id="ch4-cap-chart" aria-label="Instantaneous phase capacitor voltages"></canvas></div>'+
+         '<div class="ch4-voltage-item"><canvas id="ch4-chart-a" aria-label="Source and capacitor contributions to net commutation drive"></canvas></div>'+
+       '</div>':
+       '<div class="plot-wrapper"><canvas id="ch4-chart-a" aria-label="Synchronized converter waveform or phasor"></canvas></div>')+
+     '</section>'+
        '<section class="panel"><div class="panel-head"><strong>03 / '+headings[1]+'</strong></div>'+
        '<div class="plot-wrapper"><canvas id="ch4-chart-b" aria-label="Synchronized current or reactive-power plot"></canvas></div></section></div>'+
      '<div class="ch4-controls" id="ch4-controls">'+
@@ -474,12 +486,24 @@ const CCCChapter=(()=>{
          '<input id="ch4-'+id+'" type="range" min="'+min+'" max="'+max+
          '" step="'+step+'" value="'+settings[id]+'"></label>').join('')+'</div>'+
      '<div class="ch4-metrics" id="ch4-metrics"></div>'+
+     (lab==='series'?
+       '<details class="ch4-sensitivity" id="ch4-sensitivity">'+
+         '<summary>View C sensitivity (8, 12, 26, 50, 73 and 100 mF)</summary>'+
+         '<div id="ch4-sensitivity-table" class="ch4-sensitivity-table"></div>'+
+       '</details>':'')+
      '<div class="ch4-notes"><p id="ch4-note">'+lesson[2]+'</p><span id="ch4-warning"></span></div>'+
      '<div class="timeline ch4-timeline"><div class="timeline-top"><span>θ = '+
        '<output id="ch4-cursor-value">'+fmt(cursor,0)+'°</output> · Move the angle cursor to follow SCR conduction.</span></div>'+
        '<input id="ch4-cursor" class="angle-range" type="range" min="0" max="359.8" step="0.2" value="'+cursor+'">'+
-       '<div class="ticks"><span>0°</span><span>60°</span><span>120°</span><span>180°</span><span>240°</span><span>300°</span><span>360°</span></div>'+
+       '<div class="ticks" id="ch4-cursor-ticks"><span>0°</span><span>60°</span><span>120°</span><span>180°</span><span>240°</span><span>300°</span><span>360°</span></div>'+
      '</div></div>';
+   if(lab==='series'){
+     $('ch4-series-reference').value=String(seriesReferenceC);
+     $('ch4-series-reference').onchange=e=>{
+       seriesReferenceC=Number(e.target.value);cacheKey='';refresh(lesson);
+     };
+     $('ch4-sensitivity').ontoggle=()=>updateSensitivityTable();
+   }
    if(lab==='compare'){
      $('ch4-compare-basis').value=comparisonBasis;
      $('ch4-compare-basis').onchange=e=>{
@@ -515,6 +539,14 @@ const CCCChapter=(()=>{
  }
  function repaint(){if(needRepaint&&$('ch4-root'))needRepaint();}
  return {lessons,mount,repaint,settings,getResults,setSchematics,
+   getSeriesReferenceC:()=>seriesReferenceC,
+   setSeriesReferenceC:value=>{
+     if(!CCCSeriesSensitivity.REFERENCE_CAPS.includes(Number(value)))
+       throw Error('Reference capacitance is outside the validated set');
+     seriesReferenceC=Number(value);cacheKey='';
+     if($('ch4-series-reference'))$('ch4-series-reference').value=String(seriesReferenceC);
+     if(currentLesson()[0]==='series'&&$('ch4-root'))refresh(currentLesson());
+   },
    getComparisonBasis:()=>comparisonBasis,
    setComparisonBasis:value=>{
      if(!['equal-power','same-settings'].includes(value))
