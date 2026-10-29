@@ -56,7 +56,7 @@ The fourth laboratory now offers two clearly labeled calculation modes:
 - **Same fundamental active power P1 (default):** The LCC firing angle remains
   the user-controlled reference. The CCC firing angle is numerically adjusted
   until its fundamental AC active power agrees with the LCC within
-  2e-5 p.u. The DC current, phase voltage, leakage inductance, series
+  5e-7 p.u. The DC current, phase voltage, leakage inductance, series
   resistance and capacitor value are otherwise held fixed. The matched CCC
   firing angle may lie between 0° and 90°, while the reference LCC slider
   is limited to 0°–60°. No additional circuit dynamics is fabricated.
@@ -78,3 +78,5 @@ not guaranteed to have lower reactive demand for the same active power.
 The matching method and its model/feasibility regression tests are in
 presentation/src/ccc_power_match.js and
 presentation/tests/chapter04_equal_power.js.
+
+The matched-power solver is now accurate to 5e-7 p.u. (fundamental AC P1) so nominal LCC and CCC active-power readings agree even at four displayed decimal places. The circuit viewer restores the complete native Schemdraw topology when enlarged; the smaller comparison tiles focus on the valves and commutation components.

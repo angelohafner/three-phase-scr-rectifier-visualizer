@@ -1,7 +1,7 @@
 /* Compare LCC and CCC at identical fundamental AC active power. */
 'use strict';
 const CCCPowerMatch=(()=>{
- const DEFAULT_TOLERANCE=2e-5, LIMITS=[0,90];
+ const DEFAULT_TOLERANCE=5e-7, LIMITS=[0,90];
  const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
  const ratio=(q,p)=>Math.abs(p)>1e-7?q/p:NaN;
  function match(reference,parameters,opts={}){

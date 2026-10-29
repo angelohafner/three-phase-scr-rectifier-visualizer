@@ -401,6 +401,11 @@ const CCCChapter=(()=>{
      const host=$('ch4-circuit');
      if(!host.querySelector('svg'))return;
      $('zoom-content').innerHTML=lab==='compare'?host.innerHTML:host.querySelector('svg').outerHTML;
+     if(lab==='compare'){
+       // The normal view emphasizes commutation; enlarge restores full circuit topology.
+       $('zoom-content').querySelectorAll('svg[data-full-view-box]').forEach(svg=>
+         svg.setAttribute('viewBox',svg.dataset.fullViewBox));
+     }
      $('zoom-title').textContent='CH 04 · '+lesson[1];
      $('zoom-overlay').classList.add('open');
      $('zoom-overlay').setAttribute('aria-hidden','false');

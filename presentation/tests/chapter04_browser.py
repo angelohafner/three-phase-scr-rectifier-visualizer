@@ -98,7 +98,7 @@ with sync_playwright() as pw:
         idc_LCC:lcc.params.idc,idc_CCC:main.params.idc,
         residual:matched.errorP,ratio:main.powers.Q/main.powers.P};
     }''')
-    assert abs(equal['P_CCC']-equal['P_LCC'])<2e-5,equal
+    assert abs(equal['P_CCC']-equal['P_LCC'])<5e-7,equal
     assert equal['idc_LCC']==equal['idc_CCC'],equal
     assert equal['alpha_CCC']>equal['alpha_LCC'],equal
     # Same-active-power comparison can reverse the nominal CCC Q advantage.
@@ -126,13 +126,15 @@ with sync_playwright() as pw:
       const {main,lcc}=CCCChapter.getResults();
       return {pErr:main.powers.P-lcc.powers.P,q:main.powers.Q};
     }''')
-    assert abs(afterChange['pErr'])<2e-5,afterChange
+    assert abs(afterChange['pErr'])<5e-7,afterChange
     assert abs(afterChange['q']-beforeQ)>.001,afterChange
     assert axis_limits()==domain
     assert page.locator('#ch4-qShunt').is_hidden()
     page.locator('#ch4-CmF').is_visible()
     page.locator('#ch4-enlarge').click()
     assert page.locator('#zoom-content svg').count()==2
+    assert all(svg.get_attribute('viewBox')=='0 0 1080 564'
+               for svg in page.locator('#zoom-content svg').all())
     page.locator('#zoom-close').click()
 
     for width,height in ((1100,760),(390,844)):

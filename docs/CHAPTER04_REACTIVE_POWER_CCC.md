@@ -208,7 +208,7 @@ for each solution. Since equal P1 and equal alpha are different constraints,
 the apparent reactive advantage of the CCC may change sign.
 
 The solver has bounded alpha search (0°–90°), an active-power residual
-tolerance of 2e-5 p.u., and fail-closed behavior for unavailable operating
+tolerance of 5e-7 p.u., and fail-closed behavior for unavailable operating
 points. It does not pretend the original same-alpha comparison was an
 equal-power comparison. Additional Node and offline-browser regressions
 verify equality of AC P1, conservation of imposed DC current and Q/P
