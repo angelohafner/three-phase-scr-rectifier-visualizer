@@ -166,25 +166,48 @@ const CCCChapter=(()=>{
    canvas.dataset.axisClipped=String(items.some(item=>item.value<lo||item.value>hi));
  }
 
- function plot(canvas,kind,res,old){
+ function plot(canvas,kind,res,old,reference=null){
    const tr=res.traces,p=res.params,first=tr.filter(q=>q.angle<60),mu=res.mu[0];
    const source=idx=>tr.map(q=>[q.angle,q.source[idx]]);
    const current=idx=>tr.map(q=>[q.angle,q.current[idx]]);
    let opts={cursor,kind:'voltage',title:'',xEnd:360},series=[];
    if(kind==='drive'){
-     const s=first,sign=-1;
-     const supply=q=>sign*(q.source[2]-q.source[1]),assist=q=>-sign*(q.capacitors[2]-q.capacitors[1]);
-     const drive=q=>supply(q)+assist(q)-sign*p.R*(q.current[2]-q.current[1]);
-     series=[line(s,supply,'#287da4','AC line'),line(s,assist,'#c38a28','Capacitor'),
-       line(s,drive,'#bc3c57','Net drive (incl. R)')];
-     opts={title:'COMMUTATING VOLTAGE · FIRST 60° SECTOR',kind:'voltage',xEnd:60,mu,cursor};
+     // Resolve the same physical source/capacitor/resistor drive used in the ODE.
+     const ac=q=>CCCSeriesSensitivity.terms(q,p).ac;
+     const cap=q=>CCCSeriesSensitivity.terms(q,p).capacitor;
+     const net=q=>CCCSeriesSensitivity.terms(q,p).net;
+     series=[line(first,ac,'#287da4','AC drive'),
+       line(first,cap,'#b88729','Cap assist'),
+       line(first,net,'#bc3c57','Net drive')];
+     if(reference?.valid){
+       series.push({...line(reference.traces.filter(q=>q.angle<60),
+         q=>CCCSeriesSensitivity.terms(q,reference.params).net,
+         '#5c8190','Net C ref'),dash:[6,5],width:1.65});
+     }
+     const focus=FixedAxes.preset()!=='full';
+     opts={title:'COMMUTATING DRIVE = AC + CAPACITOR + R · p.u.',
+       kind:'commDrive',xEnd:focus?30:60,mu,cursor,muRef:reference?.mu?.[0]};
    }else if(kind==='transfer'){
-     series=[line(first,q=>Math.max(0,-q.current[2]),'#c13d56','Incoming T6'),line(first,q=>Math.max(0,-q.current[1]),'#227ca4','Outgoing T4'),
-       line(first,q=>Math.max(0,q.current[0]),'#0e8693','Stationary T1')];
-     opts={title:'SCR CURRENT TRANSFER · DYNAMIC μ',kind:'current',xEnd:60,mu,cursor};
-   }else if(kind==='capacitors'){
-     series=[line(tr,q=>q.capacitors[0],'#be3b56','v C,a'),line(tr,q=>q.capacitors[1],'#2a7ca5','v C,b'),line(tr,q=>q.capacitors[2],'#0c8f99','v C,c')];
-     opts={title:'SERIES CAPACITOR VOLTAGES',kind:'cap',cursor};
+     series=[line(first,q=>Math.max(0,-q.current[2]),'#c13d56','Incoming T6'),
+       line(first,q=>Math.max(0,-q.current[1]),'#227ca4','Outgoing T4'),
+       line(first,q=>p.idc,'#0b8892','I dc')];
+     if(reference?.valid){
+       series.push({...line(reference.traces.filter(q=>q.angle<60),
+         q=>Math.max(0,-q.current[2]),'#657d93','Incoming ref'),
+         dash:[6,5],width:1.7});
+     }
+     const focus=FixedAxes.preset()!=='full';
+     opts={title:'OUTGOING / INCOMING SCR CURRENT · p.u.',
+       kind:'current',xEnd:reference?(focus?30:60):60,mu,cursor,
+       muRef:reference?.mu?.[0]};
+   }else if(kind==='capacitorsLocal'){
+     // The three native capacitor-voltage states share the commutation axis.
+     series=[line(first,q=>q.capacitors[0],'#c13d56','v C,a'),
+       line(first,q=>q.capacitors[1],'#287da4','v C,b'),
+       line(first,q=>q.capacitors[2],'#0e8893','v C,c')];
+     const focus=FixedAxes.preset()!=='full';
+     opts={title:'INSTANTANEOUS SERIES-CAPACITOR VOLTAGES · p.u.',
+       kind:'cap',xEnd:focus?30:60,cursor,mu};
    }else if(kind==='valves'){
      const names=['T1','T2','T3','T4','T5','T6'];
      const phases=[0,0,1,1,2,2],upper=[true,false,true,false,true,false];
